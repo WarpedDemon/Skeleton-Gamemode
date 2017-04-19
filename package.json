@@ -1,0 +1,15 @@
+{
+  "name": "flashcycle",
+  "version": "1.0.0",
+  "description": "Multiplayer game",
+  "main": "app.js",
+  "dependencies": {
+    "victor": "^1.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

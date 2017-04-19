@@ -1,0 +1,814 @@
+<html>
+	<head>
+		<!--<audio id="backgroundMusic" src="/client/music/backgroundMusic.mp3"></audio>!-->
+		<link rel="stylesheet" type="text/css" href="/client/css/index.css"/>
+		<title> Skeleton Gamemode </title>
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	</head>
+
+
+	<body>
+		<h1 id="title"></h1>
+		<canvas id="ctx" width="1000" height="1000" style="border: 1px solid #000000;"></canvas>
+		<script>//run client.js
+			var canvas = document.getElementById('ctx')
+			var ctx = canvas.getContext('2d');
+			ctx.font = '30px Arial';
+
+			var WIDTH = canvas.width;
+			var HEIGHT = canvas.height;
+
+			var socket = io();
+
+			var localOffsetx;
+			var localOffsetY;
+			var localId;
+			var localData;
+
+			var local_MAP_ARRAY;
+
+			var gameDimensionX;
+			var gameDimensionY;
+
+			var local_KNIGHT_ARRAY = [];
+			var local_GHOST_ARRAY = [];
+			var local_RAT_ARRAY = [];
+			//var music = document.getElementById("backgroundMuisc");
+			//music.play(music);
+			//music.volume = 0.4;
+			var ShopKeeper = {x: "undef", y: "undef", vx: "undef", vy: "undef", size:7, color: "#42d9f4", segement: []};
+
+			var GAME_MAP = [];
+			//MAIN
+			/*
+			var masterKey = [
+				[TR,T,T,T,T,T,T,T,TL],
+				[L,BA,BB,1,1,1,1,1,R],
+				[L,BC,BD,1,1,1,1,1,R],
+				[L,1,1,1,1,1,1,1,R],
+				[L,1,1,1,1,1,1,1,R],
+				[L,1,1,1,1,1,1,1,R],
+				[L,SH,1,1,1,1,1,1,R],
+				[L,1,1,1,1,1,1,S,R],
+				[BR,B,B,B,B,B,B,B,BL]
+			];*/
+
+			/* LEGEND */
+			//--> postion = [0,0], map_data = {roomLengthX: x, roomLengthY y, };
+			function masterKey(position, map_data)
+			{
+
+				var middleXIndex = Math.floor((map_data.roomLengthX-1)/2);
+				var middleYIndex = Math.floor((map_data.roomLengthY-1)/2);
+				if(position[0] == middleXIndex) {
+					if(position[1] == middleYIndex) {
+						//Center Spawn
+						return "forceSpawn";
+
+					}
+				}
+
+				if(position[0] == 0)
+				{
+					if(position[1] == 0) {
+						return "forceTL";
+					} else if(position[1] == map_data.roomLengthY-1) {
+						return "forceBL"
+					} else {
+						return "forceL";
+					}
+				}
+				if(position[0] == map_data.roomLengthX-1)
+				{
+					if(position[1] == 0) {
+						return "forceTR";
+					} else if(position[1] == map_data.roomLengthY-1) {
+						return "forceBR";
+					} else {
+						return "forceR";
+					}
+				}
+				if(position[1] == 0)
+				{
+					return "forceT";
+				}
+				if(position[1] == map_data.roomLengthY-1)
+				{
+					return "forceB";
+				}
+
+
+				return false;
+			}
+
+
+			function generateMap()
+			{
+				//var randomX  = Math.floor(Math.random()*2 ) +3;
+				//var randomY = Math.floor(Math.random()*2 ) +3;
+				gameDimensionX = 15; //map segs
+				gameDimensionY = 15; //map segs
+				var map_data = {roomLengthX: gameDimensionX, roomLengthY: gameDimensionY};
+				var generatedShop = false;
+				for(var i=0; i<gameDimensionY; i++)
+				{
+					var tempArray = [];
+					for(var j=0; j<gameDimensionX; j++)
+					{
+						var result = masterKey([j, i], map_data);
+						switch (result)
+						{
+							case false:
+								if(!generatedShop) {
+									var rand = Math.floor(Math.random()*10) + 1;
+
+									if(rand == 0) {
+										var randomSegment = map_Piece0;
+										var type = "Random";
+									} else if(rand == 1) {
+										var randomSegment = map_Piece1;
+										var type = "Random";
+									} else if(rand == 2) {
+										var randomSegment = map_Piece2;
+										var type = "Random";
+									} else if(rand == 3) {
+										var randomSegment = map_Piece3;
+										var type = "Random";
+									} else if(rand == 4) {
+										var randomSegment = map_Piece4;
+										var type = "Random";
+									} else if(rand == 5) {
+										var randomSegment = map_Piece5;
+										var type = "Random";
+									} else if(rand == 6) {
+										var randomSegment = map_Piece6;
+										var type = "Random";
+									} else if(rand == 7) {
+										var randomSegment = map_Piece7;
+										var type = "Random";
+									} else if(rand == 8) {
+										var randomSegment = map_Piece8;
+										var type = "Random";
+									} else if(rand == 9) {
+										//Generate shop
+										var randomSegment = map_PieceShop;
+										var spawnLocX = (j*9*32) + (9*32)/2;
+										var spawnLocY = (i*9*32) + (9*32)/2;
+										ShopKeeper.x = spawnLocX;
+										ShopKeeper.y = spawnLocY;
+										var type = "Shop";
+										ShopKeeper.segment = [i, j];
+										generatedShop = true;
+									} else if(rand == 10) {
+										//Knight room
+										var type = "Knight";
+										var randomSegment = map_PieceKnight;
+									} else {
+										//generated unexpected number;
+
+									}
+								//make = to not not e
+
+									//make = to not not e
+									//var map seg messaround with the random gen numbers to get better/more complex map e.g. set 6 to 9  (btw what ever amount you leave empty has a a chance to spawn a shop)
+								} else {
+									var rand = Math.floor(Math.random()*9) + 1;
+									if(rand == 0) {
+										var type = "Random";
+										var randomSegment = map_Piece0;
+									} else if(rand == 1) {
+										var type = "Random";
+										var randomSegment = map_Piece1;
+									} else if(rand == 2) {
+										var randomSegment = map_Piece2;
+										var type = "Random";
+									} else if(rand == 3) {
+										var randomSegment = map_Piece3;
+										var type = "Random";
+									} else if(rand == 4) {
+										var randomSegment = map_Piece4;
+										var type = "Random";
+									} else if(rand == 5) {
+										var randomSegment = map_Piece5;
+										var type = "Random";
+									} else if(rand == 6) {
+										var randomSegment = map_Piece6;
+										var type = "Random";
+									} else if(rand == 7) {
+										var randomSegment = map_Piece7;
+										var type = "Random";
+									} else if(rand == 8) {
+										var randomSegment = map_Piece8;
+										var type = "Random";
+									} else if(rand = 9) {
+										//Knight room
+										var type = "Knight";
+										var randomSegment = map_PieceKnight;
+									} else {
+										var randomSegment = map_Piece0;
+										var type = "Random";
+										//generated unexpected number;
+									}
+								}
+								tempArray.push({segment: randomSegment, revealed: false, type: type});
+								console.log("Pushed at: " + i + ", " + j);
+								break;
+							case "forceB":
+								var segment = map_PieceB;
+								tempArray.push({segment: segment, revealed: false, type:"B"}); // make all
+								break;
+							case "forceL":
+								var segment = map_PieceL;
+								tempArray.push({segment: segment, revealed: false, type: "L"});
+								break;
+							case "forceR":
+								var segment = map_PieceR;
+								tempArray.push({segment: segment, revealed: false, type: "R"});
+								break;
+							case "forceT":
+								var segment = map_PieceT;
+								tempArray.push({segment: segment, revealed: false, type: "T"});
+								break;
+							case "forceTR":
+								var segment = map_PieceTR;
+								console.log("force purcshed Top right");
+								tempArray.push({segment: segment, revealed: false, type: "TR"});
+								break;
+							case "forceTL":
+								var segment = map_PieceTL;
+								tempArray.push({segment: segment, revealed: false, type: "TL"});
+								break;
+							case "forceBR":
+								var segment = map_PieceBR;
+								tempArray.push({segment: segment, revealed: false, type: "BR"});
+								break;
+							case "forceBL":
+								var segment = map_PieceBL;
+								tempArray.push({segment: segment, revealed: false, type: "BL"});
+								break;
+							case "forceSpawn":
+								var segment = map_PieceSpawn;
+								//localData.x = (j*32)/2;
+								var locX = (j*(9*32)) + (9*32)/2;
+								var locY = (i*(9*32)) + (9*32)/2;
+								socket.emit("playerspawn", {x: locX, y: locY});
+								console.log("EMITTED");
+								//localData.y = (i*32)/2;
+								tempArray.push({segment: segment, revealed: false, type: "Spawn"});
+								break;
+
+							default:
+								break;
+						}
+					}
+					GAME_MAP.push(tempArray);
+				}
+			}
+			//S
+			var map_PieceSpawn = [
+				[1,0,0,0,0,0,0,0,1],
+				[0,1,0,0,1,0,0,1,0],
+				[0,0,0,0,0,0,0,0,0],
+				[0,0,0,1,0,1,0,0,0],
+				[0,1,0,0,0,0,0,1,0],
+				[0,0,0,1,0,1,0,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[0,1,0,0,1,0,0,1,0],
+				[1,0,0,0,0,0,0,0,1]
+			];
+			//1
+			var map_Piece0 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,0,1,0,0],
+				[1,0,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,1,1,0,1,0,1,1,1],
+				[0,0,0,0,1,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece1 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,1,0,1,0,1],
+				[1,0,1,0,0,0,0,0,1],
+				[0,0,0,0,1,0,1,0,0],
+				[1,0,1,1,1,0,1,1,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,1,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece2 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,1,0,1,0,1,0,0],
+				[1,0,0,0,1,0,1,1,1],
+				[1,1,0,1,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,1,0,0,0,0,1,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece3 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,0,1,0,0],
+				[1,0,1,1,1,0,1,0,1],
+				[1,0,1,0,0,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece4 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,1,0,1,0,1,0,0],
+				[1,1,1,1,1,0,1,0,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,1,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece5 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,1,1,0,0],
+				[1,1,0,1,1,0,1,1,1],
+				[1,1,0,0,1,0,0,0,1],
+				[1,1,1,0,1,0,1,1,1],
+				[0,0,1,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece6 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,0,0,1,0,0],
+				[1,1,1,1,0,1,1,1,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,1,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece7 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,1,0,0,1],
+				[1,0,1,0,1,1,1,0,1],
+				[0,0,1,0,0,1,1,0,0],
+				[1,1,1,1,0,1,1,1,1],
+				[1,0,1,0,1,0,1,0,1],
+				[1,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			var map_Piece8 = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,0,0,1],
+				[1,0,1,0,1,1,0,1,1],
+				[0,0,0,0,0,1,1,0,0],
+				[1,1,1,1,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,1,0,0,0,1,1,1],
+				[0,0,0,0,1,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//L
+			var map_PieceL = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,0,0,1,0,1,0,0],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[1,0,0,0,0,0,0,0,1],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//R
+			var map_PieceR = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,0,1,0,1],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,0,0,1],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//U
+			var map_PieceT = [
+				[1,1,1,1,1,1,1,1,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,0,1,0,0],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//D
+			var map_PieceB = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,0,1,0,0],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,1,1,1,1,1,1,1,1]
+			];
+			//TR
+			var map_PieceTR = [
+				[1,1,1,1,1,1,1,1,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[0,0,0,0,1,0,1,0,1],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,0,0,1],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//TL
+			var map_PieceTL = [
+				[1,1,1,1,1,1,1,1,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,0,0,1,0,1,0,0],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[1,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//BL
+			var map_PieceBL = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,0,0,1,0,1,0,0],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[1,0,0,0,0,0,0,0,0],
+				[1,1,1,1,1,1,1,1,1]
+			];
+			//BR
+			var map_PieceBR = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,1,0,1,0,0,0,1],
+				[1,0,0,0,1,0,1,0,1],
+				[1,1,1,1,1,0,1,1,1],
+				[1,0,0,0,1,0,0,0,1],
+				[1,0,1,0,1,0,1,1,1],
+				[0,0,0,0,0,0,0,0,1],
+				[1,1,1,1,1,1,1,1,1]
+			];
+			//SH
+			var map_PieceKnight = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,0,0,0,0,0,0,1],
+				[1,0,1,1,1,1,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,0,1,0,1,0,1],
+				[1,0,0,0,0,0,0,0,1],
+				[1,0,1,1,1,1,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//SH
+			var map_PieceShop = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,0,0,0,0,0,0,1],
+				[1,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,0,0,0,1,0,1],
+				[1,0,0,0,0,0,0,0,1],
+				[1,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//BA
+			var map_PieceBossA = [
+				[1,0,1,1,1,1,1,0,1],
+				[1,0,0,0,0,0,0,0,0],
+				[1,0,1,0,1,0,1,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,0,0,0,1,0,0],
+				[1,0,0,0,0,0,0,0,0],
+				[1,0,1,0,1,0,1,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,0,0,0,0,0,0,1]
+			];
+			//BB
+			var map_PieceBossB = [
+				[1,0,1,1,1,1,1,0,1],
+				[0,0,0,0,0,0,0,0,1],
+				[0,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[0,0,1,0,0,0,1,0,1],
+				[0,0,0,0,0,0,0,0,1],
+				[0,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,0,0,0,0,0,0,1]
+			];
+			//BC
+			var map_PieceBossC = [
+				[1,0,0,0,0,0,0,0,1],
+				[1,0,0,0,0,0,0,0,0],
+				[1,0,1,0,1,0,1,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,0,0,0,1,0,0],
+				[1,0,0,0,0,0,0,0,0],
+				[1,0,1,0,1,0,1,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+			//BD
+			var map_PieceBossD = [
+				[1,0,0,0,0,0,0,0,1],
+				[0,0,0,0,0,0,0,0,1],
+				[0,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[0,0,1,0,0,0,1,0,1],
+				[0,0,0,0,0,0,0,0,1],
+				[0,0,1,0,1,0,1,0,1],
+				[0,0,0,0,0,0,0,0,0],
+				[1,0,1,1,1,1,1,0,1]
+			];
+
+			socket.on('receivedConnect', function(data) {
+				localId = data.id;
+			});
+
+			socket.on('newPosition', function(data) {
+				localData = data.player;
+				//console.log(data);
+			});
+
+			socket.on('newNPCList', function(data) {
+				local_KNIGHT_ARRAY = data.knights;
+				local_GHOST_ARRAY = data.ghosts;
+				local_RAT_ARRAY = data.rats;
+				local_MAP_ARRAY = data.map;
+				ShopKeeper = data.shopkeeper;
+			});
+
+			function isInRevealedSegment(entity) {
+				var testX = (entity.x/9)/32;
+				var testY = (entity.y/9)/32;
+				var xOuterIndex = Math.floor(testX);
+				var yOuterIndex = Math.floor(testY);
+
+				return GAME_MAP[yOuterIndex][xOuterIndex].revealed;
+			}
+
+			function animate(){
+ //	update
+
+			 for(var i in GAME_MAP)
+			 {
+
+				 for(var j in GAME_MAP[i])
+				 {
+						 var xLoc = j*9*32;
+						 var yLoc = i*9*32;
+						 var size = 9*32;
+						 if(boxCollides([localData.x-localData.size, localData.y-localData.size], [localData.size*2, localData.size*2],[xLoc, yLoc],[size,size])) {
+							 console.log("DID THIS");
+							 GAME_MAP[i][j].revealed = true;
+						 } else {
+							 GAME_MAP[i][j].revealed = false;
+						 }
+				 }
+			 }
+/*
+			 boxCollides([p.x,p.y],[p.w,p.h],[o.x,o.y],[o.s,o.h]);
+							//draw
+							ctx.clearRect(0,0,WIDTH, HEIGHT);
+*/
+
+
+
+				ctx.clearRect(0,0,WIDTH, HEIGHT);
+				//map generator
+				//uses main key
+				//then gets those maps and reads them into the game
+						//first peice
+				var outerLoopX = 0;
+				var outerLoopY = 0;
+				for(var i in GAME_MAP)
+				{
+
+					for(var j in GAME_MAP[i])
+					{
+						var loopX = 0;
+						var loopY = 0;
+						for(var k in GAME_MAP[i][j].segment)
+						{
+							for(var l in GAME_MAP[i][j].segment[k])
+							{
+								var tile = GAME_MAP[i][j].segment[k][l];
+								ctx.beginPath();
+										//fillStyle command
+										//change to function to return ctx.fillStyle = "#708090"
+								if(GAME_MAP[i][j].revealed) {//this one chnages wehter u see everything or nothing yes (true) (in order to turn on fog GAME_MAP[i][j].reveled)
+									switch(tile)
+									{
+										case 0:
+											ctx.fillStyle = "#708090";
+										break;
+
+										case 1:
+											ctx.fillStyle = "#696969";
+										break;
+										default:
+										ctx.fillStyle = "#ffffff"
+										break;
+									}
+								} else {
+									ctx.fillStyle = "rgba(0,0,0,0.9)";
+								}
+							ctx.rect(outerLoopX + loopX - localData.x + (WIDTH/2), outerLoopY + loopY - localData.y + (HEIGHT/2), 32, 32);
+							ctx.fill();
+							ctx.closePath();
+
+							loopX += 32;
+							}
+							loopX = 0;
+							loopY += 32;
+						}
+						outerLoopX += 32*9;
+					}
+					outerLoopX = 0;
+					outerLoopY += 32*9;
+				}
+
+				for(var k in local_GHOST_ARRAY) {
+					var ghost = local_GHOST_ARRAY[k];
+
+					//Gets index of sgement the rat is currently on.
+					var testX = (ghost.x/9)/32;
+					var testY = (ghost.y/9)/32;
+					var xOuterIndex = Math.floor(testX);
+					var yOuterIndex = Math.floor(testY);
+
+					if(GAME_MAP[yOuterIndex][xOuterIndex].revealed) {
+						//
+						ctx.beginPath();
+						ctx.fillStyle = ghost.color;
+						ctx.arc(ghost.x - localData.x + (WIDTH/2), ghost.y - localData.y + (HEIGHT/2), ghost.size, 0, Math.PI*2);
+						ctx.fill();
+						ctx.closePath();
+					}
+				}
+
+				for(var k in local_RAT_ARRAY) {
+					var rat = local_RAT_ARRAY[k];
+
+
+					//Gets index of sgement the rat is currently on.
+					var testX = (rat.x/9)/32;
+					var testY = (rat.y/9)/32;
+					var xOuterIndex = Math.floor(testX);
+					var yOuterIndex = Math.floor(testY);
+
+					if(GAME_MAP[yOuterIndex][xOuterIndex].revealed) {
+
+						ctx.beginPath();
+						ctx.fillStyle = rat.color;
+						ctx.arc(rat.x - localData.x + (WIDTH/2), rat.y - localData.y + (HEIGHT/2), rat.size, 0, Math.PI*2);
+						ctx.fill();
+						ctx.closePath();
+
+						//Health Bar
+						ctx.beginPath();
+						ctx.fillStyle = "red";
+						ctx.rect((rat.x-rat.size - 10) - localData.x + (WIDTH/2), (rat.y - 30) - localData.y + (HEIGHT/2), 40 * (rat.health/rat.maxHealth), 5);
+						ctx.fill();
+						ctx.closePath();
+					}
+				}
+				///kinght stuffdssdaf
+				for (var i in local_KNIGHT_ARRAY){
+					var knight = local_KNIGHT_ARRAY[i];
+					if(isInRevealedSegment(knight)) {
+						ctx.beginPath();
+						ctx.fillStyle = knight.color;
+						ctx.arc(knight.x - localData.x + (WIDTH/2), knight.y - localData.y + (HEIGHT/2), knight.size, 0, Math.PI*2);
+						ctx.fill();
+						ctx.closePath();
+					}
+				}
+				//Shopkeep entity;
+				if(ShopKeeper.x !== "undef") {
+					//Gets index of sgement the rat is currently on.
+					var testX = (ShopKeeper.x/9)/32;
+					var testY = (ShopKeeper.y/9)/32;
+					var xOuterIndex = Math.floor(testX);
+					var yOuterIndex = Math.floor(testY);
+
+					if(GAME_MAP[yOuterIndex][xOuterIndex].revealed) {
+
+						ctx.beginPath();
+						ctx.fillStyle = ShopKeeper.color;
+						ctx.arc(ShopKeeper.x - localData.x + (WIDTH/2), ShopKeeper.y - localData.y + (HEIGHT/2), ShopKeeper.size, 0, Math.PI*2);
+						ctx.fill();
+						ctx.closePath();
+					}
+				}
+
+
+				//drawPlayer
+				if (localData)
+				{
+					ctx.beginPath();
+					ctx.fillStyle = localData.color;
+					ctx.arc(WIDTH/2, HEIGHT/2, localData.size, 0, Math.PI*2);
+					ctx.fill();
+					ctx.closePath();
+					ctx.beginPath();
+					ctx.font = "16px helvetica";
+					ctx.fillText("Current Blocked Direction: " + localData.cantMove, WIDTH-250, 100);
+					ctx.closePath();
+
+					ctx.beginPath();
+					ctx.fillStyle = "red";
+					ctx.rect(WIDTH/2 - 20, HEIGHT/2 - 30, 40 * (localData.health/localData.maxHealth), 5);
+					ctx.fill();
+					ctx.closePath();
+				} else { console.log("no data bob!"); }
+
+				requestAnimationFrame(animate);
+			}
+			//Default WASD Movement style
+
+			document.onkeydown = function(event) {
+				if(event.keyCode == 68) { //d
+					socket.emit('keyPress',{inputId:'right', state: true});
+				}
+				if(event.keyCode == 83) { //s
+					socket.emit('keyPress',{inputId:'down', state: true});
+				}
+				if(event.keyCode == 65) {// a
+					socket.emit('keyPress',{inputId:'left', state: true});
+				}
+				if(event.keyCode == 87) {//w
+					socket.emit('keyPress',{inputId:'up', state: true});
+				}
+			};
+
+			document.onkeyup = function(event) {
+				if(event.keyCode == 68) { //d
+					socket.emit('keyPress',{inputId:'right', state: false});
+				}
+				if(event.keyCode == 83) { //s
+					socket.emit('keyPress',{inputId:'down', state: false});
+				}
+				if(event.keyCode == 65) {// a
+					socket.emit('keyPress',{inputId:'left', state: false});
+				}
+				if(event.keyCode == 87) {//w
+					socket.emit('keyPress',{inputId:'up', state: false});
+				}
+			};
+
+			function preInitialize() {
+				generateMap();
+				console.log("DOING");
+				socket.emit("playerReady", {map: GAME_MAP, roomLengthX: gameDimensionX, roomLengthY: gameDimensionY});
+				socket.emit("createdShopKeeper", {x:ShopKeeper.x, y:ShopKeeper.y, segement: ShopKeeper.segment});
+			}
+
+			var interval = setInterval(test, 500)
+			function test() {
+				if(localData) {
+					clearInterval(interval);
+					preInitialize();
+					animate();
+				}
+			}
+
+
+			function collides(x, y, r, b, x2, y2, r2, b2) {
+					    return !(r <= x2 || x > r2 || b <= y2 || y > b2);
+						}
+						//Checks collisions for boxes only.
+						//pos = item x and y coordinates. eg [0, 0]
+						//size = item dimensions (size). eg [50, 50];
+						//pos2 = item 2 x and y coordinates.
+						//size2 = item 2 dimensions (size).
+						function boxCollides(pos, size, pos2, size2) {
+						    return collides(pos[0], pos[1], pos[0] + size[0], pos[1] + size[1], pos2[0], pos2[1], pos2[0] + size2[0], pos2[1] + size2[1]);
+						}
+		</script>
+	</body>
+</html>

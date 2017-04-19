@@ -1,0 +1,21 @@
+canvas{
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+body{
+  background-image: url('/client/img/darkBack.png');
+}
+#title{
+  background-repeat: no-repeat;
+  width: 750px;
+  height: 100px;
+  background-image: url('/client/img/title.png');
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
