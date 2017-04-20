@@ -1,0 +1,498 @@
+<html>
+	<head>
+		<title> Partice Ability Examples </title>
+		<style>
+			canvas {
+				margin: auto;
+				background-color: black;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+	
+		<canvas id="canvas" width="900" height="600"></canvas>
+		
+		<script type="text/javascript">
+			
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+			
+			
+			
+			var WIDTH = canvas.width;
+			var HEIGHT = canvas.height;
+			
+			var shiftPressed = false;
+			var fourPressed = false;
+			var sixPressed = false;
+			var sevenPressed = false;
+			var ninePressed = false;
+			var onePressed = false;
+			var threePressed = false;
+			var castingSpell = false;
+			var spellFinished = false;
+			var cast = [];
+			
+			var midSize = 3;
+			var outSize  = 3;
+			var ringSize = 3;
+			
+			var circle = document.getElementById('circle');
+	
+			var ogrd=ctx.createRadialGradient(WIDTH/2,HEIGHT/2,55,WIDTH/2,HEIGHT/2,100);
+			ogrd.addColorStop(0,"red");
+			ogrd.addColorStop(1,"black");
+			
+			var Particle = function(x,y,lifetime) {
+				var self = {
+					x: x,
+					y: y,
+					lifetime: lifetime,
+					startTime: dt,
+					tick: 0,
+					incrementTick: (Math.PI/180)*5,
+					opacity: 1,
+					speed: 1
+				};
+				return self;
+			}
+			
+			var Anim = function() {
+				var self = {
+					x: WIDTH/2,
+					y: HEIGHT/2,
+					color: "red",
+					geoType: "arc",
+					particles: [],
+					lastParticle: 0,
+					size: 140,
+					particleCount: 100
+				};
+				return self;
+			}
+			
+			var anim = new Anim();
+		
+			var testTurn = 0;
+			var testTurn2 = (Math.PI/180) * 90;
+			var testTurn3 = 0;
+			var now, dt, gameTime;
+			var startTime = Date.now();
+			var lastTime = 0;
+			var offset = (Math.PI/180) * 90;
+			function animateCustomTriangles() {
+				ctx.clearRect(0,0,WIDTH,HEIGHT);
+				
+				now = Date.now();
+				gameTime =  (now - startTime);
+				dt = gameTime/1000;
+				if(spellFinished) {
+					testTurn += 0.02;
+					testTurn2 += 0.02;
+				}
+				
+				if(castingSpell) {
+					
+					drawBase("red", outSize+50, offset, 1);
+				
+				
+					if(checkCasted("outerPiece")) {
+						/*
+						if(outSize < 100) {
+							outSize +=1;
+						}
+						*/
+						
+						outSize = Math.abs(90*Math.sin(testTurn));
+						drawBase("red", outSize, offset/2, -1);
+					}
+					//ctx.clearArc(WIDTH/2, HEIGHT/2, 90, 0, Math.PI*2);
+					/*
+					ctx.beginPath();
+					ctx.fillStyle = "black";
+					ctx.arc(WIDTH/2, HEIGHT/2, 40, 0, Math.PI*2);
+					ctx.fill();
+					ctx.closePath();
+					*/
+					if(checkCasted("ringPiece")) {
+						if(!spellFinished) {
+							if(ringSize < 90) {
+								ringSize += 1;
+							}
+						}
+						
+						if(spellFinished) {
+							//ringSize = Math.abs(90 * Math.sin(testTurn2));
+							animateParticles(anim);
+						}
+						ctx.beginPath();
+						ctx.shadowBlur = 20;
+						ctx.shadowColor = "red";
+						ctx.strokeStyle = ogrd;
+						ctx.lineWidth = 20;
+						ctx.arc(WIDTH/2, HEIGHT/2, ringSize, 0, Math.PI*2);
+						ctx.stroke();
+						ctx.closePath();
+					}
+					
+
+					
+					if(checkCasted("centerPiece")) {
+						if(midSize < 50) {
+							midSize += 1;	
+						}
+						drawBase("red", midSize, 0, 1);
+					}
+				}
+				
+
+				
+				
+				
+				triangleAnim = requestAnimationFrame(animateCustomTriangles);
+			}	
+			
+	
+
+			
+			function drawBase(color, size, offsetInit, type) {
+					
+					ctx.beginPath();
+				ctx.strokeStyle = color;
+				ctx.lineWidth = 1;
+				
+				ctx.save();
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate((offsetInit + offset + testTurn)*type);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2,HEIGHT/2 - size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) + size);
+				ctx.lineTo((WIDTH/2) + size,(HEIGHT/2) + size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 - size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+				
+				ctx.beginPath();
+				ctx.save();
+				ctx.strokeStyle = color;
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate((offsetInit + offset + testTurn)*type);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) - size);
+				ctx.lineTo((WIDTH/2) + size, (HEIGHT/2) - size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+				
+				
+				
+				
+				
+				ctx.beginPath();
+				ctx.strokeStyle = color;
+				
+				
+				ctx.save();
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate((offsetInit + testTurn) * type);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2,HEIGHT/2 - size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) + size);
+				ctx.lineTo((WIDTH/2) + size,(HEIGHT/2) + size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 - size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+				
+				ctx.beginPath();
+				ctx.save();
+				ctx.strokeStyle = color;
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate((offsetInit + testTurn) * type);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) - size);
+				ctx.lineTo((WIDTH/2) + size, (HEIGHT/2) - size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+				
+			}
+			
+			document.addEventListener('keydown', onKeyDown, false);
+			document.addEventListener('keyup', onKeyUp, false);
+			
+			function onKeyUp(e) {
+				var key = e.keyCode;
+				if(key == 16) {
+				 shiftPressed = false;
+				}
+				
+				if(key == 97) {
+					onePressed = false;
+				}
+				if(key == 99) {
+					threePressed = false;
+				}
+				if(key == 100) {
+					fourPressed = false;
+				}
+				if(key == 102) {
+					sixPressed = false;
+				}
+				if(key == 103) {
+					sevenPressed = false;
+				}
+				if(key == 105) {
+					ninePressed = false;
+				}
+			}
+			
+			function onKeyDown(e) {
+				var key = e.keyCode;
+				if(key == 16) {
+					shiftPressed = true;
+					console.log("SHIFT");
+				}
+				if(key == 67) {
+					if(shiftPressed) {
+						castingSpell = true;
+						console.log("BEGUNCASTING");
+					}
+				}
+				//4 key
+				if(key == 100 || key == 37) {
+					if(sixPressed) {
+						var todo = !checkCasted("ringPiece");
+						if(todo) {
+							cast.push("ringPiece");
+							checkComplete();
+						} else{
+							cast = [];
+							castingSpell = false;
+							spellFinished = false;
+							resetSizes();
+						}
+					} else {
+						fourPressed = true;
+					}
+				}
+			
+				// 6 Key
+				if(key == 102 || key == 39) {
+					if(fourPressed) {
+						var todo = checkCasted("ringPiece");
+						if(!todo) {
+							cast.push("ringPiece");
+							checkComplete();
+						} else{
+							cast = [];
+							castingSpell = false;
+							spellFinished = false;
+							resetSizes()
+						}
+					} else {
+						sixPressed = true;
+					}
+				}				
+				
+				//5 Key
+				if(key == 101 || key == 12) {
+					if(castingSpell) {
+						console.log("HERE");
+						var todo = !checkCasted("centerPiece");
+						if(todo) {
+							cast.push("centerPiece");
+							checkComplete();
+						} else {
+							cast = [];
+							castingSpell = false;
+							spellFinished = false;
+							resetSizes()
+						}
+					}
+				}
+				
+				
+				if(key == 103 ) {
+					if(ninePressed) {
+						if(onePressed){
+							if(threePressed) {
+								var todo = !checkCasted("outerPiece");
+								if(todo) {
+									cast.push("outerPiece");
+									checkComplete();
+								} else {
+									cast = [];
+									castingSpell = false;
+									spellFinished =false;
+									resetSizes();
+								}
+							}
+						}
+					}
+					sevenPressed = true;
+				}
+				
+					if(key == 97) {
+					if(ninePressed) {
+						if(sevenPressed){
+							if(threePressed) {
+								var todo = !checkCasted("outerPiece");
+								if(todo) {
+									cast.push("outerPiece");
+									checkComplete();
+								} else {
+									cast = [];
+									castingSpell = false;
+									spellFinished = false;
+									resetSizes();
+								}
+							}
+						}
+					}
+					onePressed = true;
+				}			
+				
+				
+				if(key == 105) {
+					if(sevenPressed) {
+						if(onePressed){
+							if(threePressed) {
+								var todo = !checkCasted("outerPiece");
+								if(todo) {
+									cast.push("outerPiece");
+									checkComplete();
+								} else {
+									cast = [];
+									spellFinished = false;
+									castingSpell = false;
+									resetSizes();
+								}
+							}
+						}
+					}
+					ninePressed = true;
+				}
+				
+				
+				if(key == 99) {
+					if(ninePressed) {
+						if(onePressed){
+							if(sevenPressed) {
+								var todo = !checkCasted("outerPiece");
+								if(todo) {
+									cast.push("outerPiece");
+									checkComplete();
+								} else {
+									cast = [];
+									castingSpell =false;
+									spellFinished = false;
+									resetSizes();
+								}
+							}
+						}
+					}
+					threePressed = true;
+				}
+				
+			}
+			
+			function checkComplete() {
+				if(cast.length == 1) {
+					if(cast[0] !== "centerPiece") {
+						cast = [];
+						castingSpell = false;
+						spellFinished = false;
+						resetSizes();
+					}
+				}
+				if(cast.length == 2) {
+					if(cast[1] !== "ringPiece") {
+						cast = [];
+						castingSpell = false;
+						spellFinished = false;
+						resetSizes();
+					}
+				}
+				if(cast.length == 3) {
+					spellFinished = true;
+				}
+			}
+			
+			function resetSizes() {
+				ringSize = 3;
+				outSize = 3;
+				midSize =3;
+			}
+			
+			function checkCasted(piece) {
+				for(var i in cast) {
+					if(cast[i] == piece) {
+							return true;
+					}
+				}
+				return false;
+			}
+			
+			
+			function animateParticles(entity) {
+				if(entity.particles.length < entity.particleCount) {
+					if(0.1 < dt - entity.lastParticle) {
+						console.log("NEW PARTICLE");
+						if(entity.geoType == "arc") {
+							var randX = (entity.x - entity.size) + Math.random() * ((entity.x+entity.size) - (entity.x-entity.size));
+							var randY = (entity.y - entity.size) + Math.random() * ((entity.y+entity.size) - (entity.y-entity.size));
+						} else if(entity.geoType == "rect") {
+							var randX = entity.x + Math.random() * entity.width;
+							var randX = entity.y + Math.random() * entity.height;
+						}
+						var lifeTime = Math.ceil(Math.random()*6);
+						var newParticle = new Particle(randX, randY, lifeTime);
+						entity.particles.push(newParticle);
+						entity.lastParticle = dt;
+					}
+				}
+				for(var i in entity.particles) {
+					var particle = entity.particles[i];
+					particle.tick += particle.incrementTick;
+					particle.opacity -= 0.00000000001;
+					
+					particle.y -= particle.speed;
+					particle.x = particle.x + (Math.cos(particle.tick));
+					
+					
+					ctx.beginPath();
+					console.log(particle.x, particle.y);
+					ctx.fillStyle = entity.color;
+					ctx.arc(particle.x, particle.y, 1, 0, Math.PI*2);
+					ctx.fill();
+					ctx.closePath();
+					
+					
+					if(particle.lifetime < dt - particle.startTime) {
+						entity.particles.splice(i ,1);
+					}
+					
+				}
+			}
+			
+			//animateOrbs();
+			//animateShield();
+			animateCustomTriangles();
+		</script>
+	</body>
+</html>
