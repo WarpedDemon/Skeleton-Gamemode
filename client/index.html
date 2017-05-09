@@ -4,13 +4,194 @@
 		<link rel="stylesheet" type="text/css" href="/client/css/index.css"/>
 		<title> Skeleton Gamemode </title>
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+		<img src="client/img/gameTiles/middleRoomPillar.png" id="internal_wall" style="display: none;"/>
+
+		<img src="client/img/gameTiles/blank.png" id="blank" style="display: none;"/>
+
+		<img src="client/img/gameTiles/tiledFloor.png" id="tiled_floor" style="display: none;"/>
+
+		<img src="client/img/gameTiles/outRightBottomCorner.png" id="out_bottom_right_corner" style="display: none;"/>
+		<img src="client/img/gameTiles/outLeftBottomCorner.png" id="out_bottom_left_corner" style="display: none;"/>
+		<img src="client/img/gameTiles/outRightTopCorner.png" id="out_top_right_corner" style="display: none;"/>
+		<img src="client/img/gameTiles/outLeftTopCorner.png" id="out_top_left_corner" style="display: none;"/>
+
+		<img src="client/img/gameTiles/bottomRightCorner.png" id="bottom_right_corner" style="display: none;"/>
+		<img src="client/img/gameTiles/bottomLeftCorner.png" id="bottom_left_corner" style="display: none;"/>
+		<img src="client/img/gameTiles/topRightCorner.png" id="top_right_corner" style="display: none;"/>
+		<img src="client/img/gameTiles/topLeftCorner.png" id="top_left_corner" style="display: none;"/>
+
+		<img src="client/img/gameTiles/BottomWall.png" id="wall_bottom" style="display: none;"/>
+		<img src="client/img/gameTiles/wall.png" id="wall_top" style="display: none;"/>
+		<img src="client/img/gameTiles/wallLeft.png" id="wall_left" style="display: none;"/>
+		<img src="client/img/gameTiles/wallRight.png" id="wall_right" style="display: none;"/>
+
+		<img src="client/img/Character/idle1.png" id="player_idle1" style="display: none;"/>
+		<img src="client/img/Character/idle2.png" id="player_idle2" style="display: none;"/>
+		<img src="client/img/Character/idle3.png" id="player_idle3" style="display: none;"/>
+
+		<img src="client/img/Character/ghost.png" id="ghost_idle1" style="display: none;"/>
+		<img src="client/img/Character/ghost2.png" id="ghost_idle2" style="display: none;"/>
+		<img src="client/img/Character/ghost3.png" id="ghost_idle3" style="display: none;"/>
+		<img src="client/img/Character/ghost4.png" id="ghost_idle4" style="display: none;"/>
+		<img src="client/img/Character/ghost5.png" id="ghost_idle5" style="display: none;"/>
+		<img src="client/img/Character/ghost6.png" id="ghost_idle6" style="display: none;"/>
+		<img src="client/img/Character/ghost7.png" id="ghost_idle7" style="display: none;"/>
+		<img src="client/img/Character/ghost8.png" id="ghost_idle8" style="display: none;"/>
+		<img src="client/img/Character/ghost9.png" id="ghost_idle9" style="display: none;"/>
+
+		<img src="client/img/Character/run1.png" id="player_run1" style="display: none;"/>
+		<img src="client/img/Character/run2.png" id="player_run2" style="display: none;"/>
+		<img src="client/img/Character/run3.png" id="player_run3" style="display: none;"/>
+		<img src="client/img/Character/run4.png" id="player_run4" style="display: none;"/>
+		<img src="client/img/Character/run5.png" id="player_run5" style="display: none;"/>
+		<img src="client/img/Character/run6.png" id="player_run6" style="display: none;"/>
+
+		<img src="client/img/Character/idle_left1.png" id="player_idle_left1" style="display: none;"/>
+		<img src="client/img/Character/idle_left2.png" id="player_idle_left2" style="display: none;"/>
+		<img src="client/img/Character/idle_left3.png" id="player_idle_left3" style="display: none;"/>
+
+		<img src="client/img/Character/run_left1.png" id="player_run_left1" style="display: none;"/>
+		<img src="client/img/Character/run_left2.png" id="player_run_left2" style="display: none;"/>
+		<img src="client/img/Character/run_left3.png" id="player_run_left3" style="display: none;"/>
+		<img src="client/img/Character/run_left4.png" id="player_run_left4" style="display: none;"/>
+		<img src="client/img/Character/run_left5.png" id="player_run_left5" style="display: none;"/>
+		<img src="client/img/Character/run_left6.png" id="player_run_left6" style="display: none;"/>
+
+		<img src="client/img/Character/up1.png" id="player_up1" style="display: none;"/>
+		<img src="client/img/Character/up2.png" id="player_up2" style="display: none;"/>
+		<img src="client/img/Character/up3.png" id="player_up3" style="display: none;"/>
+		<img src="client/img/Character/up4.png" id="player_up4" style="display: none;"/>
+
+		<img src="client/img/Character/down1.png" id="player_down1" style="display: none;"/>
+		<img src="client/img/Character/down2.png" id="player_down2" style="display: none;"/>
+		<img src="client/img/Character/down3.png" id="player_down3" style="display: none;"/>
+		<img src="client/img/Character/down4.png" id="player_down4" style="display: none;"/>
+
+
+		<img src="client/img/Character/attack_up1.png" id="player_attack_up1" style="display: none;" />
+		<img src="client/img/Character/attack_up2.png" id="player_attack_up2" style="display: none;" />
+		<img src="client/img/Character/attack_up3.png" id="player_attack_up3" style="display: none;" />
+		<img src="client/img/Character/attack_up4.png" id="player_attack_up4" style="display: none;" />
+
+		<img src="client/img/Character/attack_right1.png" id="player_attack_right1" style="display: none;" />
+		<img src="client/img/Character/attack_right2.png" id="player_attack_right2" style="display: none;" />
+		<img src="client/img/Character/attack_right3.png" id="player_attack_right3" style="display: none;" />
+		<img src="client/img/Character/attack_right4.png" id="player_attack_right4" style="display: none;" />
+
+		<img src="client/img/Character/attack_left1.png" id="player_attack_left1" style="display: none;" />
+		<img src="client/img/Character/attack_left2.png" id="player_attack_left2" style="display: none;" />
+		<img src="client/img/Character/attack_left3.png" id="player_attack_left3" style="display: none;" />
+		<img src="client/img/Character/attack_left4.png" id="player_attack_left4" style="display: none;" />
+
+		<img src="client/img/Character/attack_down1.png" id="player_attack_down1" style="display: none;" />
+		<img src="client/img/Character/attack_down2.png" id="player_attack_down2" style="display: none;" />
+		<img src="client/img/Character/attack_down3.png" id="player_attack_down3" style="display: none;" />
+		<img src="client/img/Character/attack_down4.png" id="player_attack_down4" style="display: none;" />
+
+		<img src="client/img/Character/ratDown.png" id="rat_down" style="display: none;"/>
+		<img src="client/img/Character/ratUp.png" id="rat_up" style="display: none;"/>
+		<img src="client/img/Character/ratLeft.png" id="rat_left" style="display: none;"/>
+		<img src="client/img/Character/ratRight.png" id="rat_right" style="display: none;"/>
+
+
+
+
+		<img src="client/img/Abilities/Melee_Default/Melee_Default1.png" id="melee_default1" style="display: none;"/>
+		<img src="client/img/Abilities/Melee_Default/Melee_Default2.png" id="melee_default2" style="display: none;"/>
+		<img src="client/img/Abilities/Melee_Default/Melee_Default3.png" id="melee_default3" style="display: none;"/>
+		<img src="client/img/Abilities/Melee_Default/Melee_Default4.png" id="melee_default4" style="display: none;"/>
+		<img src="client/img/Abilities/Melee_Default/Melee_Default5.png" id="melee_default5" style="display: none;"/>
+		<img src="client/img/Abilities/Melee_Default/Melee_Default6.png" id="melee_default6" style="display: none;"/>
+
+
+		<script src="client/js/jquery.min.js"> </script>
 	</head>
 
 
 	<body>
+
+
+		<!--LOGIN OVERLAY
+		=================-->
+
+		<div id="loginOverlay">
+			<h1> Login </h1>
+			<hr/>
+			<br/>
+			Username: <input type="text" id="username_input" placeholder="Username..." />
+			<br/>
+			<br/>
+			Password: <input type="password" id="password_input" placeholder="Password..." />
+			<br/>
+			<br/>
+			<br/>
+			<a href="#" id="loginSubmit"><p><b>Login</b></p></a>
+			<a href="#" id="registerSwitchButton"><p><b>Create Account</b></p></a>
+		</div>
+
+
+		<!--WORLD SWITCHER OVERLAY
+		==========================-->
+
+		<div id="worldSwitchOverlay">
+			<h2> Available Worlds </h2>
+			<hr/>
+			<ul id="lobbyList">
+				<!--Automatically generated items here-->
+
+			</ul>
+			<hr/>
+			<div id="lobbyRefresh"><p>Refresh</p></div>
+		</div>
+
+
+
+		<!--SHOP OVERLAY
+		==================-->
+		<div id="shopOverlay">
+			<div class="tab">
+			  <button class="tablinks" onclick="shop_switchTo(event, 'Weapons')">Weapons</button>
+			  <button class="tablinks" onclick="shop_switchTo(event, 'Defence')">Defence</button>
+			  <button class="tablinks" onclick="shop_switchTo(event, 'Magic')">Magic</button>
+			</div>
+
+			<div id="Weapons" class="tabcontent">
+			  <h1>Weapons</h1>
+				<hr/>
+			  <p>Sword</p>
+			</div>
+
+			<div id="Defence" class="tabcontent">
+			  <h1>Defence</h1>
+				<hr/>
+			  <p>Sheild</p>
+			</div>
+
+			<div id="Magic" class="tabcontent">
+			  <h1>Magic</h1>
+				<hr/>
+				<ul id="spellList">
+			  	<p>Mana Bolt</p>
+				</ul>
+			</div>
+		</div>
+
+
+
+
 		<h1 id="title"></h1>
-		<canvas id="ctx" width="1000" height="1000" style="border: 1px solid #000000;"></canvas>
+		<div id="canvasBacking">
+			<canvas id="ctx" width="1000" height="1000" style="border: 1px solid #000000;"></canvas>
+		</div>
 		<script>//run client.js
+			//wall resources
+
+			var testTurn = 0;
+			var offset = (Math.PI/180)*90;
+			var interval;
+			var dt = 0;
+
 			var canvas = document.getElementById('ctx')
 			var ctx = canvas.getContext('2d');
 			ctx.font = '30px Arial';
@@ -30,9 +211,304 @@
 			var gameDimensionX;
 			var gameDimensionY;
 
+			//TILES
+
+			var dungeon_tiled_floor, blank, dungeon_top_left_corner, dungeon_top_right_corner, dungeon_bottom_left,
+					dungeon_out_top_left_corner, dungeon_out_top_right_corner, dungeon_out_bottom_left_corner, dungeon_out_bottom_right_corner,
+					dungeon_bottom_right, dungeon_wall_top, dungeon_wall_bottom, dungeon_wall_right, dungeon_wall_left, internal_wall;
+
+
+			var ghost_1, ghost_2, ghost_3, ghost_4, ghost_5, ghost_6, ghost_7, ghost_8, ghost_9;
+
+			//Melee Attack Sprite Variable Allocations.
+			var melee_default1, melee_default2, melee_default3, melee_default4, melee_default5, melee_default6;
+			var melee_animations;
+
+			//Player Sprite Variable Allocations.
+			var player_idle1, player_ide2, player_idle3;
+			var player_run1, player_run2, player_run3, player_run4, player_run5, player_run6;
+			var player_up1, player_up2, player_up3, player_up4;
+			var player_down1, player_down2, player_down3, player_down4;
+			var player_idle_left1;
+			var player_idle_left1, player_idle_left2, player_idle_left3;
+			var player_attack_left1, player_attack_left2, player_attack_left3, player_attack_left4,
+			  	player_attack_right1, player_attack_right2, player_attack_right3, player_attack_right4,
+		  		player_attack_up1, player_attack_up2, player_attack_up3, player_attack_up4,
+					player_attack_down1, player_attack_down2, player_attack_down3, player_attack_down4;
+			var player_run_left1, player_run_left2, player_run_left3, player_run_left4, player_run_left5, player_run_left6;
+			var player_animations;
+
+			var rat_up, rat_down, rat_left, rat_right;
+			var ratAnims = {};
+
 			var local_KNIGHT_ARRAY = [];
 			var local_GHOST_ARRAY = [];
 			var local_RAT_ARRAY = [];
+			var local_ATTACK_ARRAY = [];
+			var local_PLAYER_LIST = [];
+			var loginButton, registerSwitchButton, loginOverlay, username_input, password_input;
+			var lobbyOverlay, lobbyRefresh, lobbyList;
+			var DungeonTiles = {};
+			///Interactions
+			var shopOverlay;
+			var displayingShop = false;
+
+			var shopSpellList = {
+				manaBolt: {
+					name: "Mana Bolt",
+					cost: 50,
+					manaCost: 5
+				},
+				fireBolt: {
+					name: "Fire bolt",
+					cost: 50,
+					manaCost: 5
+				}
+			}
+
+			var interacting = {
+				ShopKeeper: false
+			}
+
+			function start() {
+				shopOverlay = document.getElementById("shopOverlay");
+				console.log("SET SHOP OVERLAY");
+
+				loginButton = document.getElementById('loginSubmit');
+				registerSwitchButton = document.getElementById('registerSwitchButton');
+				username_input = document.getElementById('username_input');
+				password_input = document.getElementById('password_input');
+				loginOverlay = document.getElementById('loginOverlay');
+
+
+				loginButton.addEventListener('click', attemptLogin, false);
+
+
+
+				lobbyOverlay = document.getElementById('lobbyOverlay');
+				lobbyRefresh = document.getElementById('lobbyRefresh');
+				lobbyList = document.getElementById('lobbyList');
+
+				lobbyRefresh.addEventListener('click', refreshLobbyList, false);
+
+				//TILES
+				dungeon_internal_wall = document.getElementById('internal_wall');
+				dungeon_tiled_floor = document.getElementById('tiled_floor');
+				blank = document.getElementById('blank');
+
+				dungeon_top_left_corner = document.getElementById('top_left_corner');
+				dungeon_top_right_corner = document.getElementById('top_right_corner');
+				dungeon_bottom_left_corner = document.getElementById('bottom_left_corner');
+				dungeon_bottom_right_corner = document.getElementById('bottom_right_corner');
+
+				dungeon_out_top_left_corner = document.getElementById('out_top_left_corner');
+				dungeon_out_top_right_corner = document.getElementById('out_top_right_corner');
+				dungeon_out_bottom_left_corner = document.getElementById('out_bottom_left_corner');
+				dungeon_out_bottom_right_corner = document.getElementById('out_bottom_right_corner');
+
+				dungeon_wall_top = document.getElementById('wall_top');
+				dungeon_wall_bottom = document.getElementById('wall_bottom');
+				dungeon_wall_right = document.getElementById('wall_right');
+				dungeon_wall_left = document.getElementById('wall_left');
+
+				DungeonTiles = {
+					tiled_floor: {
+						src: dungeon_tiled_floor
+					},
+					internal_wall: {
+						src: dungeon_internal_wall
+					},
+
+					wall_top: {
+						src: dungeon_wall_top
+					},
+					wall_bottom: {
+						src: dungeon_wall_bottom
+					},
+					wall_left: {
+						src: dungeon_wall_left
+					},
+					wall_right: {
+						src: dungeon_wall_right
+					},
+
+					top_left_corner: {
+						src: dungeon_top_left_corner
+					},
+					top_right_corner: {
+						src: dungeon_top_right_corner
+					},
+					bottom_left_corner: {
+						src: dungeon_bottom_left_corner
+					},
+					bottom_right_corner: {
+						src: dungeon_bottom_right_corner
+					},
+
+					out_top_left_corner: {
+						src: dungeon_out_top_left_corner
+					},
+					out_top_right_corner: {
+						src: dungeon_out_top_right_corner
+					},
+					out_bottom_left_corner: {
+						src: dungeon_out_bottom_left_corner
+					},
+					out_bottom_right_corner: {
+						src: dungeon_out_bottom_right_corner
+					},
+
+
+					blank: {
+						src: blank
+					}
+				};
+
+
+
+
+				player_idle_left1 = document.getElementById("player_idle_left1");
+				player_idle_left2 = document.getElementById("player_idle_left2");
+				player_idle_left3 = document.getElementById("player_idle_left3");
+
+				player_run_left1 = document.getElementById('player_run_left1');
+				player_run_left2 = document.getElementById('player_run_left2');
+				player_run_left3 = document.getElementById('player_run_left3');
+				player_run_left4 = document.getElementById('player_run_left4');
+				player_run_left5 = document.getElementById('player_run_left5');
+				player_run_left6 = document.getElementById('player_run_left6');
+
+				player_idle1 = document.getElementById("player_idle1");
+				player_idle2 = document.getElementById("player_idle2");
+				player_idle3 = document.getElementById("player_idle3");
+
+				player_run1 = document.getElementById('player_run1');
+				player_run2 = document.getElementById('player_run2');
+				player_run3 = document.getElementById('player_run3');
+				player_run4 = document.getElementById('player_run4');
+				player_run5 = document.getElementById('player_run5');
+				player_run6 = document.getElementById('player_run6');
+
+				player_up1 = document.getElementById('player_up1');
+				player_up2 = document.getElementById('player_up2');
+				player_up3 = document.getElementById('player_up3');
+				player_up4 = document.getElementById('player_up4');
+
+				player_down1 = document.getElementById('player_down1');
+				player_down2 = document.getElementById('player_down2');
+				player_down3 = document.getElementById('player_down3');
+				player_down4 = document.getElementById('player_down4');
+
+				player_attack_right1 = document.getElementById('player_attack_right1');
+				player_attack_right2 = document.getElementById('player_attack_right2');
+				player_attack_right3 = document.getElementById('player_attack_right3');
+				player_attack_right4 = document.getElementById('player_attack_right4');
+
+
+
+				player_attack_left1 = document.getElementById('player_attack_left1');
+				player_attack_left2 = document.getElementById('player_attack_left2');
+				player_attack_left3 = document.getElementById('player_attack_left3');
+				player_attack_left4 = document.getElementById('player_attack_left4');
+
+
+				player_attack_down1 = document.getElementById('player_attack_down1');
+				player_attack_down2 = document.getElementById('player_attack_down2');
+				player_attack_down3 = document.getElementById('player_attack_down3');
+				player_attack_down4 = document.getElementById('player_attack_down4');
+
+
+
+				player_attack_up1 = document.getElementById('player_attack_up1');
+				player_attack_up2 = document.getElementById('player_attack_up2');
+				player_attack_up3 = document.getElementById('player_attack_up3');
+				player_attack_up4 = document.getElementById('player_attack_up4');
+
+
+				//Melee Attack designations.
+
+				melee_default1 = document.getElementById('melee_default1');
+				melee_default2 = document.getElementById('melee_default2');
+				melee_default3 = document.getElementById('melee_default3');
+				melee_default4 = document.getElementById('melee_default4');
+				melee_default5 = document.getElementById('melee_default5');
+				melee_default6 = document.getElementById('melee_default6');
+
+
+
+				rat_down = document.getElementById('rat_down');
+				rat_up = document.getElementById('rat_up');
+				rat_left = document.getElementById('rat_left');
+				rat_right = document.getElementById('rat_right');
+
+				ghost_1 = document.getElementById('ghost_idle1');
+				ghost_2 = document.getElementById('ghost_idle2');
+				ghost_3 = document.getElementById('ghost_idle3');
+				ghost_4 = document.getElementById('ghost_idle4');
+				ghost_5 = document.getElementById('ghost_idle5');
+				ghost_6 = document.getElementById('ghost_idle6');
+				ghost_7 = document.getElementById('ghost_idle7');
+				ghost_8 = document.getElementById('ghost_idle8');
+				ghost_9 = document.getElementById('ghost_idle9');
+
+				ratAnims = {
+					up: rat_up,
+					down: rat_down,
+					left: rat_left,
+					right: rat_right,
+					none: rat_up
+				};
+
+				ghostAnims = {
+					idle: [ghost_1, ghost_2, ghost_3, ghost_4, ghost_5, ghost_6, ghost_7, ghost_8, ghost_9]
+				};
+
+				player_animations = {
+					idle: [player_idle1,player_idle2,player_idle3],
+					idle_left: [player_idle_left1,player_idle_left2,player_idle_left3],
+					right: [player_run1, player_run2, player_run3, player_run4, player_run5, player_run6],
+					up: [player_up1, player_up2, player_up3, player_up4],
+					down: [player_down1, player_down2, player_down3, player_down4],
+					left: [player_run_left1, player_run_left2, player_run_left3, player_run_left4, player_run_left5, player_run_left6],
+					attacking: {
+						idle: [player_attack_right1, player_attack_right2, player_attack_right3, player_attack_right4],
+						idle_left: [player_attack_left1, player_attack_left2, player_attack_left3, player_attack_left4],
+						up: [player_attack_up1, player_attack_up2, player_attack_up3, player_attack_up4],
+						down: [player_attack_down1, player_attack_down2, player_attack_down3, player_attack_down4],
+						right: [player_attack_right1, player_attack_right2, player_attack_right3, player_attack_right4],
+						left: [player_attack_left1, player_attack_left2, player_attack_left3, player_attack_left4]
+					}
+				};
+
+				melee_animations = {
+					default: [melee_default1, melee_default2, melee_default3, melee_default4, melee_default5, melee_default6]
+				}
+
+				interval = setInterval(test, 500);
+
+
+			}
+
+
+
+			/* EVENT LISTENERS HERE ONLY */
+
+			function refreshLobbyList() {
+				socket.emit("refreshLobbyList", {id: localId});
+			}
+
+			function attemptLogin() {
+				loginButton.enabled = false;
+
+				var attemptUsername = username_input.value;
+				var attemptPassword = password_input.value;
+				console.log("HERE");
+				socket.emit("attemptLogin", {id: localId, username: attemptUsername, password: attemptPassword});
+			}
+
+
+			/* END EVENT LISTENERS */
+
 			//var music = document.getElementById("backgroundMuisc");
 			//music.play(music);
 			//music.volume = 0.4;
@@ -40,18 +516,6 @@
 
 			var GAME_MAP = [];
 			//MAIN
-			/*
-			var masterKey = [
-				[TR,T,T,T,T,T,T,T,TL],
-				[L,BA,BB,1,1,1,1,1,R],
-				[L,BC,BD,1,1,1,1,1,R],
-				[L,1,1,1,1,1,1,1,R],
-				[L,1,1,1,1,1,1,1,R],
-				[L,1,1,1,1,1,1,1,R],
-				[L,SH,1,1,1,1,1,1,R],
-				[L,1,1,1,1,1,1,S,R],
-				[BR,B,B,B,B,B,B,B,BL]
-			];*/
 
 			/* LEGEND */
 			//--> postion = [0,0], map_data = {roomLengthX: x, roomLengthY y, };
@@ -106,8 +570,8 @@
 			{
 				//var randomX  = Math.floor(Math.random()*2 ) +3;
 				//var randomY = Math.floor(Math.random()*2 ) +3;
-				gameDimensionX = 15; //map segs
-				gameDimensionY = 15; //map segs
+				gameDimensionX = 5; //map segs
+				gameDimensionY = 5; //map segs
 				var map_data = {roomLengthX: gameDimensionX, roomLengthY: gameDimensionY};
 				var generatedShop = false;
 				for(var i=0; i<gameDimensionY; i++)
@@ -120,56 +584,74 @@
 						{
 							case false:
 								if(!generatedShop) {
-									var rand = Math.floor(Math.random()*10) + 1;
-
-									if(rand == 0) {
-										var randomSegment = map_Piece0;
-										var type = "Random";
-									} else if(rand == 1) {
-										var randomSegment = map_Piece1;
-										var type = "Random";
-									} else if(rand == 2) {
-										var randomSegment = map_Piece2;
-										var type = "Random";
-									} else if(rand == 3) {
-										var randomSegment = map_Piece3;
-										var type = "Random";
-									} else if(rand == 4) {
-										var randomSegment = map_Piece4;
-										var type = "Random";
-									} else if(rand == 5) {
-										var randomSegment = map_Piece5;
-										var type = "Random";
-									} else if(rand == 6) {
-										var randomSegment = map_Piece6;
-										var type = "Random";
-									} else if(rand == 7) {
-										var randomSegment = map_Piece7;
-										var type = "Random";
-									} else if(rand == 8) {
-										var randomSegment = map_Piece8;
-										var type = "Random";
-									} else if(rand == 9) {
-										//Generate shop
+									var toSkip = false;
+									if(gameDimensionX == j+2 && gameDimensionY == i + 2) {
 										var randomSegment = map_PieceShop;
-										var spawnLocX = (j*9*32) + (9*32)/2;
-										var spawnLocY = (i*9*32) + (9*32)/2;
+										var spawnLocX = (j*18*32) + (18*32)/2;
+										var spawnLocY = (i*18*32) + (18*32)/2;
 										ShopKeeper.x = spawnLocX;
 										ShopKeeper.y = spawnLocY;
 										var type = "Shop";
 										ShopKeeper.segment = [i, j];
 										generatedShop = true;
-									} else if(rand == 10) {
-										//Knight room
-										var type = "Knight";
-										var randomSegment = map_PieceKnight;
-									} else {
-										//generated unexpected number;
+										console.log("HAD TO FORCE SHOP");
 
+										toSkip = true;
 									}
-								//make = to not not e
 
-									//make = to not not e
+									if(!toSkip) {
+										console.log(GAME_MAP);
+										if(typeof GAME_MAP[i] === 'undefined') { console.log("skip");}
+										var rand = Math.floor(Math.random()*10) + 1;
+
+
+										if(rand == 0) {
+											var randomSegment = map_Piece0;
+											var type = "Random";
+										} else if(rand == 1) {
+											var randomSegment = map_Piece1;
+											var type = "Random";
+										} else if(rand == 2) {
+											var randomSegment = map_Piece2;
+											var type = "Random";
+										} else if(rand == 3) {
+											var randomSegment = map_Piece3;
+											var type = "Random";
+										} else if(rand == 4) {
+											var randomSegment = map_Piece4;
+											var type = "Random";
+										} else if(rand == 5) {
+											var randomSegment = map_Piece5;
+											var type = "Random";
+										} else if(rand == 6) {
+											var randomSegment = map_Piece6;
+											var type = "Random";
+										} else if(rand == 7) {
+											var randomSegment = map_Piece7;
+											var type = "Random";
+										} else if(rand == 8) {
+											var randomSegment = map_Piece8;
+											var type = "Random";
+										} else if(rand == 9) {
+											//Generate shop
+											var randomSegment = map_PieceShop;
+											var spawnLocX = (j*18*32) + (18*32)/2;
+											var spawnLocY = (i*18*32) + (18*32)/2;
+											ShopKeeper.x = spawnLocX;
+											ShopKeeper.y = spawnLocY;
+											var type = "Shop";
+											ShopKeeper.segment = [i, j];
+											generatedShop = true;
+										} else if(rand == 10) {
+											//Knight room
+											var type = "Knight";
+											var randomSegment = map_PieceKnight;
+										} else {
+											//generated unexpected number;
+
+										}
+									}
+
 									//var map seg messaround with the random gen numbers to get better/more complex map e.g. set 6 to 9  (btw what ever amount you leave empty has a a chance to spawn a shop)
 								} else {
 									var rand = Math.floor(Math.random()*9) + 1;
@@ -208,6 +690,7 @@
 										var randomSegment = map_Piece0;
 										var type = "Random";
 										//generated unexpected number;
+
 									}
 								}
 								tempArray.push({segment: randomSegment, revealed: false, type: type});
@@ -249,8 +732,8 @@
 							case "forceSpawn":
 								var segment = map_PieceSpawn;
 								//localData.x = (j*32)/2;
-								var locX = (j*(9*32)) + (9*32)/2;
-								var locY = (i*(9*32)) + (9*32)/2;
+								var locX = (j*(18*32)) + (18*32)/2;
+								var locY = (i*(18*32)) + (18*32)/2;
 								socket.emit("playerspawn", {x: locX, y: locY});
 								console.log("EMITTED");
 								//localData.y = (i*32)/2;
@@ -263,287 +746,549 @@
 					}
 					GAME_MAP.push(tempArray);
 				}
+				console.log("MAP");
+				console.log(GAME_MAP);
 			}
+			//blank = 0
+			//wall = 1
+			//floor = 2
+			//internalPillar = 3
+			//var map_PieceSpawn = [
+	//			[0,0,0,0,0,0,0,0,0],
+	//			[0,1,1,1,1,1,1,1,0],
+		//		[0,1,0,0,0,0,0,1,0],
+		//		[0,1,0,3,0,3,0,1,0],
+//				[0,1,0,0,0,0,0,1,0],
+		//		[0,1,0,3,0,3,0,1,0],
+	//			[0,1,0,0,0,0,0,1,0],
+	//			[0,1,1,1,1,1,1,1,0],
+	//			[0,0,0,0,0,0,0,0,0]
+		//	];
 			//S
+
 			var map_PieceSpawn = [
-				[1,0,0,0,0,0,0,0,1],
-				[0,1,0,0,1,0,0,1,0],
-				[0,0,0,0,0,0,0,0,0],
-				[0,0,0,1,0,1,0,0,0],
-				[0,1,0,0,0,0,0,1,0],
-				[0,0,0,1,0,1,0,0,0],
-				[0,0,0,0,0,0,0,0,0],
-				[0,1,0,0,1,0,0,1,0],
-				[1,0,0,0,0,0,0,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
+
 			//1
 			var map_Piece0 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,0,1,0,0],
-				[1,0,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,1,1,0,1,0,1,1,1],
-				[0,0,0,0,1,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece1 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,1,0,1,0,1],
-				[1,0,1,0,0,0,0,0,1],
-				[0,0,0,0,1,0,1,0,0],
-				[1,0,1,1,1,0,1,1,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,1,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece2 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,1,0,1,0,1,0,0],
-				[1,0,0,0,1,0,1,1,1],
-				[1,1,0,1,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,1,0,0,0,0,1,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece3 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,0,1,0,0],
-				[1,0,1,1,1,0,1,0,1],
-				[1,0,1,0,0,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece4 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,1,0,1,0,1,0,0],
-				[1,1,1,1,1,0,1,0,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,1,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece5 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,1,1,0,0],
-				[1,1,0,1,1,0,1,1,1],
-				[1,1,0,0,1,0,0,0,1],
-				[1,1,1,0,1,0,1,1,1],
-				[0,0,1,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece6 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,0,0,1,0,0],
-				[1,1,1,1,0,1,1,1,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,1,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece7 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,1,0,0,1],
-				[1,0,1,0,1,1,1,0,1],
-				[0,0,1,0,0,1,1,0,0],
-				[1,1,1,1,0,1,1,1,1],
-				[1,0,1,0,1,0,1,0,1],
-				[1,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			var map_Piece8 = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,0,0,1],
-				[1,0,1,0,1,1,0,1,1],
-				[0,0,0,0,0,1,1,0,0],
-				[1,1,1,1,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,1,0,0,0,1,1,1],
-				[0,0,0,0,1,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,9,9,9,9,9,9,9,9,12,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//L
 			var map_PieceL = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,0,0,1,0,1,0,0],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[1,0,0,0,0,0,0,0,1],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//R
 			var map_PieceR = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,0,1,0,1],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,0,0,1],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//U
 			var map_PieceT = [
-				[1,1,1,1,1,1,1,1,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,0,1,0,0],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//D
 			var map_PieceB = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,0,1,0,0],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,1,1,1,1,1,1,1,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,8,8,8,8,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 			];
 			//TR
 			var map_PieceTR = [
-				[1,1,1,1,1,1,1,1,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[0,0,0,0,1,0,1,0,1],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,0,0,1],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//TL
 			var map_PieceTL = [
-				[1,1,1,1,1,1,1,1,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,0,0,1,0,1,0,0],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[1,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//BL
 			var map_PieceBL = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,0,0,1,0,1,0,0],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[1,0,0,0,0,0,0,0,0],
-				[1,1,1,1,1,1,1,1,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 			];
 			//BR
 			var map_PieceBR = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,1,0,1,0,0,0,1],
-				[1,0,0,0,1,0,1,0,1],
-				[1,1,1,1,1,0,1,1,1],
-				[1,0,0,0,1,0,0,0,1],
-				[1,0,1,0,1,0,1,1,1],
-				[0,0,0,0,0,0,0,0,1],
-				[1,1,1,1,1,1,1,1,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,2,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 			];
 			//SH
 			var map_PieceKnight = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,0,0,0,0,0,0,1],
-				[1,0,1,1,1,1,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,0,1,0,1,0,1],
-				[1,0,0,0,0,0,0,0,1],
-				[1,0,1,1,1,1,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,10,9,9,10,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,10,9,9,10,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,10,9,9,10,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,10,9,9,10,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//SH
 			var map_PieceShop = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,0,0,0,0,0,0,1],
-				[1,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,0,0,0,1,0,1],
-				[1,0,0,0,0,0,0,0,1],
-				[1,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,10,9,9,10,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,10,9,9,10,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,10,9,9,10,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,10,9,9,10,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//BA
 			var map_PieceBossA = [
-				[1,0,1,1,1,1,1,0,1],
-				[1,0,0,0,0,0,0,0,0],
-				[1,0,1,0,1,0,1,0,0],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,0,0,0,1,0,0],
-				[1,0,0,0,0,0,0,0,0],
-				[1,0,1,0,1,0,1,0,0],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,0,0,0,0,0,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//BB
 			var map_PieceBossB = [
-				[1,0,1,1,1,1,1,0,1],
-				[0,0,0,0,0,0,0,0,1],
-				[0,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[0,0,1,0,0,0,1,0,1],
-				[0,0,0,0,0,0,0,0,1],
-				[0,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,0,0,0,0,0,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//BC
 			var map_PieceBossC = [
-				[1,0,0,0,0,0,0,0,1],
-				[1,0,0,0,0,0,0,0,0],
-				[1,0,1,0,1,0,1,0,0],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,0,0,0,1,0,0],
-				[1,0,0,0,0,0,0,0,0],
-				[1,0,1,0,1,0,1,0,0],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
 			//BD
 			var map_PieceBossD = [
-				[1,0,0,0,0,0,0,0,1],
-				[0,0,0,0,0,0,0,0,1],
-				[0,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[0,0,1,0,0,0,1,0,1],
-				[0,0,0,0,0,0,0,0,1],
-				[0,0,1,0,1,0,1,0,1],
-				[0,0,0,0,0,0,0,0,0],
-				[1,0,1,1,1,1,1,0,1]
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
+				[0,1,5,5,5,5,5,11,9,9,12,5,5,5,5,5,2,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[5,13,9,9,9,9,9,9,9,9,9,9,9,9,9,9,13,5],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9],
+				[8,14,9,9,9,9,9,9,9,9,9,9,9,9,9,9,14,8],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
+				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
+				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
 			];
+			socket.on('refreshedLobbyInfo', function(data) {
+				var lobby_pack = data;
+				$("#lobbyList").empty();
+				for(var i in lobby_pack) {
+					var worldId = lobby_pack[i].worldId;
+					var worldAmount = lobby_pack[i].worldAmount;
+
+					var newElem = $("<li id='connect_" + worldId + "''><div class='world_id'>World: " + worldId + "</div></li>");
+					$("#lobbyList").append(newElem);
+					var string = "connect_" + worldId;
+				  var theElem = document.getElementById(string);
+					theElem.addEventListener('click', joinWorld, false);
+				}
+			});
+
+			function joinWorld(e) {
+				console.log("EVENT: " + e.target.parentElement.id);
+				var world = e.target.parentElement.id.substring(8, e.target.parentElement.id.length);
+				console.log(world);
+				socket.emit("joinWorld", {id: localId, worldId: world});
+			}
+			socket.on('successfulLogin', function(data) {
+				loginOverlay.style.display = "none";
+				worldSwitchOverlay.style.display = "block";
+				preInitialize();
+				animate();
+			});
 
 			socket.on('receivedConnect', function(data) {
 				localId = data.id;
@@ -551,24 +1296,49 @@
 
 			socket.on('newPosition', function(data) {
 				localData = data.player;
+				dt = data.dt;
 				//console.log(data);
+			});
+
+			socket.on('newPositions', function(data) {
+				//console.log("Existing Players: ")
+				for(var i in data.players) {
+					//console.log("Player: " + data.players[i].id);
+				}
+				local_PLAYER_LIST = [];
+				local_PLAYER_LIST = data.players;
 			});
 
 			socket.on('newNPCList', function(data) {
 				local_KNIGHT_ARRAY = data.knights;
 				local_GHOST_ARRAY = data.ghosts;
 				local_RAT_ARRAY = data.rats;
-				local_MAP_ARRAY = data.map;
+				local_ATTACK_ARRAY = data.attacks;
+				GAME_MAP = data.map;
 				ShopKeeper = data.shopkeeper;
 			});
+			socket.on("noUsers", function(data) {
+				loginButton.enabled = true;
+			});
+
+
 
 			function isInRevealedSegment(entity) {
-				var testX = (entity.x/9)/32;
-				var testY = (entity.y/9)/32;
+				var testX = (entity.x/18)/32;
+				var testY = (entity.y/18)/32;
 				var xOuterIndex = Math.floor(testX);
 				var yOuterIndex = Math.floor(testY);
 
 				return GAME_MAP[yOuterIndex][xOuterIndex].revealed;
+			}
+
+			function entityInCurrentSegment(entity) {
+				var testX = (entity.x/18)/32;
+				var testY = (entity.y/18)/32;
+				var xOuterIndex = Math.floor(testX);
+				var yOuterIndex = Math.floor(testY);
+
+				return [yOuterIndex, xOuterIndex];
 			}
 
 			function animate(){
@@ -579,11 +1349,10 @@
 
 				 for(var j in GAME_MAP[i])
 				 {
-						 var xLoc = j*9*32;
-						 var yLoc = i*9*32;
-						 var size = 9*32;
-						 if(boxCollides([localData.x-localData.size, localData.y-localData.size], [localData.size*2, localData.size*2],[xLoc, yLoc],[size,size])) {
-							 console.log("DID THIS");
+						 var xLoc = j*18*32;
+						 var yLoc = i*18*32;
+						 var size = 18*32;
+						 if(boxCollides([localData.x, localData.y], [1,1],[xLoc, yLoc],[size,size])) {
 							 GAME_MAP[i][j].revealed = true;
 						 } else {
 							 GAME_MAP[i][j].revealed = false;
@@ -610,63 +1379,163 @@
 
 					for(var j in GAME_MAP[i])
 					{
-						var loopX = 0;
-						var loopY = 0;
-						for(var k in GAME_MAP[i][j].segment)
-						{
-							for(var l in GAME_MAP[i][j].segment[k])
+
+
+						var testY = (i/18)/32;
+						var testX = (j/18)/32;
+						var yOuterIndex = Math.floor(i);
+						var xOuterIndex = Math.floor(j);
+						var newX = xOuterIndex * 18 * 32;
+						var newY = yOuterIndex * 18 * 32;
+						var segDimensions = [[newX, newY], [18*32, 18*32]];
+						var playerScreen = getPlayerScreenHitbox();
+
+						if(boxCollides(playerScreen[0], playerScreen[1], segDimensions[0], segDimensions[1])) {
+						//if(entityInCurrentSegment(localData) == [j,i]) {
+							var loopX = 0;
+							var loopY = 0;
+							for(var k in GAME_MAP[i][j].segment)
 							{
-								var tile = GAME_MAP[i][j].segment[k][l];
-								ctx.beginPath();
-										//fillStyle command
-										//change to function to return ctx.fillStyle = "#708090"
-								if(GAME_MAP[i][j].revealed) {//this one chnages wehter u see everything or nothing yes (true) (in order to turn on fog GAME_MAP[i][j].reveled)
-									switch(tile)
-									{
-										case 0:
-											ctx.fillStyle = "#708090";
-										break;
+								for(var l in GAME_MAP[i][j].segment[k])
+								{
+									var tile = GAME_MAP[i][j].segment[k][l];
 
-										case 1:
-											ctx.fillStyle = "#696969";
-										break;
-										default:
-										ctx.fillStyle = "#ffffff"
-										break;
+
+									ctx.beginPath();
+											//fillStyle command
+									var image = false;
+											//change to function to return ctx.fillStyle = "#708090"
+									if(GAME_MAP[i][j].revealed) {//this one chnages wehter u see everything or nothing yes (true) (in order to turn on fog GAME_MAP[i][j].reveled)
+										//console.log(tile);
+										switch(tile)
+										{
+											case 0:
+												var tile = DungeonTiles.blank.src;
+
+												break;
+
+											case 1:
+												var tile = DungeonTiles.top_left_corner.src;
+
+												break;
+
+											case 2:
+												var tile = DungeonTiles.top_right_corner.src;
+
+												break;
+
+											case 3:
+												var tile = DungeonTiles.bottom_left_corner.src;
+
+												break;
+
+											case 4:
+												var tile = DungeonTiles.bottom_right_corner.src;
+
+												break;
+
+											case 5:
+												var tile = DungeonTiles.wall_top.src;
+
+												break;
+
+											case 6:
+												var tile = DungeonTiles.wall_right.src;
+
+												break;
+
+											case 7:
+												var tile = DungeonTiles.wall_left.src;
+
+												break;
+
+											case 8:
+												var tile = DungeonTiles.wall_bottom.src;
+
+												break;
+
+											case 9:
+												var tile = DungeonTiles.tiled_floor.src;
+
+												break;
+
+											case 10:
+												var tile = DungeonTiles.internal_wall.src;
+
+												break;
+
+											case 11:
+												var tile = DungeonTiles.out_top_right_corner.src;
+
+												break;
+
+											case 12:
+												var tile = DungeonTiles.out_top_left_corner.src;
+
+												break;
+
+											case 13:
+												var tile = DungeonTiles.out_bottom_right_corner.src;
+
+												break;
+
+											case 14:
+												var tile = DungeonTiles.out_bottom_left_corner.src;
+
+												break;
+
+											default:
+												tile = DungeonTiles.blank.src;
+												ctx.fillStyle = "#ffffff";
+
+												break;
+										}
+										///console.log(tile);
+										ctx.drawImage(tile, outerLoopX + loopX - localData.x + (WIDTH/2), outerLoopY + loopY - localData.y + (HEIGHT/2), 32, 32);
+										image = true;
+									} else {
+										ctx.fillStyle = "rgba(0,0,0,0.9)";
 									}
-								} else {
-									ctx.fillStyle = "rgba(0,0,0,0.9)";
+								if(!image) {
+									ctx.rect(outerLoopX + loopX - localData.x + (WIDTH/2), outerLoopY + loopY - localData.y + (HEIGHT/2), 32, 32);
+									ctx.fill();
 								}
-							ctx.rect(outerLoopX + loopX - localData.x + (WIDTH/2), outerLoopY + loopY - localData.y + (HEIGHT/2), 32, 32);
-							ctx.fill();
-							ctx.closePath();
+								//ctx.rect(outerLoopX + loopX - localData.x + (WIDTH/2), outerLoopY + loopY - localData.y + (HEIGHT/2), 32, 32);
+								//ctx.fill();
+								ctx.closePath();
 
-							loopX += 32;
+								loopX += 32;
+								}
+								loopX = 0;
+								loopY += 32;
 							}
-							loopX = 0;
-							loopY += 32;
 						}
-						outerLoopX += 32*9;
+						outerLoopX += 32*18;
 					}
 					outerLoopX = 0;
-					outerLoopY += 32*9;
+					outerLoopY += 32*18;
 				}
 
 				for(var k in local_GHOST_ARRAY) {
 					var ghost = local_GHOST_ARRAY[k];
 
 					//Gets index of sgement the rat is currently on.
-					var testX = (ghost.x/9)/32;
-					var testY = (ghost.y/9)/32;
+					var testX = (ghost.x/18)/32;
+					var testY = (ghost.y/18)/32;
 					var xOuterIndex = Math.floor(testX);
 					var yOuterIndex = Math.floor(testY);
 
 					if(GAME_MAP[yOuterIndex][xOuterIndex].revealed) {
 						//
 						ctx.beginPath();
-						ctx.fillStyle = ghost.color;
-						ctx.arc(ghost.x - localData.x + (WIDTH/2), ghost.y - localData.y + (HEIGHT/2), ghost.size, 0, Math.PI*2);
-						ctx.fill();
+						//ctx.fillStyle = ghost.color;
+						//ctx.arc(ghost.x - localData.x + (WIDTH/2), ghost.y - localData.y + (HEIGHT/2), ghost.size, 0, Math.PI*2);
+						//ctx.fill();
+						if(ghost.animTick > 8) { ghost.animTick = 0; }
+						//console.log("HERE: " + ghost.animTick);
+						//console.log(ghost.status);
+						ctx.drawImage(ghostAnims.idle[ghost.animTick], ghost.x - localData.x + (WIDTH/2) - 16, ghost.y - localData.y + (HEIGHT/2) - 16);
+
 						ctx.closePath();
 					}
 				}
@@ -676,17 +1545,19 @@
 
 
 					//Gets index of sgement the rat is currently on.
-					var testX = (rat.x/9)/32;
-					var testY = (rat.y/9)/32;
+					var testX = (rat.x/18)/32;
+					var testY = (rat.y/18)/32;
 					var xOuterIndex = Math.floor(testX);
 					var yOuterIndex = Math.floor(testY);
 
 					if(GAME_MAP[yOuterIndex][xOuterIndex].revealed) {
 
 						ctx.beginPath();
-						ctx.fillStyle = rat.color;
-						ctx.arc(rat.x - localData.x + (WIDTH/2), rat.y - localData.y + (HEIGHT/2), rat.size, 0, Math.PI*2);
-						ctx.fill();
+						///ctx.fillStyle = rat.color;
+						///ctx.arc(rat.x - localData.x + (WIDTH/2), rat.y - localData.y + (HEIGHT/2), rat.size, 0, Math.PI*2);
+						///ctx.fill();
+						//console.log(rat.direction);
+						ctx.drawImage(ratAnims[rat.direction], rat.x - localData.x + (WIDTH/2) - 8, rat.y - localData.y + (HEIGHT/2) - 8);
 						ctx.closePath();
 
 						//Health Bar
@@ -711,8 +1582,8 @@
 				//Shopkeep entity;
 				if(ShopKeeper.x !== "undef") {
 					//Gets index of sgement the rat is currently on.
-					var testX = (ShopKeeper.x/9)/32;
-					var testY = (ShopKeeper.y/9)/32;
+					var testX = (ShopKeeper.x/18)/32;
+					var testY = (ShopKeeper.y/18)/32;
 					var xOuterIndex = Math.floor(testX);
 					var yOuterIndex = Math.floor(testY);
 
@@ -726,14 +1597,77 @@
 					}
 				}
 
+				//draw other players
+				if(local_PLAYER_LIST) {
+					for(var i in local_PLAYER_LIST) {
+						if(local_PLAYER_LIST[i].id !== localId) {
+							//console.log(local_PLAYER_LIST[i].worldId)
+							var otherPlayer = local_PLAYER_LIST[i];
+							var testX = (otherPlayer.x/18)/32;
+							var testY = (otherPlayer.y/18)/32;
+							var xOuterIndex = Math.floor(testX);
+							var yOuterIndex = Math.floor(testY);
 
+							if(GAME_MAP[yOuterIndex][xOuterIndex].revealed) {
+								console.log("INIT VAL: " + otherPlayer.animTick);
+
+								if(otherPlayer.direction == "up" || otherPlayer.direction == "down") {
+									if(otherPlayer.animTick > 3) {
+										otherPlayer.animTick = 0;
+										console.log("RESET 1");
+									}
+								} else if(otherPlayer.direction == "left" || otherPlayer.direction == "right"){
+									if(otherPlayer.animTick > 6) {
+										otherPlayer.animTick = 0;
+										console.log("RESET 2");
+
+									}
+								} else if(otherPlayer.direction == "idle" || otherPlayer.direction == "idle_left") {
+									if(otherPlayer.animTick > 2) {
+										otherPlayer.animTick = 0;
+										console.log("RESET 3");
+
+									}
+								}
+
+								ctx.beginPath();
+								ctx.drawImage(player_animations[otherPlayer.direction][otherPlayer.animTick], otherPlayer.x - localData.x + (WIDTH/2)-32,  otherPlayer.y - localData.y + (HEIGHT/2) - 32, 64, 64);
+								ctx.closePath();
+							}
+						}
+					}
+				}
+				//Player.animTick = 0;
 				//drawPlayer
 				if (localData)
 				{
+					if(localData.direction == "up" || localData.direction == "down") {
+						if(localData.animTick > 3) {
+							localData.animTick = 0;
+						}
+					} else if(localData.direction == "left" || localData.direction == "right"){
+						if(localData.animTick > 6) {
+							localData.animTick = 0;
+						}
+					} else if(localData.direction == "idle" || localData.direction == "idle_left") {
+						if(localData.animTick > 2) {
+							localData.animTick = 0;
+						}
+					}
+
+					if(localData.currentAction == "attacking") {
+						if(localData.animTick > 2) {
+							localData.animTick = 0;
+						}
+					}
+
 					ctx.beginPath();
-					ctx.fillStyle = localData.color;
-					ctx.arc(WIDTH/2, HEIGHT/2, localData.size, 0, Math.PI*2);
-					ctx.fill();
+					//ctx.fillStyle = localData.color;
+					//ctx.arc(WIDTH/2, HEIGHT/2, localData.size, 0, Math.PI*2);
+					//ctx.fill();
+
+						ctx.drawImage(player_animations[localData.direction][localData.animTick], (WIDTH/2)-32, (HEIGHT/2) - 32, 64, 64);
+
 					ctx.closePath();
 					ctx.beginPath();
 					ctx.font = "16px helvetica";
@@ -747,8 +1681,83 @@
 					ctx.closePath();
 				} else { console.log("no data bob!"); }
 
+
+				for(var i in local_ATTACK_ARRAY) {
+					var attack = local_ATTACK_ARRAY[i];
+					if(attack) {
+						//If exists..
+						var rot = (Math.PI/180) * attack.rotation;
+						ctx.beginPath();
+						ctx.save();
+						ctx.translate(attack.x - localData.x + (WIDTH/2), attack.y - localData.y + (HEIGHT/2));
+						ctx.rotate(rot);
+						ctx.translate(-(attack.x - localData.x + (WIDTH/2)), -(attack.y - localData.y + (HEIGHT/2)));
+						ctx.drawImage(melee_animations[attack.type][attack.animTick], attack.x - localData.x + (WIDTH/2), attack.y - localData.y + (HEIGHT/2), 64, 64);
+						ctx.restore();
+						console.log(rot);
+						ctx.closePath();
+					}
+				}
+
+
+
+
+
+
+
+				if(boxCollides([localData.x - localData.size, localData.y - localData.size], [localData.size*2,localData.size*2], [ShopKeeper.x - ShopKeeper.size, ShopKeeper.y - ShopKeeper.size],[ShopKeeper.size *2,ShopKeeper.size*2]))
+				{
+					interacting.ShopKeeper = true;
+				} else {
+					interacting.ShopKeeper = false;
+					if(displayingShop) {
+						displayingShop = false;
+						shopOverlay.style.display = "none";
+					}
+				}
+				if(interacting.ShopKeeper) {
+					//Background Gui
+					ctx.beginPath();
+					ctx.fillStyle = "black";
+					ctx.rect((localData.x + 50) - localData.x + (WIDTH/2),(localData.y - 50) - localData.y + (HEIGHT/2),(150),(40));
+					ctx.fill();
+					ctx.closePath();
+
+					//Text Gui
+					ctx.beginPath();
+					ctx.font = "14px vecna";
+					ctx.fillStyle = "white";
+					ctx.fillText("Press 'E' to interact", (WIDTH/2) + 60, (HEIGHT/2) - 25);
+					ctx.closePath();
+				}
+
+				//TestShadow
+				var loc = entityInCurrentSegment(localData);
+				var yPos = (loc[0]*18*32) + ((18*32)/2);
+				var xPos = (loc[1]*18*32) + ((18*32)/2);
+				var grd=ctx.createRadialGradient(xPos - localData.x + (WIDTH/2),yPos - localData.y + (HEIGHT/2),1,xPos  - localData.x + (WIDTH/2),yPos  - localData.y + (HEIGHT/2),(18*32)/1.4);
+				grd.addColorStop(0,"transparent");
+				grd.addColorStop(0.9,"black");
+				grd.addColorStop(1,"black");
+				ctx.beginPath();
+				ctx.fillStyle = grd;
+				ctx.arc(xPos - localData.x + (WIDTH/2) , yPos - localData.y + (HEIGHT/2), (18*32)/1.4, 0, Math.PI*2);
+				ctx.fill();
+				ctx.closePath();
+
 				requestAnimationFrame(animate);
+
 			}
+
+			document.addEventListener('click', playerClick, false);
+
+
+			function playerClick() {
+				console.log("HERE");
+				socket.emit('playerAttackMelee');
+			}
+
+
 			//Default WASD Movement style
 
 			document.onkeydown = function(event) {
@@ -764,9 +1773,14 @@
 				if(event.keyCode == 87) {//w
 					socket.emit('keyPress',{inputId:'up', state: true});
 				}
+
+
+
+
 			};
 
 			document.onkeyup = function(event) {
+				var key = event.keyCode;
 				if(event.keyCode == 68) { //d
 					socket.emit('keyPress',{inputId:'right', state: false});
 				}
@@ -779,21 +1793,177 @@
 				if(event.keyCode == 87) {//w
 					socket.emit('keyPress',{inputId:'up', state: false});
 				}
+
+				if(event.keyCode == 69) {//e
+					if(interacting.ShopKeeper) {
+						prepShop();
+						displayingShop = true;
+						console.log("DID IT");
+					}
+				}
+
+				if(event.keyCode == 27) {
+					shopOverlay.style.display = "none";
+					displayingShop = false;
+				}
+
+
+				function busy() {
+					2
+				}
+
+
+
+
+				//Spell Related Events
+				if(key ==  97 || key == 35) {
+					//Numpad 1
+					socket.emit("spellKey", {number: 1, id: localId});
+				}
 			};
+
+			function getPlayerScreenHitbox() {
+				return [[localData.x - WIDTH/2, localData.y - HEIGHT/2],[WIDTH,HEIGHT]];
+
+			}
 
 			function preInitialize() {
 				generateMap();
-				console.log("DOING");
 				socket.emit("playerReady", {map: GAME_MAP, roomLengthX: gameDimensionX, roomLengthY: gameDimensionY});
 				socket.emit("createdShopKeeper", {x:ShopKeeper.x, y:ShopKeeper.y, segement: ShopKeeper.segment});
 			}
+			function drawBase(color, size, offsetInit) {
+				ctx.beginPath();
+				ctx.strokeStyle = color;
+				ctx.lineWidth = 1;
 
-			var interval = setInterval(test, 500)
+				ctx.save();
+				ctx.translate((x), (y));
+				ctx.rotate(offsetInit + offset + testTurn);
+				ctx.translate(-(x - localData.x + (WIDTH/2)), -((HEIGHT/2)));
+				//^^^offsets to give percpective
+				ctx.moveTo(WIDTH/2,HEIGHT/2 - size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) + size);
+				ctx.lineTo((WIDTH/2) + size,(HEIGHT/2) + size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 - size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+
+				ctx.beginPath();
+				ctx.save();
+				ctx.strokeStyle = color;
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate(offsetInit + offset + testTurn);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) - size);
+				ctx.lineTo((WIDTH/2) + size, (HEIGHT/2) - size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+
+
+
+
+
+				ctx.beginPath();
+				ctx.strokeStyle = color;
+
+
+				ctx.save();
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate(offsetInit + testTurn);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2,HEIGHT/2 - size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) + size);
+				ctx.lineTo((WIDTH/2) + size,(HEIGHT/2) + size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 - size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+
+				ctx.beginPath();
+				ctx.save();
+				ctx.strokeStyle = color;
+				ctx.translate((WIDTH/2), (HEIGHT/2));
+				ctx.rotate(offsetInit + testTurn);
+				ctx.translate(-(WIDTH/2), -((HEIGHT/2)));
+				ctx.moveTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.lineTo((WIDTH/2) - size, (HEIGHT/2) - size);
+				ctx.lineTo((WIDTH/2) + size, (HEIGHT/2) - size);
+				ctx.lineTo(WIDTH/2, HEIGHT/2 + size);
+				ctx.restore();
+				ctx.shadowBlur = 20;
+				ctx.shadowColor = color;
+				ctx.stroke();
+				ctx.closePath();
+
+			}
+
+
+
+			/* OVERLAY RELATED FUNCTIONS */
+
+			function shop_switchTo(evt, switchTo) {
+			    // Declare all variables
+			    var i, tabcontent, tablinks;
+
+			    // Get all elements with class="tabcontent" and hide them
+			    tabcontent = document.getElementsByClassName("tabcontent");
+			    for (i = 0; i < tabcontent.length; i++) {
+			        tabcontent[i].style.display = "none";
+			    }
+
+			    // Get all elements with class="tablinks" and remove the class "active"
+			    tablinks = document.getElementsByClassName("tablinks");
+			    for (i = 0; i < tablinks.length; i++) {
+			        tablinks[i].className = tablinks[i].className.replace(" active", "");
+			    }
+
+			    // Show the current tab, and add an "active" class to the button that opened the tab
+			    document.getElementById(switchTo).style.display = "block";
+			    evt.currentTarget.className += " active";
+			}
+
+
+
+			function prepShop()
+			{
+				//Empty old spell list.
+				$('#spellList').empty();
+
+				for(var i in shopSpellList) {
+					var currentSpell = shopSpellList[i];
+					var spellName = currentSpell.name;
+					var spellCost = currentSpell.cost;
+					var spellManaCost = currentSpell.manaCost;
+
+					var newElem = $("<li id='" + spellName + "'><b><span class='title'>" + spellName + "</span><span class='costs'> Cost: $" + spellCost + ", Mana Cost: " + spellManaCost + "</span></b></li>");
+					$('#spellList').append(newElem);
+				}
+
+				shopOverlay.style.display = "block";
+				console.log("WHY");
+			}
+
+
+
+
+
+			document.addEventListener("DOMContentLoaded", start, false);
+
 			function test() {
 				if(localData) {
 					clearInterval(interval);
-					preInitialize();
-					animate();
+
 				}
 			}
 

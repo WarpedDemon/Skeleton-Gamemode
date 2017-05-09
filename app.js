@@ -2,6 +2,26 @@
 //use for bug testing if need be
 //console.log(GLOBAL_NPC_LIST[1].ghosts);
 //server.js
+//Start Db
+//var db = require('mysql-native').createTCPClient("localhost", "2000");
+var mysql = require("mysql");
+
+var connection = mysql.createConnection({
+		host: 'localhost',
+		user: 'root',
+		password: 'pass',
+		database: 'crawler'
+});
+
+console.log("[Server]: Got here.....")
+connection.connect(function(e) {
+	if(!e) {
+		console.log("[Server]: Successfully connected to the database!");
+	}
+
+});
+
+
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
@@ -20,7 +40,6 @@ var dt = 0;
 var now;
 var gameTime = 0;
 var startTime = Date.now();
-
 
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
@@ -42,10 +61,18 @@ var map_Piece1 = [
 ];
 
 
+var GLOBAL_SPELL_BOOK = {
+	heal_basic: {
+		name: "Basic Heal",
+		sequence: "123"
+	}
+}
+
 //objects
 var Player = function(id){
 	var self = {
 		//
+		logged: false,
 		health: 50,
 		maxHealth: 50,
 		mana: 25,
@@ -62,7 +89,13 @@ var Player = function(id){
 		cantMove: false,
 		ready: false,
 		GAME_MAP: "none",
-		world: id
+		worldId: id,
+		castingSpell: false,
+		spell: [],
+		direction: "idle",
+		animTick: 0,
+		lastTickUpdate: 0,
+		currentAction: "none"
 	};
 	return self;
 };
@@ -87,7 +120,9 @@ var Ghost = function(id, x, y, vx, vy){
 		moveTime: 0,
 		setMove: 0,
 		direction: "none",
-		availableDirections: []
+		availableDirections: [],
+		animTick: 0,
+		lastTickUpdate: 0
 	};
 	return self;
 }
@@ -144,7 +179,37 @@ var Rat = function(id, x, y, vx, vy){
 	return self;
 }
 
+
+//spells
+var SpellObject = function(id, x, y, vx, vy){
+	var self = {
+		components: [],
+		id: id,
+		x: x,
+		y: y,
+		vx: vx,
+		vy: vy
+
+	};
+	return self;
+}
+
+var Melee = function(x, y, w, h, type, rot) {
+	var self = {
+		x: x,
+		y: y,
+		w: w,
+		h: h,
+		animTick: 0,
+		type: type,
+		rotation: rot,
+		lastTickUpdate: 0
+	};
+	return self;
+}
+
 var io = require('socket.io')(serv, {});
+
 io.sockets.on('connection', function(socket)
 {
 	socket.id = Math.random();
@@ -157,8 +222,30 @@ io.sockets.on('connection', function(socket)
 
 	socket.on('disconnect', function()
 	{
+		var player = PLAYER_LIST[socket.id];
+		console.log(player.worldId);
+
+		if(GLOBAL_WORLD_LIST[player.worldId]) {
+			var array = GLOBAL_WORLD_LIST[player.worldId].roomData.playerlist;
+			var search_term = player.id;
+
+			for( var i=array.length-1; i>=0; i--) {
+				if(array[i] === search_term) {
+					array.splice(i,1);
+					console.log(array + " DONE YE");
+					break;
+				}
+			}
+		}
+		if(GLOBAL_WORLD_LIST[player.id] || GLOBAL_NPC_LIST[player.id]) {
+
+			delete GLOBAL_WORLD_LIST[socket.id];
+			delete GLOBAL_NPC_LIST[socket.id];
+		}
+
 		delete SOCKET_LIST[socket.id];
 		delete PLAYER_LIST[socket.id];
+		refreshAllLobbies();
 		console.log(colors.magenta('[Server]:') + ' Player with Id ' + colors.yellow('"'+ socket.id + '"') + '" has ' + colors.red('disconnected.'));
 	});
 
@@ -169,20 +256,58 @@ io.sockets.on('connection', function(socket)
 		var player = PLAYER_LIST[socket.id];
 		if(data.inputId == "up")
 		{
+			//if(checkPresses(player, "up")) { player.animTick = 0; }
+
 			player.pressingUp = data.state;
+			if(data.state) {
+				player.direction = "up";
+			} else {
+				if(!checkPresses(player, "up")) {
+					player.direction = "idle";
+				}
+				//player.animTick = 0;
+			}
 		}
 		if(data.inputId == "down")
 		{
+			//if(checkPresses(player, "down")) { player.animTick = 0; }
+			if(data.state) {
+				player.direction = "down";
+			} else {
+				player.direction = 'idle';
+				//player.animTick = 0;
+			}
 				player.pressingDown = data.state;
 		}
 
 		if(data.inputId == "right")
 		{
+			//if(checkPresses(player, "right")) { player.animTick = 0; }
+
 			player.pressingRight = data.state;
+			//player.animTick = 0;
+			if(data.state) {
+				player.direction = "right";
+			} else {
+				if(!checkPresses(player, "right")) {
+					player.direction = "idle";
+				}
+				//player.animTick = 0;
+			}
 		}
 		if(data.inputId == "left")
 		{
+			//if(checkPresses(player, "left")) { player.animTick = 0; }
+
 				player.pressingLeft = data.state;
+				if(data.state) {
+					player.direction = "left";
+				} else {
+					if(!checkPresses(player, "left")) {
+						player.direction = "idle_left";
+					}
+					//player.animTick = 0;
+				}
 		}
 	});
 
@@ -197,7 +322,8 @@ io.sockets.on('connection', function(socket)
 				roomLengthX: data.roomLengthX,
 				roomLengthY: data.roomLengthY
 			},
-			map: data.map
+			map: data.map,
+			attacks: []
 		};
 		// server is 1
 		// also get array of ghosts
@@ -237,14 +363,14 @@ io.sockets.on('connection', function(socket)
 					var random = Math.floor(Math.random()*5) +1;
 					for (var k = 0;k < random; k++){
 						var world = GLOBAL_WORLD_LIST[socket.id];
-						var setX = j * 9 * 32;
-						var setY = i * 9 * 32;
-						var randX = Math.floor(Math.random()*(9*32));
-						var randY = Math.floor(Math.random()*(9*32));
+						var setX = j * 18 * 32;
+						var setY = i * 18 * 32;
+						var randX = Math.floor(Math.random()*(18*32));
+						var randY = Math.floor(Math.random()*(18*32));
 
-						while(determineTileFromPx(setX + randX, setY + randY, socket.id) == 1) {
-							var randX = Math.floor(Math.random()*(9*32));
-							var randY = Math.floor(Math.random()*(9*32));
+						while(determineTileFromPx(setX + randX, setY + randY, socket.id) == 9) {
+							var randX = Math.floor(Math.random()*(18*32));
+							var randY = Math.floor(Math.random()*(18*32));
 						}
 						var randomX = setX + randX;
 						var randomY = setY + randY;
@@ -275,8 +401,214 @@ io.sockets.on('connection', function(socket)
 		player.y = data.y;
 	});
 
+
+	//Login stuff
+	socket.on('attemptLogin', function(data) {
+		var attemptUsername = data.username;
+		var attemptPassword = data.password;
+
+		var player = PLAYER_LIST[data.id];
+		console.log("Got submit: " + attemptUsername);
+		var stmt = "SELECT * FROM logins WHERE username=? AND password=?";
+		connection.query(stmt,[attemptUsername, attemptPassword],function(err, rows, fields) {
+			if(!err) {
+				if(rows.length > 0) {
+					player.name = rows[0].username;
+					console.log("successfulLogin");
+					player.logged = true;
+
+					socket.emit("successfulLogin", {});
+				} else {
+					console.log("No users found");
+					socket.emit("noUsers", {});
+				}
+			} else {
+				console.log("ERROR");
+			}
+		});
+
+	});
+
+
+	socket.on("refreshLobbyList", function(data) {
+		refreshLobby(socket);
+
+	});
+
+
+	socket.on('joinWorld', function(data) {
+		var player = PLAYER_LIST[data.id];
+		if(player) {
+			//Player Exists
+			var oldWorld = GLOBAL_WORLD_LIST[player.worldId];
+			if(oldWorld) {
+				//Old World exists, filter self out.
+
+				var array = oldWorld.roomData.playerlist;
+				var search_term = data.id;
+
+				for( var i=array.length-1; i>=0; i--) {
+					if(array[i] === search_term) {
+						array.splice(i,1);
+						console.log(array + " DONE YE");
+						break;
+					}
+				}
+
+
+				console.log("Old World List: " + array);
+				if(array.length == 0) {
+					//Delete old world
+
+
+
+					delete GLOBAL_WORLD_LIST[player.worldId];
+					delete GLOBAL_NPC_LIST[player.worldId];
+
+				}
+
+				var newWorldId = data.worldId;
+				player.worldId = newWorldId;
+				console.log(player.worldId);
+				console.log(GLOBAL_WORLD_LIST);
+				var newWorld = GLOBAL_WORLD_LIST[player.worldId];
+				if(newWorld) {
+					newWorld.roomData.playerlist.push(data.id);
+				} else {
+					newWorld.roomData.playerlist = [data.id];
+				}
+				console.log("New World List: " + newWorld.roomData.playerlist);
+
+			} else {
+				console.log("FATAL ERROR: FAILED TO FIND OLD WORLD!");
+			}
+		}
+		refreshAllLobbies();
+	});
+
+
+	socket.on('playerAttackMelee', function() {
+		var player = PLAYER_LIST[socket.id];
+		player.currentAction = "attacking";
+		player.animTick = 0;
+		createNewMeleeAttack(player);
+		console.log("CLICK");
+	});
+
 });
 
+function createNewMeleeAttack(player) {
+	var world = GLOBAL_WORLD_LIST[player.worldId];
+	if(world) {
+		var rotation = 0;
+		if(player.direction == "idle" || player.direction == "right") {
+			//If facing right.
+
+
+		}
+
+		if(player.direction == "left" || player.direction == "idle_left") {
+			rotation = 180;
+		}
+
+		if(player.direction == "up") {
+			rotation = 90;
+		}
+
+		if(player.direction == "down") {
+			rotation = 270;
+		}
+
+		var xLoc = player.x-32 + 40;
+		var yLoc = player.y-32 - 10;
+		var w = 32;
+		var h = 32;
+		//Create img for attack
+
+		var newAttackObj = new Melee(xLoc, yLoc, w, h, "default", rotation);
+
+		world.attacks.push(newAttackObj);
+		//Create actual damage for attack
+		checkHits(newAttackObj, player.worldId, player);
+		console.log("CHECKED");
+	} else {
+		console.log("Random fatal error.");
+	}
+}
+
+function checkHits(object, worldId, player) {
+	//rats
+	var world_npcs = GLOBAL_NPC_LIST[worldId];
+	for(var i in world_npcs.rats) {
+		var rat = world_npcs.rats[i];
+		if(boxCollides([rat.x, rat.y],[16, 16],[object.x, object.y],[object.w, object.h])) {
+			//Hit rat with attack.
+			rat.health -= player.currentWeaponDamage;
+		}
+	}
+}
+
+function checkPresses(player, exclusion) {
+
+	if(exclusion == "up") {
+		if(player.pressingDown || player.pressingLeft || player.pressingRight) {
+			return true;
+		}
+	} else if(exclusion == "down" ) {
+		if(player.pressingUp || player.pressingLeft || player.pressingRight) {
+			return true;
+		}
+	} else if(exclusion == "left") {
+		if(player.pressingUp || player.pressingDown || player.pressingRight) {
+			return true;
+		}
+	} else if(exclusion == "right") {
+		if(player.pressingUp || player.pressingDown || player.pressingLeft) {
+			return true;
+		}
+	}
+
+
+	if(player.pressingUp || player.pressingDown || player.pressingLeft || player.pressingRight) {
+		return true;
+	}
+}
+
+function refreshLobby(socket) {
+	var lobby_pack = [];
+	for(var i in GLOBAL_WORLD_LIST) {
+		if(true) {
+			var world = GLOBAL_WORLD_LIST[i];
+			var worldAmount = world.roomData.playerlist.length;
+
+			lobby_pack.push({
+					worldId: i,
+					worldAmount: worldAmount
+			});
+		}
+	}
+	socket.emit("refreshedLobbyInfo", lobby_pack);
+}
+
+function refreshAllLobbies() {
+	var lobby_pack = [];
+	for(var i in GLOBAL_WORLD_LIST) {
+		if(true) {
+			var world = GLOBAL_WORLD_LIST[i];
+			var worldAmount = world.roomData.playerlist.length;
+
+			lobby_pack.push({
+					worldId: i,
+					worldAmount: worldAmount
+			});
+		}
+	}
+
+	for(var i in SOCKET_LIST) {
+		var socket = SOCKET_LIST[i];
+		socket.emit("refreshedLobbyInfo", lobby_pack);
+	}
+}
 //qhosts
 function spawnGhosts(id, amount)
 {
@@ -300,12 +632,12 @@ function spawnRats(id, amount)
 		for(var i = 0; i < amount ; i ++)
 		{
 			var world = GLOBAL_WORLD_LIST[id];
-			var randomX = Math.floor(Math.random()*(world.roomData.roomLengthX*9*32));
-			var randomY = Math.floor(Math.random()*(world.roomData.roomLengthY*9*32));
+			var randomX = Math.floor(Math.random()*(world.roomData.roomLengthX*18*32));
+			var randomY = Math.floor(Math.random()*(world.roomData.roomLengthY*18*32));
 
 			while(determineTileFromPx(randomX, randomY, id) == 1) {
-				randomX = Math.floor(Math.random()*(world.roomData.roomLengthX*9*32));
-				randomY = Math.floor(Math.random()*(world.roomData.roomLengthY*9*32));
+				randomX = Math.floor(Math.random()*(world.roomData.roomLengthX*18*32));
+				randomY = Math.floor(Math.random()*(world.roomData.roomLengthY*18*32));
 			}
 
 			var randomId = Math.random();
@@ -315,18 +647,37 @@ function spawnRats(id, amount)
 }
 
 function determineTileFromPx(x, y, id) {
+	/*
 	var world = GLOBAL_WORLD_LIST[id];
-	var testX = (x/9)/32;
-	var testY = (y/9)/32;
+	var testX = (x/18)/32;
+	var testY = (y/18)/32;
 	var xOuterIndex = Math.floor(testX);
 	var yOuterIndex = Math.floor(testY);
 	var nx = testX - xOuterIndex;
 	var ny = testY - yOuterIndex;
-	var xIndex = Math.floor((nx*32*9)/32);
-	var yIndex = Math.floor((ny*32*9)/32);
+	var xIndex = Math.floor((nx*32*18)/32);
+	var yIndex = Math.floor((ny*32*18)/32);
 
 	return world.map[yOuterIndex][xOuterIndex].segment[yIndex][xIndex];
+	*/
 }
+
+function updateAttacks(id) {
+	for(var i in GLOBAL_WORLD_LIST[id].attacks) {
+		var attack = GLOBAL_WORLD_LIST[id].attacks[i];
+		if(attack) {
+			var timer = 0.05;
+			if(timer < dt - attack.lastTickUpdate) {
+				attack.lastTickUpdate = dt;
+				attack.animTick += 1;
+				if(attack.animTick > 5) {
+					GLOBAL_WORLD_LIST[id].attacks.splice(i, 1);
+				}
+			}
+		}
+	}
+}
+
 
 function updateRats(id) {
 	for(var i in GLOBAL_NPC_LIST[id].rats) {
@@ -384,7 +735,7 @@ function updateRats(id) {
 				var up = 0;
 				var down = 1;
 				var tempTile = determineAdjacentTiles(rat, id);
-				if(tempTile[rat.direction] == 1){
+				if(tempTile[rat.direction] !== 9){
 					rat.direction = "none";
 					rat.status = "idle";
 				}
@@ -402,7 +753,7 @@ function updateRats(id) {
 
 					//FINAL CHECK, ANY OTHER UPDATES MUST GO ABOVE.
 
-					if(rat.x < 32 || rat.x + rat.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*9*32)-32-rat.size || rat.y < 32+rat.size || rat.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*9*32)-32-rat.size ) {
+					if(rat.x < 32 || rat.x + rat.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*18*32)-32-rat.size || rat.y < 32+rat.size || rat.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*18*32)-32-rat.size ) {
 						rat.x -= rat.vx * rat.speed;
 						rat.y -= rat.vy * rat.speed;
 						rat.status = "idle";
@@ -420,6 +771,18 @@ function updateRats(id) {
 function updateGhosts(id) {
 	for(var i in GLOBAL_NPC_LIST[id].ghosts) {
 		var ghost = GLOBAL_NPC_LIST[id].ghosts[i];
+			var timer = 0.05;
+
+			if(ghost.status == "idling") { timer = 0.05; }
+
+			if(timer < dt - ghost.lastTickUpdate) {
+				ghost.lastTickUpdate = dt;
+				ghost.animTick += 1;
+				if(ghost.animTick > 8) {
+					ghost.animTick = 0;
+				}
+			}
+
 			if(ghost.status == "idle") {
 				//Set ghost to idling for a random amount of time.
 				ghost.status = "idling";
@@ -475,7 +838,7 @@ function updateGhosts(id) {
 
 					//FINAL CHECK, ANY OTHER UPDATES MUST GO ABOVE.
 
-					if(ghost.x < 32 || ghost.x + ghost.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*9*32)-32-ghost.size || ghost.y < 32+ghost.size || ghost.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*9*32)-32-ghost.size ) {
+					if(ghost.x < 32 || ghost.x + ghost.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*18*32)-32-ghost.size || ghost.y < 32+ghost.size || ghost.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*18*32)-32-ghost.size ) {
 						ghost.x -= ghost.vx * ghost.speed;
 						ghost.y -= ghost.vy * ghost.speed;
 						ghost.status = "idle";
@@ -492,13 +855,64 @@ function updateGhosts(id) {
 
 function updatePosition(player)
 {
+	var timer = 0;
+	if(player.direction == "idle" || player.direction == "idle_left"){ timer = 0.5; }
+	if(player.direction == "right" || player.direction == "left") { timer = 0.1; }
+	if(player.direction == "up" || player.direction == "down") { timer = 0.20; }
+
+	if(player.currentAction == "attacking") { timer = 0.1	; }
+
+	if(timer < dt-player.lastTickUpdate) {
+		player.lastTickUpdate = dt;
+		if(player.direction == "idle" || player.direction == "idle_left") {
+			player.animTick += 1;
+			if(player.currentAction == "attacking") {
+				if(player.animTick > 2) {
+					player.animTick = 0;
+					player.currentAction = "none";
+				}
+			} else {
+				if(player.animTick > 2) {
+					player.animTick = 0;
+				}
+			}
+
+		}
+		if(player.direction == "right" || player.direction == "left") {
+			player.animTick += 1;
+			if(player.currentAction == "attacking") {
+				if(player.animTick > 2) {
+					player.animTick = 0;
+					player.currentAction = "none";
+				}
+			} else {
+				if(player.animTick > 5) {
+					player.animTick = 0;
+				}
+			}
+		}
+		if(player.direction == "down" || player.direction == "up") {
+			player.animTick += 1;
+			if(player.currentAction == "attacking") {
+				if(player.animTick > 2) {
+					player.animTick = 0;
+					player.currentAction = "none";
+				}
+			} else {
+				if(player.animTick > 3) {
+					player.animTick = 0;
+				}
+			}
+		}
+
+	}
+
 	var prevX = player.x;
 	var prevY = player.y;
 	if(player.cantMove == false) {
 			if(player.pressingUp)
 			{
 				player.y -= player.speed;
-
 			}
 			if(player.pressingDown)
 			{
@@ -519,8 +933,9 @@ function updatePosition(player)
 
 		return [prevX, prevY];
 }
+
 function checkCollisions(player) {
-	var world = GLOBAL_WORLD_LIST[player.world];
+	var world = GLOBAL_WORLD_LIST[player.worldId];
 	//determineTile(player);
 	if(player.ready) {
 		for(var i in world.map) {
@@ -529,11 +944,11 @@ function checkCollisions(player) {
 					for(var l in world.map[i][j].segment[k]) {
 						var tile = world.map[i][j].segment[k][l];
 
-						if(tile == 1) {
+						if(tile !== 9) {
 
-							if(boxCollides([player.x-player.size+5, player.y-player.size+5],[player.size*2-10,player.size*2-10],[(j*32*9) + (l*32),(i*32*9) + (k*32)],[32,32])){
-								var val1 = (i*32*9) + (l*32);
-								var val2 = (j*32*9) + (k*32);
+							if(boxCollides([player.x-player.size+5, player.y-player.size+5],[player.size*2-10,player.size*2-10],[(j*32*18) + (l*32),(i*32*18) + (k*32)],[32,32])){
+								var val1 = (i*32*18) + (l*32);
+								var val2 = (j*32*18) + (k*32);
 								if(player.pressingUp) {
 									player.y += player.speed;
 								}
@@ -564,14 +979,14 @@ function determineAdjacentTiles(npc, id){
 		};
 
 		var world = GLOBAL_WORLD_LIST[id];
-		var testX = (npc.x/9)/32;
-		var testY = (npc.y/9)/32;
+		var testX = (npc.x/18)/32;
+		var testY = (npc.y/18)/32;
 		var xOuterIndex = Math.floor(testX);
 		var yOuterIndex = Math.floor(testY);
 		var nx = testX - xOuterIndex;
 		var ny = testY - yOuterIndex;
-		var xIndex = Math.floor((nx*32*9)/32);
-		var yIndex = Math.floor((ny*32*9)/32);
+		var xIndex = Math.floor((nx*32*18)/32);
+		var yIndex = Math.floor((ny*32*18)/32);
 
 		//INIT NORM VALUES
 		var testRightInfo = {ox: xOuterIndex, oy: yOuterIndex, x: xIndex, y: yIndex};
@@ -580,9 +995,8 @@ function determineAdjacentTiles(npc, id){
 		var testDownInfo = {ox: xOuterIndex, oy: yOuterIndex, x: xIndex, y: yIndex};
 
 		//Change variables to suit the direction to be tested
-		//Change variables to suit the direction to be tested
-		if(testRightInfo.x == 8) {
-			if(testRightInfo.ox !== world.roomData.roomLengthX) {
+		if(testRightInfo.x == 17) {
+			if(testRightInfo.ox !== world.roomData.roomLengthX-1) {
 				//Reached far right of segment.
 				testRightInfo.x = 0;
 				testRightInfo.ox += 1;
@@ -598,10 +1012,10 @@ function determineAdjacentTiles(npc, id){
 
 		if(testLeftInfo.x == 0) {
 			if(testLeftInfo.ox !== 0) {
-				testLeftInfo.x = 8;
+				testLeftInfo.x = 17;
 				testLeftInfo.ox -= 1;
 			} else {
-				testLefttInfo.toTest = false;
+				testLeftInfo.toTest = false;
 			}
 		} else {
 			//Within normal bounds for segment.
@@ -611,7 +1025,7 @@ function determineAdjacentTiles(npc, id){
 
 		if(testUpInfo.y == 0) {
 			if(testUpInfo.oy !== 0) {
-				testUpInfo.y = 8;
+				testUpInfo.y = 17;
 				testUpInfo.oy -= 1;
 			}
 		} else {
@@ -620,8 +1034,8 @@ function determineAdjacentTiles(npc, id){
 		}
 
 		/////////////////////////////////
-		if(testDownInfo.y == 8) {
-			if(testDownInfo.oy !== world.roomData.roomLengthY) {
+		if(testDownInfo.y == 17) {
+			if(testDownInfo.oy !== world.roomData.roomLengthY-1) {
 				testDownInfo.y = 0;
 				testDownInfo.oy += 1;
 		  } else {
@@ -665,14 +1079,14 @@ function determineAvailableDirections(npc, id) {
 	var availableDirections = [];
 
 	var world = GLOBAL_WORLD_LIST[id];
-	var testX = (npc.x/9)/32;
-	var testY = (npc.y/9)/32;
+	var testX = (npc.x/18)/32;
+	var testY = (npc.y/18)/32;
 	var xOuterIndex = Math.floor(testX);
 	var yOuterIndex = Math.floor(testY);
 	var nx = testX - xOuterIndex;
 	var ny = testY - yOuterIndex;
-	var xIndex = Math.floor((nx*32*9)/32);
-	var yIndex = Math.floor((ny*32*9)/32);
+	var xIndex = Math.floor((nx*32*18)/32);
+	var yIndex = Math.floor((ny*32*18)/32);
 
 
 	//INIT NORM VALUES
@@ -682,8 +1096,8 @@ function determineAvailableDirections(npc, id) {
 	var testDownInfo = {ox: xOuterIndex, oy: yOuterIndex, x: xIndex, y: yIndex, toTest: true};
 
 	//Change variables to suit the direction to be tested
-	if(testRightInfo.x == 8) {
-		if(testRightInfo.ox !== world.roomData.roomLengthX) {
+	if(testRightInfo.x == 17) {
+		if(testRightInfo.ox !== world.roomData.roomLengthX-1) {
 			//Reached far right of segment.
 			testRightInfo.x = 0;
 			testRightInfo.ox += 1;
@@ -699,7 +1113,7 @@ function determineAvailableDirections(npc, id) {
 
 	if(testLeftInfo.x == 0) {
 		if(testLeftInfo.ox !== 0) {
-			testLeftInfo.x = 8;
+			testLeftInfo.x = 17;
 			testLeftInfo.ox -= 1;
 		} else {
 			testLeftInfo.toTest = false;
@@ -712,7 +1126,7 @@ function determineAvailableDirections(npc, id) {
 
 	if(testUpInfo.y == 0) {
 		if(testUpInfo.oy !== 0) {
-			testUpInfo.y = 8;
+			testUpInfo.y = 17;
 			testUpInfo.oy -= 1;
 		}
 	} else {
@@ -721,8 +1135,8 @@ function determineAvailableDirections(npc, id) {
 	}
 
 	/////////////////////////////////
-	if(testDownInfo.y == 8) {
-		if(testDownInfo.oy !== world.roomData.roomLengthY) {
+	if(testDownInfo.y == 17) {
+		if(testDownInfo.oy !== world.roomData.roomLengthY-1) {
 			testDownInfo.y = 0;
 			testDownInfo.oy += 1;
 	  } else {
@@ -733,32 +1147,36 @@ function determineAvailableDirections(npc, id) {
 		testDownInfo.y += 1;
 	}
 	/////////////////////////////////
-
-
+	/*
+	console.log("RIGHT INFO: " + testRightInfo.oy + ", " + testRightInfo.ox + ", " + testRightInfo.y + ", " + testRightInfo.x);
+	console.log("LEFT INFO: " + testLeftInfo.oy + ", " + testLeftInfo.ox + ", " + testLeftInfo.y + ", " + testLeftInfo.x);
+	console.log("UP INFO: " + testUpInfo.oy + ", " + testUpInfo.ox + ", " + testUpInfo.y + ", " + testUpInfo.x);
+	console.log("DOWN INFO: " + testDownInfo.oy + ", " + testDownInfo.ox + ", " + testDownInfo.y + ", " + testDownInfo.x);
+*/
 	//TEST TILES FOR THEIR number
 	//////////////////////////////
 	//Test right
 	if(testRightInfo.toTest) {
 		var tileRight = world.map[testRightInfo.oy][testRightInfo.ox].segment[testRightInfo.y][testRightInfo.x];
-		if(tileRight !== 1) {
+		if(tileRight == 9) {
 			availableDirections.push("right");
 		}
 	}
 	if(testLeftInfo.toTest) {
 		var tileLeft = world.map[testLeftInfo.oy][testLeftInfo.ox].segment[testLeftInfo.y][testLeftInfo.x];
-		if(tileLeft !== 1) {
+		if(tileLeft == 9) {
 			availableDirections.push("left");
 		}
 	}
 	if(testUpInfo.toTest) {
 		var tileUp = world.map[testUpInfo.oy][testUpInfo.ox].segment[testUpInfo.y][testUpInfo.x];
-		if(tileUp !== 1) {
+		if(tileUp == 9) {
 			availableDirections.push("up");
 		}
 	}
 	if(testDownInfo.toTest) {
 		var tileDown = world.map[testDownInfo.oy][testDownInfo.ox].segment[testDownInfo.y][testDownInfo.x];
-		if(tileDown !== 1) {
+		if(tileDown == 9) {
 			availableDirections.push("down");
 		}
 	}
@@ -771,21 +1189,37 @@ function determineAvailableDirections(npc, id) {
 function determineTile(npc, id) {
 	var player = PLAYER_LIST[id];
 	if(player) {
-		var world = GLOBAL_WORLD_LIST[player.world];
-		var testX = (npc.x/9)/32;
-		var testY = (npc.y/9)/32;
+		var world = GLOBAL_WORLD_LIST[player.worldId];
+		var testX = (npc.x/18)/32;
+		var testY = (npc.y/18)/32;
 		var xOuterIndex = Math.floor(testX);
 		var yOuterIndex = Math.floor(testY);
 		var nx = testX - xOuterIndex;
 		var ny = testY - yOuterIndex;
-		var xIndex = Math.floor((nx*32*9)/32);
-		var yIndex = Math.floor((ny*32*9)/32);
+		var xIndex = Math.floor((nx*32*18)/32);
+		var yIndex = Math.floor((ny*32*18)/32);
 
 		var tile = world.map[yOuterIndex][xOuterIndex].segment[yIndex][xIndex];
 	} else {
 		return "error";
 	}
 }
+
+function checkCurrentSpellProgress(id) {
+	var player = PLAYER_LIST[id];
+
+	var currentSpell = "";
+	for(var i in player.spell) {
+		var toAdd = player.spell[i];
+		currentSpell = currentSpell + toAdd.toString();
+
+	}
+	console.log(currentSpell);
+
+}
+
+
+
 
 
 
@@ -814,16 +1248,54 @@ setInterval(function()
 			}
 		}
 	}
+	var player_pack = [];
 
 	for(var i in GLOBAL_WORLD_LIST) {
 		var world = GLOBAL_WORLD_LIST[i];
+
+		//Update player attacks.
+
+
+		//Load player data to others
+		for(var k in world.roomData.playerlist) {
+			var player = PLAYER_LIST[world.roomData.playerlist[k]];
+			if(player) {
+				player_pack.push({
+					logged: player.logged,
+					health: player.health,
+					maxHealth: player.maxHealth,
+					mana: player.mana,
+					size: player.size,
+					id: player.id,
+					x: player.x,
+					y: player.y,
+					color: player.color,
+					speed: player.speed,
+					pressingUp: player.pressingUp,
+					pressingDown: player.pressingDown,
+					pressingLeft: player.pressingLeft,
+					pressingRight: player.pressingRight,
+					cantMove: player.cantMove,
+					ready: player.ready,
+					worldId: player.worldId,
+					castingSpell: player.castingSpell,
+					spell: player.spell,
+					direction: player.direction,
+					animTick: player.animTick
+				});
+			}
+		}
+		//console.log("Existing Players for World " + i);
+
 		for(var j in world.roomData.playerlist) {
 			var player = PLAYER_LIST[world.roomData.playerlist[j]];
 			if(player) {
 				var socketId = world.roomData.playerlist[j];
 				var socket = SOCKET_LIST[socketId];
-				socket.emit("newNPCList", {ghosts: GLOBAL_NPC_LIST[i].ghosts, rats: GLOBAL_NPC_LIST[i].rats, map: GLOBAL_WORLD_LIST[i].map, shopkeeper: GLOBAL_NPC_LIST[i].ShopKeeper, knights: GLOBAL_NPC_LIST[i].knights});
+				socket.emit("newNPCList", {ghosts: GLOBAL_NPC_LIST[i].ghosts, rats: GLOBAL_NPC_LIST[i].rats, map: GLOBAL_WORLD_LIST[i].map, shopkeeper: GLOBAL_NPC_LIST[i].ShopKeeper, knights: GLOBAL_NPC_LIST[i].knights, attacks: GLOBAL_WORLD_LIST[i].attacks});
 				//socket.emit("newPosition", {player: PLAYER_LIST[socket]});
+				//console.log("Player: " + socketId);
+				socket.emit("newPositions", {players: player_pack});
 			}
 		}
 	}
@@ -834,11 +1306,15 @@ setInterval(function()
 		updateRats(i);
 	}
 
+	for(var i in GLOBAL_WORLD_LIST) {
+		updateAttacks(i);
+	}
+
 	for(var i in SOCKET_LIST)
 	{
 		var socket = SOCKET_LIST[i];
 		//Send Data here
-		socket.emit("newPosition", {player: PLAYER_LIST[i]});
+		socket.emit("newPosition", {player: PLAYER_LIST[i], dt: dt});
 	}
 
 }, 1000/60);
