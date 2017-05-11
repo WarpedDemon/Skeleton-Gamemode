@@ -154,6 +154,14 @@
 					<li><img src="client/img/gfx/joinFriend.png" width="64" height="64" /><p>Join a Friend</p></li>
 				</ul>
 			</div>
+
+			<div id="menuInventory">
+				<h1> Inventory </h1>
+				<hr/>
+				<ul id="menuInventoryList">
+					<!--Automatically Generated Items here-->
+				</ul>
+			</div>
 		</div>
 
 		<div id="menuButton">
@@ -360,7 +368,9 @@
 				menuCloseText = document.getElementById('menuCloseText');
 				menuCloseSpan = document.getElementById('menuCloseSpan');
 				multiplayerButton = document.getElementById('multiplayerButton');
+				inventoryButton = document.getElementById('inventoryButton');
 
+				inventoryButton.addEventListener('click', prepInventory, false);
 				menuClose.addEventListener('click', toggleMenu, false);
 
 				$('#menuMultiplayer').click(function() {
@@ -598,6 +608,30 @@
 
 
 			/* EVENT LISTENERS HERE ONLY */
+			function prepInventory() {
+				$('#menuInventoryList').empty();
+				for(var i in localData.inventory) {
+					if(localData.inventory[i].itemName !== "none") {
+						var newElem = $("<li><img src='" + localData.inventory[i].itemImg + "' />" + localData.inventory[i].itemName + "</li>");
+						$('#menuInventoryList').append(newElem);
+					} else {
+						var newElem = $('<li class="emptyInventoryItem"></li>');
+						$('menuInventoryList').append(newElem);
+					}
+				}
+				showInventory();
+			}
+
+			function showInventory() {
+				menuInventory.style.display = "block";
+				menuDefault.style.display = "none";
+				menuCloseText.innerHTML = "Back";
+				menuCloseSpan.className = "fa fa-arrow-left";
+
+				menuClose.removeEventListener('click', toggleMenu, false);
+				menuClose.addEventListener('click', showMenuDefault, false);
+			}
+
 
 			function showMultiplayer() {
 				console.log("HERESDALDS");

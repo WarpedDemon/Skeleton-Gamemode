@@ -70,6 +70,90 @@ var GLOBAL_SPELL_BOOK = {
 
 //objects
 var Player = function(id){
+
+	var inventory = {
+		1: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		2: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		3: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		4: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		5: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		6: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		7: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		8: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		9: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		10: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		11: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		12: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		13: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		14: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		15: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		16: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		17: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		18: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		19: {
+			itemName: "none",
+			itemImg: "none"
+		},
+		20: {
+			itemName: "none",
+			itemImg: "none"
+		}
+	}
+
 	var self = {
 		//
 		logged: false,
@@ -96,7 +180,8 @@ var Player = function(id){
 		animTick: 0,
 		lastTickUpdate: 0,
 		currentAction: "none",
-		currentWeaponDamage: "2"
+		currentWeaponDamage: "2",
+		inventory: inventory
 	};
 	return self;
 };

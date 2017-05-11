@@ -148,6 +148,39 @@ div.tab button.active {
   cursor: pointer;
 
 }
+
+
+.emptyInventoryItem {
+  width: 64px;
+  height: 64px;
+  background-image: url(../img/leather.jpg);
+  border: 2px solid black;
+
+}
+#menuInvetoryList {
+  margin-left: -50px;
+}
+#menuInvetoryList li {
+  display: inline-block;
+  margin: 20px 20px 20px 20px;
+  transition: all 0.3s ease;
+}
+#menuInvetoryList  li img {
+  border: 2px solid black;
+  transition: all 0.3s ease;
+}
+#menuInvetoryList  li:hover img {
+  border: 2px solid white;
+}
+#menuInvetoryList li p {
+  display: block;
+  color: white;
+  margin-top: 20px;
+}
+#menuInventory {
+  display: none;
+}
+
 #menuMultiplayer {
   display: none;
 }
