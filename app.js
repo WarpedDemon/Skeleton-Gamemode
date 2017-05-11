@@ -95,7 +95,8 @@ var Player = function(id){
 		direction: "idle",
 		animTick: 0,
 		lastTickUpdate: 0,
-		currentAction: "none"
+		currentAction: "none",
+		currentWeaponDamage: "2"
 	};
 	return self;
 };
@@ -169,6 +170,7 @@ var Rat = function(id, x, y, vx, vy){
 		vy: vy,
 		cantMove: false,
 		ready: false,
+		dead: false,
 		status: "idle",
 		lastMove: 0,
 		moveTime: 0,
@@ -194,15 +196,17 @@ var SpellObject = function(id, x, y, vx, vy){
 	return self;
 }
 
-var Melee = function(x, y, w, h, type, rot) {
+var Melee = function(x, y, hbx, hby, w, h, type, dir) {
 	var self = {
 		x: x,
 		y: y,
+		hbx: hbx,
+		hby: hby,
 		w: w,
 		h: h,
 		animTick: 0,
 		type: type,
-		rotation: rot,
+		direction: dir,
 		lastTickUpdate: 0
 	};
 	return self;
@@ -263,7 +267,7 @@ io.sockets.on('connection', function(socket)
 				player.direction = "up";
 			} else {
 				if(!checkPresses(player, "up")) {
-					player.direction = "idle";
+					player.direction = "idle_up";
 				}
 				//player.animTick = 0;
 			}
@@ -274,7 +278,7 @@ io.sockets.on('connection', function(socket)
 			if(data.state) {
 				player.direction = "down";
 			} else {
-				player.direction = 'idle';
+				player.direction = 'idle_down';
 				//player.animTick = 0;
 			}
 				player.pressingDown = data.state;
@@ -500,37 +504,52 @@ io.sockets.on('connection', function(socket)
 function createNewMeleeAttack(player) {
 	var world = GLOBAL_WORLD_LIST[player.worldId];
 	if(world) {
-		var rotation = 0;
+		var direction = "right";
+		var animX, animY;
 		if(player.direction == "idle" || player.direction == "right") {
 			//If facing right.
-
-
+			direction = "right";
+			animX = player.x -32 + 40;
+			animY = player.y -32;
+			var xLoc = player.x-32 + 40;
+			var yLoc = player.y-32 + 10;
 		}
 
 		if(player.direction == "left" || player.direction == "idle_left") {
-			rotation = 180;
+			direction = "left";
+			animX = player.x -32 - 40;
+			animY = player.y -32;
+			var xLoc = player.x-32 - 40;
+			var yLoc = player.y-32 + 10;
 		}
 
-		if(player.direction == "up") {
-			rotation = 90;
+		if(player.direction == "up" || player.direction == "idle_up") {
+			direction = "up";
+			animX = player.x -32;
+			animY = player.y -32 - 40;
+			var xLoc = player.x-32;
+			var yLoc = player.y-32;
 		}
 
-		if(player.direction == "down") {
-			rotation = 270;
+		if(player.direction == "down" || player.direction == "idle_down") {
+			direction = "down";
+			animX = player.x -32;
+			animY = player.y -32+40;
+			var xLoc = player.x-32;
+			var yLoc = player.y-32+40;
 		}
 
-		var xLoc = player.x-32 + 40;
-		var yLoc = player.y-32 - 10;
+
 		var w = 32;
 		var h = 32;
 		//Create img for attack
 
-		var newAttackObj = new Melee(xLoc, yLoc, w, h, "default", rotation);
+		var newAttackObj = new Melee(animX, animY, xLoc, yLoc, w, h, "default", direction);
 
 		world.attacks.push(newAttackObj);
 		//Create actual damage for attack
 		checkHits(newAttackObj, player.worldId, player);
-		console.log("CHECKED");
+		//console.log("CHECKED");
 	} else {
 		console.log("Random fatal error.");
 	}
@@ -541,9 +560,11 @@ function checkHits(object, worldId, player) {
 	var world_npcs = GLOBAL_NPC_LIST[worldId];
 	for(var i in world_npcs.rats) {
 		var rat = world_npcs.rats[i];
-		if(boxCollides([rat.x, rat.y],[16, 16],[object.x, object.y],[object.w, object.h])) {
+		if(boxCollides([rat.x, rat.y],[16, 16],[object.hbx, object.hby],[object.w, object.h])) {
 			//Hit rat with attack.
 			rat.health -= player.currentWeaponDamage;
+			console.log(rat.health);
+		} else {
 		}
 	}
 }
@@ -580,11 +601,12 @@ function refreshLobby(socket) {
 		if(true) {
 			var world = GLOBAL_WORLD_LIST[i];
 			var worldAmount = world.roomData.playerlist.length;
-
-			lobby_pack.push({
-					worldId: i,
-					worldAmount: worldAmount
-			});
+			if(i !== socket.id) {
+				lobby_pack.push({
+						worldId: i,
+						worldAmount: worldAmount
+				});
+			}
 		}
 	}
 	socket.emit("refreshedLobbyInfo", lobby_pack);
@@ -682,88 +704,95 @@ function updateAttacks(id) {
 function updateRats(id) {
 	for(var i in GLOBAL_NPC_LIST[id].rats) {
 		var rat = GLOBAL_NPC_LIST[id].rats[i];
-			if(rat.status == "idle") {
-				//Set ghost to idling for a random amount of time.
-				rat.status = "idling";
-				var random = Math.floor(Math.random()*5);
-				rat.moveTime = random;
-				rat.setMove = dt;
-			}
-
-			if(rat.status == "idling") {
-				if(rat.moveTime < (dt-rat.setMove)) {
-					//Ghost has surpassed wait time for next Movement
-					//Must decide on new pathing.
-					var direction = determineAvailableDirections(rat, id);
-					//var direction = ["up", "down", "left", "right"];
-					var randomDirection = Math.ceil(Math.random()*direction.length) - 1;
-					var randomTime = Math.random()*4;
-
-					if(direction[randomDirection] == "up") {
-						//Go up
-						rat.vx = 0;
-						rat.vy = -1;
-						rat.status = "moving";
-						rat.direction = "up";
-					} else if(direction[randomDirection] == "down") {
-						//Go down
-						rat.vx = 0;
-						rat.vy = 1;
-						rat.status = "moving";
-						rat.direction = "down";
-					} else if(direction[randomDirection] == "right") {
-						//Go right
-						rat.vx = 1;
-						rat.vy = 0;
-						rat.status = "moving";
-						rat.direction = "right";
-					} else if(direction[randomDirection] == "left") {
-						//Go left
-						rat.vx = -1;
-						rat.vy = 0;
-						rat.status = "moving";
-						rat.direction = "left";
-					}
-					rat.moveTime = randomTime;
+			if(!rat.dead) {
+				if(rat.status == "idle") {
+					//Set ghost to idling for a random amount of time.
+					rat.status = "idling";
+					var random = Math.floor(Math.random()*5);
+					rat.moveTime = random;
 					rat.setMove = dt;
 				}
-			}
 
-			if(rat.status == "moving") {
-				var left = 2;
-				var right = 3;
-				var up = 0;
-				var down = 1;
-				var tempTile = determineAdjacentTiles(rat, id);
-				if(tempTile[rat.direction] !== 9){
-					rat.direction = "none";
-					rat.status = "idle";
+				if(rat.status == "idling") {
+					if(rat.moveTime < (dt-rat.setMove)) {
+						//Ghost has surpassed wait time for next Movement
+						//Must decide on new pathing.
+						var direction = determineAvailableDirections(rat, id);
+						//var direction = ["up", "down", "left", "right"];
+						var randomDirection = Math.ceil(Math.random()*direction.length) - 1;
+						var randomTime = Math.random()*4;
+
+						if(direction[randomDirection] == "up") {
+							//Go up
+							rat.vx = 0;
+							rat.vy = -1;
+							rat.status = "moving";
+							rat.direction = "up";
+						} else if(direction[randomDirection] == "down") {
+							//Go down
+							rat.vx = 0;
+							rat.vy = 1;
+							rat.status = "moving";
+							rat.direction = "down";
+						} else if(direction[randomDirection] == "right") {
+							//Go right
+							rat.vx = 1;
+							rat.vy = 0;
+							rat.status = "moving";
+							rat.direction = "right";
+						} else if(direction[randomDirection] == "left") {
+							//Go left
+							rat.vx = -1;
+							rat.vy = 0;
+							rat.status = "moving";
+							rat.direction = "left";
+						}
+						rat.moveTime = randomTime;
+						rat.setMove = dt;
+					}
 				}
 
-
-
-
-				if(rat.moveTime > (dt-rat.setMove)) {
-					//Ghost has surpassed alloted movement time.
-					rat.x += rat.vx * rat.speed;
-					rat.y += rat.vy * rat.speed;
-
-
-
-
-					//FINAL CHECK, ANY OTHER UPDATES MUST GO ABOVE.
-
-					if(rat.x < 32 || rat.x + rat.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*18*32)-32-rat.size || rat.y < 32+rat.size || rat.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*18*32)-32-rat.size ) {
-						rat.x -= rat.vx * rat.speed;
-						rat.y -= rat.vy * rat.speed;
+				if(rat.status == "moving") {
+					var left = 2;
+					var right = 3;
+					var up = 0;
+					var down = 1;
+					var tempTile = determineAdjacentTiles(rat, id);
+					if(tempTile[rat.direction] !== 9){
+						rat.direction = "none";
 						rat.status = "idle";
 					}
 
-				} else {
-					rat.status = "idle";
+
+
+
+					if(rat.moveTime > (dt-rat.setMove)) {
+						//Ghost has surpassed alloted movement time.
+						rat.x += rat.vx * rat.speed;
+						rat.y += rat.vy * rat.speed;
+
+
+
+
+						//FINAL CHECK, ANY OTHER UPDATES MUST GO ABOVE.
+
+						if(rat.x < 32 || rat.x + rat.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*18*32)-32-rat.size || rat.y < 32+rat.size || rat.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*18*32)-32-rat.size ) {
+							rat.x -= rat.vx * rat.speed;
+							rat.y -= rat.vy * rat.speed;
+							rat.status = "idle";
+						}
+
+					} else {
+						rat.status = "idle";
+					}
 				}
 			}
 
+			if(rat.health <= 0) {
+				console.log("HERE");
+				rat.health = 0;
+				rat.dead = true;
+			}
 	}
 }
 
@@ -859,7 +888,7 @@ function updatePosition(player)
 	if(player.direction == "idle" || player.direction == "idle_left"){ timer = 0.5; }
 	if(player.direction == "right" || player.direction == "left") { timer = 0.1; }
 	if(player.direction == "up" || player.direction == "down") { timer = 0.20; }
-
+	if(player.direction == "idle_up" || player.direction == "idle_down") { timer = 1; }
 	if(player.currentAction == "attacking") { timer = 0.1	; }
 
 	if(timer < dt-player.lastTickUpdate) {
