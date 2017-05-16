@@ -400,6 +400,12 @@ io.sockets.on('connection', function(socket)
 		}
 	});
 
+	socket.on('openSwitch', function(data) {
+		var world = GLOBAL_WORLD_LIST[socket.id];
+		world.open = data;
+		console.log("World " + socket.id + " to " + data );
+	});
+
 	socket.on('playerReady', function(data) {
 		PLAYER_LIST[socket.id].ready = true;
 		PLAYER_LIST[socket.id].GAME_MAP = data.map;
@@ -412,7 +418,8 @@ io.sockets.on('connection', function(socket)
 				roomLengthY: data.roomLengthY
 			},
 			map: data.map,
-			attacks: []
+			attacks: [],
+			open: false
 		};
 		// server is 1
 		// also get array of ghosts

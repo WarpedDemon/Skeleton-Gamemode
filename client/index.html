@@ -22,6 +22,8 @@
 		<img src="client/img/gameTiles/topRightCorner.png" id="top_right_corner" style="display: none;"/>
 		<img src="client/img/gameTiles/topLeftCorner.png" id="top_left_corner" style="display: none;"/>
 
+		<img src="client/img/gameTiles/chest.png" id="chest" style="display: none;"/>
+
 		<img src="client/img/gameTiles/BottomWall.png" id="wall_bottom" style="display: none;"/>
 		<img src="client/img/gameTiles/wall.png" id="wall_top" style="display: none;"/>
 		<img src="client/img/gameTiles/wallLeft.png" id="wall_left" style="display: none;"/>
@@ -141,8 +143,8 @@
 				<h1> Menu </h1>
 				<hr/>
 				<ul class="menuOptions">
-					<li id="inventoryButton" onclick=""><img src="client/img/gfx/inventory.png" width="64" height="64" /><p>Inventory</p></li>
-					<li id="multiplayerButton" onclick="showMultiplayer();"><img src="client/img/gfx/multiplayer.png" width="64" height="64" /><p>Multiplayer</p></li>
+					<li id="inventoryButton"><img src="client/img/gfx/inventory.png" width="64" height="64" /><p>Inventory</p></li>
+					<li id="multiplayerButton"><img src="client/img/gfx/multiplayer.png" width="64" height="64" /><p>Multiplayer</p></li>
 				</ul>
 			</div>
 
@@ -150,9 +152,24 @@
 				<h1>Multiplayer</h1>
 				<hr/>
 				<ul class="menuOptions">
-					<li><img src="client/img/gfx/invade.png" width="64" height="64" /><p>Invade</p></li>
-					<li><img src="client/img/gfx/joinFriend.png" width="64" height="64" /><p>Join a Friend</p></li>
+					<li id="invadeButton"><img src="client/img/gfx/invade.png" width="64" height="64" /><p>Invade</p></li>
+					<li id="joinButton"><img src="client/img/gfx/joinFriend.png" width="64" height="64" /><p>Join a Friend</p></li>
+					<li id="menuHostButton"><img src="client/img/gfx/host.png" width="64" height="64" /><p>Host</p></li>
 				</ul>
+			</div>
+
+			<div id="menuHost">
+				<h1> Host</h1>
+				<hr/>
+				<br/>
+				<h4 style="margin-top: -10px;">Allow others to join:</h4>
+				<label class="switch">
+				  <input type="checkbox" id="multiplayerCheckbox">
+				  <div class="slider round"></div>
+				</label>
+				<h3> Your World Id</h3>
+
+				<div id="menuHostId">NOT ACTIVE</div>
 			</div>
 
 			<div id="menuInventory">
@@ -162,7 +179,19 @@
 					<!--Automatically Generated Items here-->
 				</ul>
 			</div>
+
+			<div id="menuJoin">
+				<h1> Join </h1>
+				<hr/>
+				<br/>
+				<h4>Enter World ID: </h4>
+				<input id="menuJoinId" type="text" />
+				<div id="menuJoinButton"><span class=""></span> Join</div>
+			</div>
+
 		</div>
+
+
 
 		<div id="menuButton">
 			<span class="fa fa-bars fa-3x menuButtonSpan"></span>
@@ -273,7 +302,7 @@
 
 			var dungeon_tiled_floor, blank, dungeon_top_left_corner, dungeon_top_right_corner, dungeon_bottom_left,
 					dungeon_out_top_left_corner, dungeon_out_top_right_corner, dungeon_out_bottom_left_corner, dungeon_out_bottom_right_corner,
-					dungeon_bottom_right, dungeon_wall_top, dungeon_wall_bottom, dungeon_wall_right, dungeon_wall_left, internal_wall;
+					dungeon_bottom_right, dungeon_wall_top, dungeon_wall_bottom, dungeon_wall_right, dungeon_wall_left, internal_wall, chest;
 
 
 			var ghost_1, ghost_2, ghost_3, ghost_4, ghost_5, ghost_6, ghost_7, ghost_8, ghost_9;
@@ -310,6 +339,7 @@
 			var loginButton, registerSwitchButton, loginOverlay, username_input, password_input;
 			var lobbyOverlay, lobbyRefresh, lobbyList;
 			var menuOverlay, menuButton, menuDefault, menuMultiplayer, inventoryButton, multiplayerButton, menuClose, menuCloseText, menuCloseSpan;
+			var multiplayerCheckbox, menuHost, menuHostId, menuHostButton, menuJoin, menuJoinId, menuJoinButton, joinButton;
 			var menuToggled = false;
 			var DungeonTiles = {};
 			///Interactions
@@ -369,13 +399,35 @@
 				menuCloseSpan = document.getElementById('menuCloseSpan');
 				multiplayerButton = document.getElementById('multiplayerButton');
 				inventoryButton = document.getElementById('inventoryButton');
+				joinButton = document.getElementById('joinButton');
+
+				joinButton.addEventListener('click', showJoin, false);
+
+				menuHost = document.getElementById('menuHost');
+				multiplayerCheckbox = document.getElementById('multiplayerCheckbox');
+				menuHostButton = document.getElementById('menuHostButton');
+
+				menuJoin = document.getElementById('menuJoin');
+				menuJoinId = document.getElementById('menuJoinId');
+				menuJoinButton = document.getElementById('menuJoinbutton');
+
+				//menuJoinButton.addEventListener('click', joinWorld, false);
+
+				menuHostButton.addEventListener('click', showHost, false);
+
+				multiplayerCheckbox.onchange = function() {
+					if(this.checked) {
+						activateMultiplayer();
+					} else {
+						deactivateMultiplayer();
+					}
+				}
+
+				multiplayerButton.addEventListener('click', showMultiplayer, false);
 
 				inventoryButton.addEventListener('click', prepInventory, false);
 				menuClose.addEventListener('click', toggleMenu, false);
 
-				$('#menuMultiplayer').click(function() {
-					showMultiplayer();
-				});
 				menuButton.addEventListener('click', toggleMenu, false);
 
 				//TILES
@@ -397,6 +449,8 @@
 				dungeon_wall_bottom = document.getElementById('wall_bottom');
 				dungeon_wall_right = document.getElementById('wall_right');
 				dungeon_wall_left = document.getElementById('wall_left');
+
+				chest = document.getElementById('chest');
 
 				DungeonTiles = {
 					tiled_floor: {
@@ -445,6 +499,9 @@
 						src: dungeon_out_bottom_right_corner
 					},
 
+					chest: {
+						src: chest
+					},
 
 					blank: {
 						src: blank
@@ -608,6 +665,43 @@
 
 
 			/* EVENT LISTENERS HERE ONLY */
+
+			function activateMultiplayer() {
+				document.getElementById('menuHostId').innerHTML = localData.id;
+				document.getElementById('menuHostId').style.color = "green";
+				socket.emit('openSwitch', true);
+			}
+
+			function deactivateMultiplayer() {
+				document.getElementById('menuHostId').innerHTML = "NOT ACTIVE";
+				document.getElementById('menuHostId').style.color = "red";
+				socket.emit('openSwitch', false);
+			}
+
+
+			function showJoin() {
+				menuMultiplayer.style.display = "none";
+				menuJoin.style.display = "block";
+				menuCloseText.innerHTML = "Back";
+				menuCloseSpan.className = "fa fa-arrow-left";
+
+				menuClose.removeEventListener('click', toggleMenu, false);
+				menuClose.addEventListener('click', showMenuDefault, false);
+
+			}
+
+			function showHost() {
+				menuHost.style.display = "block";
+				menuMultiplayer.style.display = "none !important";
+				document.getElementById('menuMultiplayer').style.display = "none";
+				console.log("MADE IT");
+				menuCloseText.innerHTML = "Back";
+				menuCloseSpan.className = "fa fa-arrow-left";
+
+				menuClose.removeEventListener('click', toggleMenu, false);
+				menuClose.addEventListener('click', showMenuDefault, false);
+			}
+
 			function prepInventory() {
 				$('#menuInventoryList').empty();
 				for(var i in localData.inventory) {
@@ -616,7 +710,7 @@
 						$('#menuInventoryList').append(newElem);
 					} else {
 						var newElem = $('<li class="emptyInventoryItem"></li>');
-						$('menuInventoryList').append(newElem);
+						$('#menuInventoryList').append(newElem);
 					}
 				}
 				showInventory();
@@ -649,6 +743,9 @@
 			function showMenuDefault() {
 				menuDefault.style.display = "block";
 				menuMultiplayer.style.display = "none";
+				menuHost.style.display = "none";
+				menuJoin.style.display = "none";
+				menuInventory.style.display = "none";
 				menuCloseText.innerHTML = "Close";
 				menuCloseSpan.className = "fa fa-close";
 
@@ -1331,7 +1428,7 @@
 				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
 				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
 				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
+				[9,9,9,9,9,9,10,9,9,15,9,10,9,9,9,9,9,9],
 				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
 				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
 				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
@@ -1668,6 +1765,11 @@
 
 											case 14:
 												var tile = DungeonTiles.out_bottom_left_corner.src;
+
+												break;
+
+											case 15:
+												var tile = DungeonTiles.chest.src;
 
 												break;
 
