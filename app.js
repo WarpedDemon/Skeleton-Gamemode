@@ -5,7 +5,7 @@
 //Start Db
 //var db = require('mysql-native').createTCPClient("localhost", "2000");
 var mysql = require("mysql");
-
+var PF = require('pathfinding');
 var connection = mysql.createConnection({
 		host: 'localhost',
 		user: 'root',
@@ -36,6 +36,8 @@ serv.listen(2000);
 console.log(colors.magenta("[Server]") + colors.white(": SERVER STARTED"));
 
 //timing Variables
+var dmInc = 1;
+
 var dt = 0;
 var now;
 var gameTime = 0;
@@ -70,7 +72,7 @@ var GLOBAL_SPELL_BOOK = {
 
 //objects
 var Player = function(id){
-
+	//Player Inventory Initialization.
 	var inventory = {
 		1: {
 			itemName: "none",
@@ -154,8 +156,65 @@ var Player = function(id){
 		}
 	}
 
+	var spellList = {
+		//Associative array, ordered by elementaly / mystical type.
+
+		//->Elemental<-//
+		ignis: {
+
+		},
+		aqua: {
+
+		},
+		terra: {
+
+		},
+		aer: {
+			1: {
+				//Roaring Thunder
+				name: "Rugiens Procella",
+				spell_id: "roaring_thunder",
+				manaCost: 100,
+				cost: 1000,
+				baseDamage: 20,
+				discovery_rate: 0.01,
+				gfxSrc: "client/img/gfx/abilities/roaring_thunder.png"
+			},
+			2: {
+				name: "Pulvis Minuta",
+				spell_id: "dust_mites",
+				manaCost: 45,
+				Cost: 450,
+				baseDamage: 8,
+				discovery_rate: 0.01,
+				gfxSrc: "client/img/gfx/abilities/dust_mites.png"
+			}
+		},
+
+		//->Other<-//
+		tenebrae: {
+			1: {
+				//Soul Passage
+				name: "Iter de Anima",
+				spell_id: "soul_passage",
+				manaCost: 15000,
+				baseDamage: 0,
+				discovery_rate: 0.0015,
+				gfxSrc: "client/img/gfx/abilities/soul_passage.png"
+			}
+		},
+		lux: {
+
+		},
+		other: {
+
+		}
+
+
+	};
+
 	var self = {
-		//
+		//Player Properties
 		logged: false,
 		health: 50,
 		maxHealth: 50,
@@ -165,7 +224,7 @@ var Player = function(id){
 		x: 48,
 		y: 48,
 		color: "#008000",
-		speed: 2.5,
+		speed: 5,
 		pressingUp: false,
 		pressingDown: false,
 		pressingLeft: false,
@@ -181,7 +240,9 @@ var Player = function(id){
 		lastTickUpdate: 0,
 		currentAction: "none",
 		currentWeaponDamage: "2",
-		inventory: inventory
+		inventory: inventory,
+		spellList: spellList,
+		selectedAbility: "none",
 	};
 	return self;
 };
@@ -215,26 +276,32 @@ var Ghost = function(id, x, y, vx, vy){
 
 var Knight = function(id, x, y, vx, vy){
 	var self = {
-		health: 2500,
-		maxHealth: 2500,
-		mana: 250,
-		maxMana: 250,
-		size: 12,
+		health: 15,
+		maxHealth: 15,
+		mana: 0,
+		maxMana: 0,
+		size: 32,
 		id: id,
 		x: x,
 		y: y,
-		color: "#D3D3D3",
+		color: "#a55108",
 		speed: 2.5,
 		vx: vx,
 		vy: vy,
 		cantMove: false,
 		ready: false,
+		dead: false,
 		status: "idle",
 		lastMove: 0,
 		moveTime: 0,
 		setMove: 0,
 		direction: "none",
-		availableDirections: []
+		availableDirections: [],
+		animTick: 0,
+		lastTickUpdate: 0,
+		sightRadius: 300,
+		chaseRadius: 300,
+		target: "none"
 	};
 	return self;
 }
@@ -245,7 +312,7 @@ var Rat = function(id, x, y, vx, vy){
 		maxHealth: 15,
 		mana: 0,
 		maxMana: 0,
-		size: 8,
+		size: 16,
 		id: id,
 		x: x,
 		y: y,
@@ -293,6 +360,39 @@ var Melee = function(x, y, hbx, hby, w, h, type, dir) {
 		type: type,
 		direction: dir,
 		lastTickUpdate: 0
+	};
+	return self;
+}
+
+var Ability_Dust_Mites = function(x, y, tx, ty, vx, vy, speed, ownerId) {
+	var self = {
+		x: x,
+		y: y,
+		tx: tx,
+		ty: ty,
+		vx: vx,
+		vy: vy,
+		speed: speed,
+		ownerId: ownerId,
+		r: 16,
+		animTick: 0,
+		lastTickUpdate: 0,
+		rotation: 0,
+		w: 64,
+		h: 64
+	};
+	return self;
+}
+
+var Ability_Soul_Passage = function(x, y, duration, type, ownerId, linkedId) {
+	var self = {
+		type: type,
+		x: x,
+		y: y,
+		duration: duration,
+		ownerId: ownerId,
+		linkedId: linkedId,
+		sigils: []
 	};
 	return self;
 }
@@ -400,6 +500,34 @@ io.sockets.on('connection', function(socket)
 		}
 	});
 
+	//ABILITY EVENTS//
+
+	socket.on('abilityChange', function(data) {
+		var player = PLAYER_LIST[socket.id];
+		console.log("Changing to " + data.ability)
+		player.selectedAbility = data.ability;
+		if(data.ability == "none") {
+			player.castingSpell = false;
+		} else {
+			player.castingSpell = true;
+		}
+	});
+	socket.on('castSpell', function(data) {
+		//console.log(data);
+		var castingPlayer = PLAYER_LIST[socket.id];
+		if(data.ability == "dust_mites") {
+			var dx = (data.x - castingPlayer.x);
+			var dy = (data.y - castingPlayer.y);
+			var mag = Math.sqrt((dx*dx)+(dy*dy));
+			var vx = (dx/mag) * 2;
+			var vy = (dy/mag) * 2;
+			var newDustMites = new Ability_Dust_Mites(castingPlayer.x-32, castingPlayer.y-32, data.x, data.y, vx, vy, 2, castingPlayer.id );
+			GLOBAL_WORLD_LIST[castingPlayer.worldId].abilities.dust_mites.push(newDustMites);
+			return;
+		}
+	});
+	//END ABILITY EVENTS//
+
 	socket.on('openSwitch', function(data) {
 		var world = GLOBAL_WORLD_LIST[socket.id];
 		world.open = data;
@@ -419,6 +547,13 @@ io.sockets.on('connection', function(socket)
 			},
 			map: data.map,
 			attacks: [],
+			abilities: {
+				//aer
+				dust_mites: [],
+				roaring_thunder: [],
+				//tenebrae
+				soul_passage: []
+			},
 			open: false
 		};
 		// server is 1
@@ -652,11 +787,19 @@ function checkHits(object, worldId, player) {
 	var world_npcs = GLOBAL_NPC_LIST[worldId];
 	for(var i in world_npcs.rats) {
 		var rat = world_npcs.rats[i];
-		if(boxCollides([rat.x, rat.y],[16, 16],[object.hbx, object.hby],[object.w, object.h])) {
+		if(boxCollides([rat.x-rat.size/2, rat.y-rat.size/2],[16, 16],[object.hbx, object.hby],[object.w, object.h])) {
 			//Hit rat with attack.
 			rat.health -= player.currentWeaponDamage;
 			console.log(rat.health);
 		} else {
+		}
+	}
+	for(var i in world_npcs.knights) {
+		var knight = world_npcs.knights[i];
+		if(boxCollides([knight.x, knight.y],[knight.size, knight.size],[object.hbx, object.hby],[object.w, object.h])) {
+			//Hit rat with attack.
+			knight.health -= player.currentWeaponDamage;
+			console.log(knight.health);
 		}
 	}
 }
@@ -973,6 +1116,426 @@ function updateGhosts(id) {
 	}
 }
 
+function updateKnights(id) {
+	var npcList = GLOBAL_NPC_LIST[id];
+	for(var i in npcList.knights) {
+		var knight = npcList.knights[i];
+		var timer = 0.15;
+
+		if(timer < dt - knight.lastTickUpdate) {
+			knight.lastTickUpdate = dt;
+			knight.animTick += 1;
+			if(knight.animTick > 2) {
+				knight.animTick = 0;
+			}
+		}
+
+		if(!knight.dead) {
+			if(knight.status == "idle") {
+				//Set ghost to idling for a random amount of time.
+				knight.status = "idling";
+				var random = Math.floor(Math.random()*5);
+				knight.moveTime = random;
+				knight.setMove = dt;
+			}
+
+			if(knight.status == "idling") {
+				checkNearbyPlayers(knight, id);
+				if(knight.moveTime < (dt-knight.setMove)) {
+					//Ghost has surpassed wait time for next Movement
+					//Must decide on new pathing.
+					var direction = determineAvailableDirections(knight, id);
+					//var direction = ["up", "down", "left", "right"];
+					var randomDirection = Math.ceil(Math.random()*direction.length) - 1;
+					var randomTime = Math.random()*4;
+
+					if(direction[randomDirection] == "up") {
+						//Go up
+						knight.vx = 0;
+						knight.vy = -1;
+						knight.status = "moving";
+						knight.direction = "up";
+					} else if(direction[randomDirection] == "down") {
+						//Go down
+						knight.vx = 0;
+						knight.vy = 1;
+						knight.status = "moving";
+						knight.direction = "down";
+					} else if(direction[randomDirection] == "right") {
+						//Go right
+						knight.vx = 1;
+						knight.vy = 0;
+						knight.status = "moving";
+						knight.direction = "right";
+					} else if(direction[randomDirection] == "left") {
+						//Go left
+						knight.vx = -1;
+						knight.vy = 0;
+						knight.status = "moving";
+						knight.direction = "left";
+					}
+					knight.moveTime = randomTime;
+					knight.setMove = dt;
+				}
+			}
+
+			if(knight.status == "moving") {
+				checkNearbyPlayers(knight, id);
+				var left = 2;
+				var right = 3;
+				var up = 0;
+				var down = 1;
+				var tempTile = determineAdjacentTiles(knight, id);
+				if(tempTile[knight.direction] !== 9){
+					knight.direction = lastIdle(knight);
+					knight.status = "idle";
+				}
+
+
+
+
+				if(knight.moveTime > (dt-knight.setMove)) {
+					//Ghost has surpassed alloted movement time.
+					knight.x += knight.vx * knight.speed;
+					knight.y += knight.vy *knight.speed;
+
+
+
+
+					//FINAL CHECK, ANY OTHER UPDATES MUST GO ABOVE.
+
+					if(knight.x < 32 || knight.x + knight.size > (GLOBAL_WORLD_LIST[id].roomData.roomLengthX*18*32)-32-knight.size || knight.y < 32+knight.size || knight.y > (GLOBAL_WORLD_LIST[id].roomData.roomLengthY*18*32)-32-knight.size ) {
+						knight.x -= knight.vx * knight.speed;
+						knight.y -= knight.vy * knight.speed;
+						knight.direction = lastIdle(knight);
+						knight.status = "idle";
+					}
+
+				} else {
+					knight.status = "idle";
+					knight.direction = lastIdle(knight);
+				}
+			}
+
+			if(knight.status == "choose_chase") {
+				var outerIndex = findOuterIndex(knight, id);
+				var knightSegment = GLOBAL_WORLD_LIST[id].map[outerIndex.outerY][outerIndex.outerX].segment;
+				var walkabilityMatrix = knightSegment;
+				//console.log(knightSegment);
+				var grid = new PF.Grid(18,18);
+				for(var k in knightSegment) {
+					for(var l in knightSegment[k]) {
+						var tile = knightSegment[k][l];
+						if(tile == 09) {
+							grid.setWalkableAt(l,k,true);
+						} else {
+							grid.setWalkableAt(l,k,false);
+						}
+					}
+				}
+				var playerLoc = findInnerIndex(PLAYER_LIST[knight.target], id);
+				var knightLoc = findInnerIndex(knight, id);
+				var finder = new PF.AStarFinder({
+					allowDiagonal: PF.DiagonalMovement.OnlyWhenNoObstacles
+				});
+				var path = finder.findPath(knightLoc.innerX, knightLoc.innerY, playerLoc.innerX, playerLoc.innerY, grid);
+				//console.log(path);
+				knight.currentPath = path;
+				if(knight.currentPath.length !==0 ){
+					knight.status = "chasing";
+					//console.log(knight.currentPath);
+					//console.log("It exists, get better js: " + knight.currentPath[1]);
+					if(knight.currentPath.length <= 1) { knight.status = "attacking"; return; }
+					var vectors = newVectorFromPathway(knight.currentPath[1][0], knight.currentPath[1][1], knightLoc.innerX, knightLoc.innerY);
+					//knight.direction = getDirectionFromVelocity(vectors.vx, vectors.vy);
+					if(vectors.vx > 1) { vectors.vx = 1; }
+					if(vectors.vy > 1) { vectors.vy = 1;}
+					if(vectors.vx < -1) { vectors.vx = -1; }
+					if(vectors.vy < -1) { vectors.vy = -1;}
+					knight.vx = vectors.vx * knight.speed;
+					knight.vy = vectors.vy * knight.speed;
+					knight.direction = getDirectionFromVelocity(knight.vx/knight.speed, knight.vy/knight.speed);
+
+				}
+
+			}
+
+
+			if(knight.status == "chasing") {
+				//Chasing in given direction.
+				var target = PLAYER_LIST[knight.target];
+				var targetLoc = [target.x, target.y];
+				var targetHb = [target.size, target.size];
+				var knightLocOther = [knight.x - knight.chaseRadius/2, knight.y - knight.chaseRadius/2];
+				var knightChaseHb = [knight.chaseRadius, knight.chaseRadius];
+
+				var knightLoc = findInnerIndex(knight, id);
+				var playerLoc = findInnerIndex(target, id);
+				if(boxCollides(targetLoc, targetHb, knightLocOther, knightChaseHb)) {
+					if(playerLoc.innerX !== knight.currentPath[knight.currentPath.length-1][0] || playerLoc.innerY !== knight.currentPath[knight.currentPath.length-1][1]) {
+						knight.status = "choose_chase";
+					}
+					//console.log("Current Location: " + knightLoc.innerX + "," + knightLoc.innerY);
+					//console.log("Pler Location: " + PLAYER_LIST[knight.target]);
+					//console.log("To Get to: " + knight.currentPath[1][0]);
+					//console.log(knight.currentPath);
+					if(knight.currentPath.length == 0) { knight.status = "idle"; }
+					if(knightLoc.innerX !== knight.currentPath[1][0] || knightLoc.innerY !== knight.currentPath[1][1]) {
+						//console.log(knight.vx, knight.vy);
+						knight.x -= knight.vx;
+						knight.y -= knight.vy;
+						//console.log(knight.currentPath);
+					} else {
+						//Assign new Path vector
+						if(knight.currentPath.length) {
+							knight.currentPath.splice(0,1);
+							var nextPosX;
+							var nextPosY;
+							var run = false;
+							for(var a in knight.currentPath) {
+								if(knight.currentPath[a][0] !== knightLoc.innerX && knightLoc.innerY !== knight.currentPath[a][1]) {
+									run = true;
+									nextPosX = knight.currentPath[a][0];
+									nextPosY = knight.currentPath[a][1];
+									break;
+								}
+							}
+							if(run == false) {
+								knight.status = "attacking";
+							}
+
+							if(nextPosX && nextPosY){
+								var vectors = newVectorFromPathway(nextPosX, nextPosY, knightLoc.innerX, knightLoc.innerY);
+								//knight.direction = getDirectionFromVelocity(vectors.vx, vectors.vy);
+								//console.log(knight.direction);
+								if(vectors.vx > 1) { vectors.vx = 1; }
+								if(vectors.vy > 1) { vectors.vy = 1;}
+								if(vectors.vx < -1) { vectors.vx = -1; }
+								if(vectors.vy < -1) { vectors.vy = -1;}
+								knight.vx = vectors.vx * knight.speed;
+								knight.vy = vectors.vy * knight.speed;
+								knight.direction = getDirectionFromVelocity(knight.vx/knight.speed, knight.vy/knight.speed);
+
+							}
+
+						} else {
+							knight.status = "attacking";
+						}
+					}
+				} else {
+					knight.status = "idle";
+				}
+			}
+
+			if(knight.status == "attacking") {
+				var knightLoc = findInnerIndex(knight,id);
+				var playerLoc = findInnerIndex(PLAYER_LIST[knight.target], id);
+				//console.log("Knight is attacking!");
+				if(knightLoc.innerX !== playerLoc.innerX || playerLoc.innerY !== knightLoc.innerY ) {
+					knight.status = "choose_chase";
+				}
+			}
+			if(knight.health <= 0) {
+				//console.log("HERE");
+				knight.health = 0;
+				knight.dead = true;
+			}
+		}
+	}
+}
+function getDirectionFromVelocity(vx,vy) {
+	console.log(vx, vy);
+	if(vx == 0) {
+		if(vy == -1) {
+			return "down";
+		} else if (vy == 1) {
+			return "up";
+		}
+	} else if(vy == 0) {
+		if(vx == 1) {
+			return "left";
+		} else if(vx == -1) {
+			return "right";
+		}
+	}
+
+	if(vx == 1) {
+		if(vy == -1) {
+			return "right";
+		}
+	}
+
+	if(vx > 0 && vy > 0) { return "up"; }
+	if(vx < 0 && vy > 0) { return "up"; }
+	if(vx < 0 && vy < 0) { return "down"; }
+	if(vx > 0 && vy < 0) { return "down"; }
+
+	return "down";
+
+}
+function newVectorFromPathway(posX, posY, curX, curY) {
+	var newVx = curX - posX;
+	var newVy = curY - posY;
+	return {vx: newVx, vy: newVy};
+}
+
+function lastIdle(entity) {
+	if(entity.direction == "right") {
+		return "idle_right";
+	} else if(entity.direction == "left") {
+		return "idle_left";
+	} else if(entity.direction == "down") {
+		return "none";
+	} else if(entity.direction == "up") {
+		return "idle_up";
+	}
+}
+function checkNearbyPlayers(entity, id) {
+	var world = GLOBAL_WORLD_LIST[id];
+	for(var i in world.roomData.playerlist) {
+		var player = PLAYER_LIST[world.roomData.playerlist[i]];
+		var plyrLoc = [player.x, player.y];
+		var plyrHb = [64,64];
+		var entityLoc = [entity.x-entity.sightRadius/2,entity.y-entity.sightRadius/2];
+		var entitySightHb = [entity.sightRadius,entity.sightRadius];
+		if(boxCollides(plyrLoc, plyrHb, entityLoc, entitySightHb)) {
+			entity.target = player.id;
+			entity.status = "choose_chase";
+		}
+	}
+}
+function decideChaseDirection(entity, target) {
+//console.log(entity.x, entity.y, target.x, target.y);
+	var dx = (target.x - entity.x);
+	var dy = (target.y - entity.y);
+	var mag = Math.sqrt((dx*dx)+(dy*dy));
+	var vx = (dx/mag);
+	var vy = (dy/mag);
+	var unitVector = {x: vx, y: vy};
+//console.log("Unit X: " + unitVector.x + "Unit Y: " + unitVector.y);
+	if(unitVector.x < 0) {
+		if(unitVector.y < 0) {
+			//Top Left
+			return "top_left";
+		} else if(unitVector.y > 0) {
+			//Bottom Left
+			return "bottom_left";
+		}
+	} else if(unitVector.x > 0) {
+		if(unitVector.y < 0) {
+			//Top Right
+			return "top_right";
+		} else if(unitVector.y > 0) {
+			//Bottom right
+			return "bottom_right";
+		}
+	}
+
+	if(unitVector.x == 0) {
+
+		if(unitVector.y == 1) {
+			return "down";
+		} else if(unitVector.y == -1) {
+			return "up";
+		}
+	}
+
+	if(unitVector.y == 0) {
+		if(unitVector.x == 1) {
+			return "right";
+		} else if(unitVector.x == -1) {
+			return "left";
+		} else if(unitVector.x == 0) {
+			return "down";
+		}
+	}
+	if(unitVector.x == 1 && unitVector.y == 1) { return "bottom_right"; }
+	if(unitVector.x == -1 && unitVector.y == -1) { return "top_left"; }
+	if(unitVector.x == 1 && unitVector.y == -1) { return "top_right"; }
+	if(unitVector.x == -1 && unitVector.y == 1) { return "bottom_left"; }
+}
+
+//ABILITY UPDATES
+
+function updateDustMites(i) {
+	var world = GLOBAL_WORLD_LIST[i];
+
+
+
+	for(var j in world.abilities) {
+		for(var k in world.abilities[j]) {
+			var dustMite = world.abilities[j][k];
+			var testX = (dustMite.x/18)/32;
+			var testY = (dustMite.y/18)/32;
+			var xOuterIndex = Math.floor(testX);
+			var yOuterIndex = Math.floor(testY);
+
+			var timer = 0.15;
+
+			if(timer < dt - dustMite.lastTickUpdate) {
+				dustMite.lastTickUpdate = dt;
+
+				if(dustMite.animTick == 6) {
+					dmInc = -1;
+				} else if(dustMite.animTick == 0) {
+					dmInc = 1
+				}
+
+				dustMite.animTick += dmInc;
+			}
+
+			dustMite.rotation += 0.1;
+			dustMite.x += dustMite.vx;
+			dustMite.y += dustMite.vy;
+			//console.log(dustMite);
+
+			if(boxCollides([dustMite.x+(dustMite.w/2)-10, dustMite.y+(dustMite.h/2)-10],[10,10],[dustMite.tx-10, dustMite.ty-10], [10,10])) {
+				world.abilities[j].splice(k, 1);
+			}
+
+			for(var v in world.map) {
+				for(var b in world.map[v]) {
+					var segment = world.map[v][b].segment;
+						for(var n in segment) {
+							for(var m in segment[n]) {
+								if(segment[n][m] !== 09) {
+									var posX = (b*(18*32)) + m*32;
+									var posY = (v*(18*32)) + n*32;
+									if(boxCollides([posX, posY],[32,32],[dustMite.x+5,dustMite.y+5], [dustMite.w-10, dustMite.h-10])) {
+										world.abilities[j].splice(k,1);
+										console.log("HIT!")
+									}
+								}
+							}
+						}
+				}
+			}
+		}
+	}
+}
+
+
+
+//END ABILITY UPDATES
+function findOuterIndex(entity, id) {
+	//var world = GLOBAL_WORLD_LIST[id];
+	var testX = (entity.x/18)/32;
+	var testY = (entity.y/18)/32;
+	var xOuterIndex = Math.floor(testX);
+	var yOuterIndex = Math.floor(testY);
+	return {outerX: xOuterIndex, outerY: yOuterIndex};
+}
+
+function findInnerIndex(entity, id) {
+	var testX = (entity.x/18)/32;
+	var testY = (entity.y/18)/32;
+	var xOuterIndex = Math.floor(testX);
+	var yOuterIndex = Math.floor(testY);
+	var newOffsetx = Math.floor((testX - xOuterIndex) * 18);
+	var newOffsety = Math.floor((testY - yOuterIndex) * 18);
+
+	return {innerX: newOffsetx, innerY: newOffsety};
+}
 
 function updatePosition(player)
 {
@@ -1402,7 +1965,8 @@ setInterval(function()
 					castingSpell: player.castingSpell,
 					spell: player.spell,
 					direction: player.direction,
-					animTick: player.animTick
+					animTick: player.animTick,
+					selectedAbility: player.selectedAbility
 				});
 			}
 		}
@@ -1413,7 +1977,7 @@ setInterval(function()
 			if(player) {
 				var socketId = world.roomData.playerlist[j];
 				var socket = SOCKET_LIST[socketId];
-				socket.emit("newNPCList", {ghosts: GLOBAL_NPC_LIST[i].ghosts, rats: GLOBAL_NPC_LIST[i].rats, map: GLOBAL_WORLD_LIST[i].map, shopkeeper: GLOBAL_NPC_LIST[i].ShopKeeper, knights: GLOBAL_NPC_LIST[i].knights, attacks: GLOBAL_WORLD_LIST[i].attacks});
+				socket.emit("newNPCList", {ghosts: GLOBAL_NPC_LIST[i].ghosts, rats: GLOBAL_NPC_LIST[i].rats, map: GLOBAL_WORLD_LIST[i].map, shopkeeper: GLOBAL_NPC_LIST[i].ShopKeeper, knights: GLOBAL_NPC_LIST[i].knights, attacks: GLOBAL_WORLD_LIST[i].attacks, abilities: GLOBAL_WORLD_LIST[i].abilities});
 				//socket.emit("newPosition", {player: PLAYER_LIST[socket]});
 				//console.log("Player: " + socketId);
 				socket.emit("newPositions", {players: player_pack});
@@ -1422,9 +1986,14 @@ setInterval(function()
 	}
 
 	for(var i in GLOBAL_NPC_LIST) {
-		determineTile(GLOBAL_NPC_LIST[i].rats[0], i);
+
+		//ABILITIES
+		updateDustMites(i);
+
+		//NPCS
 		updateGhosts(i);
 		updateRats(i);
+		updateKnights(i);
 	}
 
 	for(var i in GLOBAL_WORLD_LIST) {
@@ -1435,6 +2004,7 @@ setInterval(function()
 	{
 		var socket = SOCKET_LIST[i];
 		//Send Data here
+		//console.log(PLAYER_LIST[i].selectedAbility)
 		socket.emit("newPosition", {player: PLAYER_LIST[i], dt: dt});
 	}
 

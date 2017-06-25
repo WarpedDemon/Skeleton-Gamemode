@@ -1,12 +1,25 @@
 <html>
 	<head>
 		<!--<audio id="backgroundMusic" src="/client/music/backgroundMusic.mp3"></audio>!-->
+		<!-- assets -->
 		<link rel="stylesheet" type="text/css" href="/client/css/index.css"/>
 		<link rel="stylesheet" type="text/css" href="/client/css/font-awesome.min.css" />
 		<title> Skeleton Gamemode </title>
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 		<script src="client/js/anime.min.js"></script>
+		<div id="Hotbar">
+			<ul id="HotbarList">
+
+			</ul>
+
+		</div>
+		<!--knightAttack1-->
+		<img src="client/img/Gui/Hotbar.png" id="HotbarImg" style="display: block;"/>
+
 		<img src="client/img/gameTiles/middleRoomPillar.png" id="internal_wall" style="display: none;"/>
+
+		<img src="client/img/gameTiles/wallPillar1.png" id="room_pillar1" style="display: none;"/>
+		<img src="client/img/gameTiles/wallPillar2.png" id="room_pillar2" style="display: none;"/>
 
 		<img src="client/img/gameTiles/blank.png" id="blank" style="display: none;"/>
 
@@ -71,7 +84,6 @@
 		<img src="client/img/Character/down3.png" id="player_down3" style="display: none;"/>
 		<img src="client/img/Character/down4.png" id="player_down4" style="display: none;"/>
 
-
 		<img src="client/img/Character/attack_up1.png" id="player_attack_up1" style="display: none;" />
 		<img src="client/img/Character/attack_up2.png" id="player_attack_up2" style="display: none;" />
 		<img src="client/img/Character/attack_up3.png" id="player_attack_up3" style="display: none;" />
@@ -92,13 +104,45 @@
 		<img src="client/img/Character/attack_down3.png" id="player_attack_down3" style="display: none;" />
 		<img src="client/img/Character/attack_down4.png" id="player_attack_down4" style="display: none;" />
 
+		<!--Knights-->
+		<img src="client/img/Character/knightRight1.png" id="knightRight1" style="display:none;" />
+		<img src="client/img/Character/knightRight2.png" id="knightRight2" style="display:none;" />
+		<img src="client/img/Character/knightRight3.png" id="knightRight3" style="display:none;" />
+		<img src="client/img/Character/knightLeft1.png" id="knightLeft1" style="display:none;" />
+		<img src="client/img/Character/knightLeft2.png" id="knightLeft2" style="display:none;" />
+		<img src="client/img/Character/knightLeft3.png" id="knightLeft3" style="display:none;" />
+		<img src="client/img/Character/knightUp1.png" id="knightUp1" style="display:none;" />
+		<img src="client/img/Character/knightUp2.png" id="knightUp2" style="display:none;" />
+		<img src="client/img/Character/knightUp3.png" id="knightUp3" style="display:none;" />
+		<img src="client/img/Character/knightDown1.png" id="knightDown1" style="display:none;" />
+		<img src="client/img/Character/knightDown2.png" id="knightDown2" style="display:none;" />
+		<img src="client/img/Character/knightDown3.png" id="knightDown3" style="display:none;" />
+
+		<!--Knights attacksz-->
+		<img src="client/img/Abilities/knightAttack/knightAttack1.png" id="knightAttack1" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack2.png" id="knightAttack2" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack3.png" id="knightAttack3" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack4.png" id="knightAttack4" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack5.png" id="knightAttack5" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack6.png" id="knightAttack6" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack7.png" id="knightAttack7" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack8.png" id="knightAttack8" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack9.png" id="knightAttack9" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack10.png" id="knightAttack10" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack11.png" id="knightAttack11" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack12.png" id="knightAttack12" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack13.png" id="knightAttack13" style="display: none;"/>
+		<img src="client/img/Abilities/knightAttack/knightAttack14.png" id="knightAttack14" style="display: none;"/>
+
+		<img src="client/img/Abilities/knightAttack/knightAttackStack.png" id="knightAttackStack" style="display: none;"/>
+
+		<img src="client/img/Abilities/knightAttack/knightAttackExecute.png" id="knightAttackExecute" style="display: none;"/>
+
+
 		<img src="client/img/Character/ratDown.png" id="rat_down" style="display: none;"/>
 		<img src="client/img/Character/ratUp.png" id="rat_up" style="display: none;"/>
 		<img src="client/img/Character/ratLeft.png" id="rat_left" style="display: none;"/>
 		<img src="client/img/Character/ratRight.png" id="rat_right" style="display: none;"/>
-
-
-
 
 		<img src="client/img/Abilities/Melee_Default/Melee_Default_Right1.png" id="melee_default_Right1" style="display: none;"/>
 		<img src="client/img/Abilities/Melee_Default/Melee_Default_Right2.png" id="melee_default_Right2" style="display: none;"/>
@@ -131,11 +175,20 @@
 		<img src="client/img/Abilities/Melee_Default/Melee_Default_Down5.png" id="melee_default_Down5" style="display: none;"/>
 		<img src="client/img/Abilities/Melee_Default/Melee_Default_Down6.png" id="melee_default_Down6" style="display: none;"/>
 
+		<!--ABILITIES-->
+		<img src="client/img/Abilities/dust_mites/dust_mites_1.png" id="dust_mites_1" style="display: none;" />
+		<img src="client/img/Abilities/dust_mites/dust_mites_2.png" id="dust_mites_2" style="display: none;" />
+		<img src="client/img/Abilities/dust_mites/dust_mites_3.png" id="dust_mites_3" style="display: none;" />
+		<img src="client/img/Abilities/dust_mites/dust_mites_4.png" id="dust_mites_4" style="display: none;" />
+		<img src="client/img/Abilities/dust_mites/dust_mites_5.png" id="dust_mites_5" style="display: none;" />
+		<img src="client/img/Abilities/dust_mites/dust_mites_6.png" id="dust_mites_6" style="display: none;" />
+		<img src="client/img/Abilities/dust_mites/dust_mites_7.png" id="dust_mites_7" style="display: none;" />
 
+		<script src="client/js/PathFinding.js"></script>
 		<script src="client/js/jquery.min.js"> </script>
 	</head>
 
-
+ 	<!-- overflays e.g. modals or menu -->
 	<body>
 		<div id="menuOverlay">
 			<div id="menuClose"><span id="menuCloseSpan" class="fa fa-times"></span> <span id="menuCloseText">Close</span></div>
@@ -145,6 +198,16 @@
 				<ul class="menuOptions">
 					<li id="inventoryButton"><img src="client/img/gfx/inventory.png" width="64" height="64" /><p>Inventory</p></li>
 					<li id="multiplayerButton"><img src="client/img/gfx/multiplayer.png" width="64" height="64" /><p>Multiplayer</p></li>
+					<li id="spellBookButton"><img src="client/img/gfx/book.png" width="64" height="64" /><p>Spell Book</p></li>
+				</ul>
+			</div>
+
+
+			<div id="menuSpellBook">
+				<h1> Spell Book </h1>
+				<hr/>
+				<ul id="menuSpellBookList">
+					<!--Automatically Generated Items here-->
 				</ul>
 			</div>
 
@@ -269,9 +332,10 @@
 		<div id="canvasBacking">
 			<canvas id="ctx" width="1000" height="1000" style="border: 1px solid #000000;"></canvas>
 		</div>
-		<script>//run client.js
+		<script>
+			//run client.js
 			//wall resources
-
+			//global variables
 			var testTurn = 0;
 			var offset = (Math.PI/180)*90;
 			var interval;
@@ -291,18 +355,26 @@
 			var localId;
 			var localData;
 
-			var lockW = lockA = lockS = lockD = false;
+			var mouseX, mouseY;
+
+			var lockW = lockA = lockS = lockD = false; //here because networking aka matt is responcible for this.
 
 			var local_MAP_ARRAY;
 
 			var gameDimensionX;
 			var gameDimensionY;
+//Gui
+
+			var hotbar, hotbarImg;
+
+			var hovering = ["none", 0];
 
 			//TILES
 
 			var dungeon_tiled_floor, blank, dungeon_top_left_corner, dungeon_top_right_corner, dungeon_bottom_left,
 					dungeon_out_top_left_corner, dungeon_out_top_right_corner, dungeon_out_bottom_left_corner, dungeon_out_bottom_right_corner,
-					dungeon_bottom_right, dungeon_wall_top, dungeon_wall_bottom, dungeon_wall_right, dungeon_wall_left, internal_wall, chest;
+					dungeon_bottom_right, dungeon_wall_top, dungeon_wall_bottom, dungeon_wall_right, dungeon_wall_left, dungeon_internal_wall, dungeon_room_pillar1, dungeon_room_pillar2, dungeon_chest;
+
 
 
 			var ghost_1, ghost_2, ghost_3, ghost_4, ghost_5, ghost_6, ghost_7, ghost_8, ghost_9;
@@ -313,6 +385,12 @@
 					melee_default_up1, melee_default_up2, melee_default_up3, melee_default_up4, melee_default_up5, melee_default_up6,
 					melee_default_down1, melee_default_down2, melee_default_down3, melee_default_down4, melee_default_down5, melee_default_down6;
 			var melee_animations;
+
+			//Ability Sprite Variable Allocations.
+			var dust_mites_1, dust_mites_2, dust_mites_3, dust_mites_4, dust_mites_5, dust_mites_6, dust_mites_7;
+			var AbilityAnims = {
+				dust_mites: []
+			}
 
 			//Player Sprite Variable Allocations.
 			var player_idle1, player_ide2, player_idle3;
@@ -327,24 +405,50 @@
 					player_attack_down1, player_attack_down2, player_attack_down3, player_attack_down4;
 			var player_run_left1, player_run_left2, player_run_left3, player_run_left4, player_run_left5, player_run_left6;
 			var player_animations;
-
+			//knights
+			var knightDown1,knightDown2,knightDown3,knightUp1,knightUp2,knightUp3,knightLeft1,knightLeft2,knightLeft3,knightRight1,knightRight2,knightRight3;
+			var knightAttack1,knightAttack2,knightAttack3,knightAttack4,knightAttack5,knightAttack6,knightAttack7,knightAttack8,knightAttack9,knightAttack10,
+					knightAttack11, knightAttack12,knightAttack13,knightAttack14,knightAttackStack,knightAttackExecute;
+			var knightAnims = {};
+			//Rats
 			var rat_up, rat_down, rat_left, rat_right;
 			var ratAnims = {};
 
 			var local_KNIGHT_ARRAY = [];
 			var local_GHOST_ARRAY = [];
-			var local_RAT_ARRAY = [];
+			var local_RAT_ARRAY = [];		//number of an object
 			var local_ATTACK_ARRAY = [];
+			var local_ABILITIES_ARRAY = [];
 			var local_PLAYER_LIST = [];
+
 			var loginButton, registerSwitchButton, loginOverlay, username_input, password_input;
 			var lobbyOverlay, lobbyRefresh, lobbyList;
-			var menuOverlay, menuButton, menuDefault, menuMultiplayer, inventoryButton, multiplayerButton, menuClose, menuCloseText, menuCloseSpan;
-			var multiplayerCheckbox, menuHost, menuHostId, menuHostButton, menuJoin, menuJoinId, menuJoinButton, joinButton;
+			//menus
+			var menuOverlay, menuButton, menuDefault, menuMultiplayer, inventoryButton, multiplayerButton, menuClose, menuCloseText, menuCloseSpan, menuSpellBookList;
+			var multiplayerCheckbox, menuHost, menuHostId, menuHostButton, menuJoin, menuJoinId, menuJoinButton, joinButton, spellBookButton, menuSpellBook;
+
 			var menuToggled = false;
 			var DungeonTiles = {};
 			///Interactions
 			var shopOverlay;
 			var displayingShop = false;
+
+			var Hovers = {
+				//aer
+				roaring_thunder: {
+					type: "radial",
+					r: 16
+				},
+				dust_mites: {
+					type: "radial",
+					r: 16
+				},
+				//tenebrae
+				soul_passage: {
+					type: "radial",
+					r: 32
+				}
+			};
 
 			var shopSpellList = {
 				manaBolt: {
@@ -363,12 +467,37 @@
 					manaCost: 10
 				}
 			}
-
+			canvas.addEventListener('mousemove', onMouseMove, false);
 			var interacting = {
-				ShopKeeper: false
+				ShopKeeper: false //events overlay
+			}
+
+			function onMouseMove(e) {
+				var rect = canvas.getBoundingClientRect();
+
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+				console.log(mouseX + localData.x - (WIDTH/2), mouseY + localData.y - (HEIGHT/2))
+				hovering = ["none", 0];
+				for(var i in local_RAT_ARRAY) {
+					var rat = local_RAT_ARRAY[i];
+					if(boxCollides([mouseX - localData.x + (WIDTH/2) - 5,mouseY - localData.y + (HEIGHT/2) - 5],[10,10],[rat.x-rat.size/2,rat.y-rat.size/2],[rat.size,rat.size])) {
+						hovering = ["rat",i];
+						console.log("now hovering!");
+					}
+				}
+
+
+
 			}
 
 			function start() {
+				//Gui
+				hotbar = document.getElementById("Hotbar");
+				hotbarImg = document.getElementById('HotbarImg');
+				hotbarImg.style.display = "none";
+
+				//starts all of the assets
 				shopOverlay = document.getElementById("shopOverlay");
 				console.log("SET SHOP OVERLAY");
 
@@ -400,8 +529,13 @@
 				multiplayerButton = document.getElementById('multiplayerButton');
 				inventoryButton = document.getElementById('inventoryButton');
 				joinButton = document.getElementById('joinButton');
+				spellBookButton = document.getElementById('spellBookButton');
+        menuSpellBook = document.getElementById('menuSpellBook');
+				menuSpellBookList = document.getElementById('menuSpellBookList');
 
 				joinButton.addEventListener('click', showJoin, false);
+
+				spellBookButton.addEventListener('click', showSpells, false);
 
 				menuHost = document.getElementById('menuHost');
 				multiplayerCheckbox = document.getElementById('multiplayerCheckbox');
@@ -432,6 +566,10 @@
 
 				//TILES
 				dungeon_internal_wall = document.getElementById('internal_wall');
+
+				dungeon_room_pillar1 = document.getElementById('room_pillar1');
+				dungeon_room_pillar2 = document.getElementById('room_pillar2');
+
 				dungeon_tiled_floor = document.getElementById('tiled_floor');
 				blank = document.getElementById('blank');
 
@@ -459,7 +597,12 @@
 					internal_wall: {
 						src: dungeon_internal_wall
 					},
-
+					room_pillar1: {
+						src: dungeon_room_pillar1
+					},
+					room_pillar2: {
+						src: dungeon_room_pillar2
+					},
 					wall_top: {
 						src: dungeon_wall_top
 					},
@@ -500,7 +643,7 @@
 					},
 
 					chest: {
-						src: chest
+						src: dungeon_chest
 					},
 
 					blank: {
@@ -602,13 +745,52 @@
 				melee_default_down5 = document.getElementById('melee_default_Down5');
 				melee_default_down6 = document.getElementById('melee_default_Down6');
 
+				//Knight attacks
+				knightAttack1 = document.getElementById('knightAttack1');
+				knightAttack2 = document.getElementById('knightAttack2');
+				knightAttack3 = document.getElementById('knightAttack3');
+				knightAttack4 = document.getElementById('knightAttack4');
+				knightAttack5 = document.getElementById('knightAttack5');
+				knightAttack6 = document.getElementById('knightAttack6');
+				knightAttack7 = document.getElementById('knightAttack7');
+				knightAttack8 = document.getElementById('knightAttack8');
+				knightAttack9 = document.getElementById('knightAttack9');
+				knightAttack10 = document.getElementById('knightAttack10');
+				knightAttack11 = document.getElementById('knightAttack11');
+				knightAttack12 = document.getElementById('knightAttack12');
+				knightAttack13 = document.getElementById('knightAttack13');
+				knightAttack14 = document.getElementById('knightAttack14');
+				knightAttackStack = document.getElementById('knightAttackStack');
+				knightAttackExecute = document.getElementById('knightAttackExecute');
 
+				//abilities
+				dust_mites_1 = document.getElementById('dust_mites_1');
+				dust_mites_2 = document.getElementById('dust_mites_2');
+				dust_mites_3 = document.getElementById('dust_mites_3');
+				dust_mites_4 = document.getElementById('dust_mites_4');
+				dust_mites_5 = document.getElementById('dust_mites_5');
+				dust_mites_6 = document.getElementById('dust_mites_6');
+				dust_mites_7 = document.getElementById('dust_mites_7');
+
+				AbilityAnims.dust_mites = [dust_mites_1, dust_mites_2, dust_mites_3, dust_mites_4, dust_mites_5, dust_mites_6, dust_mites_7];
+
+				knightDown1 = document.getElementById('knightDown1');
+				knightDown2 = document.getElementById('knightDown2');
+				knightDown3 = document.getElementById('knightDown3');
+				knightUp1 = document.getElementById('knightUp1');
+				knightUp2 = document.getElementById('knightUp2');
+				knightUp3 = document.getElementById('knightUp3');
+				knightLeft1 = document.getElementById('knightLeft1');
+				knightLeft2 = document.getElementById('knightLeft2');
+				knightLeft3 = document.getElementById('knightLeft3');
+				knightRight1 = document.getElementById('knightRight1');
+				knightRight2 = document.getElementById('knightRight2');
+				knightRight3 = document.getElementById('knightRight3');
 
 				rat_down = document.getElementById('rat_down');
 				rat_up = document.getElementById('rat_up');
 				rat_left = document.getElementById('rat_left');
 				rat_right = document.getElementById('rat_right');
-
 				ghost_1 = document.getElementById('ghost_idle1');
 				ghost_2 = document.getElementById('ghost_idle2');
 				ghost_3 = document.getElementById('ghost_idle3');
@@ -618,6 +800,17 @@
 				ghost_7 = document.getElementById('ghost_idle7');
 				ghost_8 = document.getElementById('ghost_idle8');
 				ghost_9 = document.getElementById('ghost_idle9');
+
+				knightAnims = {
+					down: [knightDown1, knightDown2, knightDown3],
+					up: [knightUp1, knightUp2, knightUp3],
+					left: [knightLeft1, knightLeft2, knightLeft3],
+					right: [knightRight1, knightRight2, knightRight3],
+					none: [knightDown1, knightDown1, knightDown1],
+					idle_up: [knightUp1, knightUp1, knightUp1],
+					idle_left: [knightLeft1, knightLeft1, knightLeft1],
+					idle_right: [knightRight1, knightRight1, knightRight1]
+				};
 
 				ratAnims = {
 					up: rat_up,
@@ -657,6 +850,12 @@
 					}
 				}
 
+				knight_attack_animations = {
+					attack: [knightAttack1,knightAttack2,knightAttack3,knightAttack4,knightAttack5,knightAttack6,knightAttack7,knightAttack8,knightAttack9,knightAttack10,knightAttack11,knightAttack12,knightAttack13,knightAttack14],
+					stack: knightAttackStack,
+					execute: knightAttackExecute
+				}
+
 				interval = setInterval(test, 500);
 
 
@@ -670,6 +869,60 @@
 				document.getElementById('menuHostId').innerHTML = localData.id;
 				document.getElementById('menuHostId').style.color = "green";
 				socket.emit('openSwitch', true);
+			}
+
+			function selectAbility(string) {
+
+				console.log(string);
+
+			}
+
+			function showSpells() {
+
+
+				$('#menuSpellBookList').empty();
+
+				for(var i in localData.spellList) {
+						//For each elemental / mystical type in spell book.
+						var spellType = localData.spellList[i];
+						if(spellType.length < 1) {
+							//If there are no spells existing for this type of element, return;
+							continue;
+						}
+						for(var j in spellType) {
+							//For each spell of the elemental / mystical type,
+							var spell = spellType[j];
+							var newElem = $('<li class="emptyInventoryItem"><img width="64" height="64" src="' + spell.gfxSrc + '" /></li><div class="add" id=inv_' + spell.name + '"><span id="add_'+ spell.spell_id +'" class="fa fa-plus"></span> </div>');
+							//newElem.addEventListener("click", selectAbility, false);
+							$('#menuSpellBookList').append(newElem);
+
+							document.getElementById('add_' + spell.spell_id).addEventListener('click', addToHotbar, false);
+						}
+
+				}
+
+
+
+
+
+				menuDefault.style.display = "none";
+				menuSpellBook.style.display = "block";
+				menuCloseText.innerHTML = "Back";
+				menuCloseSpan.className = "fa fa-arrow-left";
+
+				menuClose.removeEventListener('click', toggleMenu, false);
+				menuClose.addEventListener('click', showMenuDefault, false);
+
+			}
+
+
+			function addToHotbar(e) {
+				console.log("WORKED: " + e.target.id);
+				var spell_id = e.target.id.substring(4);
+				var newLi = $('<li><img id="spellImg_' + spell_id + '" width="32" height="32" src="client/img/gfx/abilities/' + spell_id + '.png" /></li>');
+				$('#HotbarList').append(newLi);
+				var jsNewLi = document.getElementById('spellImg_' + spell_id);
+				jsNewLi.addEventListener('click', toggleAbilitySelection, false);
 			}
 
 			function deactivateMultiplayer() {
@@ -746,6 +999,7 @@
 				menuHost.style.display = "none";
 				menuJoin.style.display = "none";
 				menuInventory.style.display = "none";
+				menuSpellBook.style.display = "none";
 				menuCloseText.innerHTML = "Close";
 				menuCloseSpan.className = "fa fa-close";
 
@@ -890,6 +1144,10 @@
 										if(rand == 0) {
 											var randomSegment = map_Piece0;
 											var type = "Random";
+										} else if(rand > 1) {
+											//Knight room
+											var type = "Knight";
+											var randomSegment = map_PieceKnight;
 										} else if(rand == 1) {
 											var randomSegment = map_Piece1;
 											var type = "Random";
@@ -1049,500 +1307,500 @@
 			//S
 
 			var map_PieceSpawn = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[2027,2027,2027,2027,2027,2027,2027,7,9,9,6,2027,2027,2027,2027,2027,2027,2027],
+				[2027,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,10,9,9,9,9,9,9,10,9,9,9,6,2027],
+				[2027,7,9,9,9,17,9,9,9,9,9,9,17,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[5,13,9,9,9,9,9,9,10,10,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,10,10,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,16,16,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,16,16,9,9,9,9,9,9,12,8],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,10,9,9,9,9,9,9,10,9,9,9,6,2027],
+				[2027,7,9,9,9,17,9,9,9,9,9,9,17,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,2027],
+				[2027,2027,2027,2027,2027,2027,2027,7,9,9,6,2027,2027,2027,2027,2027,2027,2027],
 			];
 
 			//1
 			var map_Piece0 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece1 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece2 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece3 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece4 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece5 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece6 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece7 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			var map_Piece8 = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//L
 			var map_PieceL = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,14,13,09,09,09,09,09,09,09,09,14,13,09,14,05],
+				[00,07,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[00,07,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[00,07,09,12,11,09,09,09,09,09,09,09,09,12,11,09,12,08],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//R
 			var map_PieceR = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,09,09,09,09,09,09,09,14,13,09,06,00],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,06,00],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,06,00],
+				[08,11,09,12,11,09,09,09,09,09,09,09,09,12,11,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//U
 			var map_PieceT = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,05,05,05,05,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,09,09,09,09,09,09,09,14,13,09,14,05],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[08,11,09,12,11,09,09,09,09,09,09,09,09,12,11,09,12,08],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//D
 			var map_PieceB = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,09,09,09,09,09,09,09,14,13,09,14,05],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[08,11,09,12,11,09,09,09,09,09,09,09,09,12,11,09,12,08],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,08,08,08,08,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00]
 			];
 			//TR
 			var map_PieceTR = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,05,05,05,05,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,09,09,09,09,09,09,09,14,13,09,06,00],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,06,00],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,06,00],
+				[08,11,09,12,11,09,09,09,09,09,09,09,09,12,11,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//TL
 			var map_PieceTL = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,05,05,05,05,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,14,13,09,09,09,09,09,09,09,09,14,13,09,14,05],
+				[00,07,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[00,07,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[00,07,09,12,11,09,09,09,09,09,09,09,09,12,11,09,12,08],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//BL
 			var map_PieceBL = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,05,05,05,05,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,14,13,09,09,09,09,09,09,09,09,14,13,09,14,05],
+				[00,07,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[00,07,09,09,09,09,10,09,09,09,09,10,09,09,09,09,09,09],
+				[00,07,09,12,11,09,09,09,09,09,09,09,09,12,11,09,12,08],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,08,08,08,08,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00]
 			];
 			//BR
 			var map_PieceBR = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,09,09,09,09,09,09,09,14,13,09,06,00],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,06,00],
+				[09,09,09,09,09,09,10,09,09,09,09,10,09,09,09,09,06,00],
+				[08,11,09,12,11,09,09,09,09,09,09,09,09,12,11,09,06,00],
+				[00,07,09,06,07,09,10,09,10,10,09,10,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,08,08,08,08,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00]
 			];
 			//SH
 			var map_PieceKnight = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,15,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//SH
 			var map_PieceShop = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//BA
 			var map_PieceBossA = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[2027,2027,2027,2027,2027,2027,2027,7,9,9,6,2027,2027,2027,2027,2027,2027,2027],
+				[2027,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,10,9,9,9,9,9,9,10,9,9,9,6,2027],
+				[2027,7,9,9,9,17,9,9,9,9,9,9,17,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[5,13,9,9,9,9,9,9,10,10,9,9,9,9,9,9,14,5],
+				[9,9,9,9,9,9,9,9,10,10,9,9,9,9,9,9,9,9],
+				[9,9,9,9,9,9,9,9,16,16,9,9,9,9,9,9,9,9],
+				[8,11,9,9,9,9,9,9,16,16,9,9,9,9,9,9,12,8],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,10,9,9,9,9,9,9,10,9,9,9,6,2027],
+				[2027,7,9,9,9,17,9,9,9,9,9,9,17,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,2027],
+				[2027,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,2027],
+				[2027,2027,2027,2027,2027,2027,2027,7,9,9,6,2027,2027,2027,2027,2027,2027,2027],
 			];
 			//BB
 			var map_PieceBossB = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//BC
 			var map_PieceBossC = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			//BD
 			var map_PieceBossD = [
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0],
-				[0,1,5,5,5,5,5,13,9,9,14,5,5,5,5,5,2,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,7,9,12,8,8,8,8,8,8,8,8,8,8,11,9,6,0],
-				[0,7,9,6,1,5,5,5,5,5,5,5,5,2,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[5,13,9,14,13,9,9,9,9,9,9,9,9,14,13,9,14,5],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[9,9,9,9,9,9,10,9,9,9,9,10,9,9,9,9,9,9],
-				[8,11,9,12,11,9,9,9,9,9,9,9,9,12,11,9,12,8],
-				[0,7,9,6,7,9,10,9,10,10,9,10,9,6,7,9,6,0],
-				[0,7,9,6,7,9,9,9,9,9,9,9,9,6,7,9,6,0],
-				[0,7,9,6,3,8,8,8,8,8,8,8,8,4,7,9,6,0],
-				[0,7,9,14,5,5,5,5,5,5,5,5,5,5,13,9,6,0],
-				[0,7,9,9,9,9,9,9,9,9,9,9,9,9,9,9,6,0],
-				[0,3,8,8,8,8,8,11,9,9,12,8,8,8,8,8,4,0],
-				[0,0,0,0,0,0,0,7,9,9,6,0,0,0,0,0,0,0]
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00],
+				[00,01,05,05,05,05,05,13,09,09,14,05,05,05,05,05,02,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,07,09,12,08,08,08,08,08,08,08,08,08,08,11,09,06,00],
+				[00,07,09,06,01,05,05,05,05,05,05,05,05,02,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,07,09,10,09,09,09,09,10,09,06,07,09,06,00],
+				[05,13,09,14,13,09,16,09,09,09,09,17,09,14,13,09,14,05],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09,09],
+				[08,11,09,12,11,09,10,09,09,09,09,10,09,12,11,09,12,08],
+				[00,07,09,06,07,09,17,09,09,09,09,16,09,06,07,09,06,00],
+				[00,07,09,06,07,09,09,09,09,09,09,09,09,06,07,09,06,00],
+				[00,07,09,06,03,08,08,08,08,08,08,08,08,04,07,09,06,00],
+				[00,07,09,14,05,05,05,05,05,05,05,05,05,05,13,09,06,00],
+				[00,07,09,09,09,09,09,09,09,09,09,09,09,09,09,09,06,00],
+				[00,03,08,08,08,08,08,11,09,09,12,08,08,08,08,08,04,00],
+				[00,00,00,00,00,00,00,07,09,09,06,00,00,00,00,00,00,00]
 			];
 			socket.on('refreshedLobbyInfo', function(data) {
 				var lobby_pack = data;
@@ -1567,9 +1825,13 @@
 			}
 			socket.on('successfulLogin', function(data) {
 				loginOverlay.style.display = "none";
-				worldSwitchOverlay.style.display = "block";
+				//worldSwitchOverlay.style.display = "block";
 				menuButton.style.display = "block";
 				menuOverlay.style.display = "block";
+				hotbarImg.style.display = "block";
+				hotbar.style.display = "block";
+				hotbar.style.left = "42.75rem";
+				hotbar.style.top = "68rem";
 				preInitialize();
 				animate();
 			});
@@ -1598,6 +1860,7 @@
 				local_GHOST_ARRAY = data.ghosts;
 				local_RAT_ARRAY = data.rats;
 				local_ATTACK_ARRAY = data.attacks;
+				local_ABILITIES_ARRAY = data.abilities;
 				GAME_MAP = data.map;
 				ShopKeeper = data.shopkeeper;
 			});
@@ -1693,7 +1956,7 @@
 										//console.log(tile);
 										switch(tile)
 										{
-											case 0:
+											case 2027:
 												var tile = DungeonTiles.blank.src;
 
 												break;
@@ -1743,6 +2006,56 @@
 
 												break;
 
+											case 00:
+												var tile = DungeonTiles.blank.src;
+
+												break;
+
+											case 01:
+												var tile = DungeonTiles.top_left_corner.src;
+
+												break;
+
+											case 02:
+												var tile = DungeonTiles.top_right_corner.src;
+
+												break;
+
+											case 03:
+												var tile = DungeonTiles.bottom_left_corner.src;
+
+												break;
+
+											case 04:
+												var tile = DungeonTiles.bottom_right_corner.src;
+
+												break;
+
+											case 05:
+												var tile = DungeonTiles.wall_top.src;
+
+												break;
+
+											case 06:
+												var tile = DungeonTiles.wall_right.src;
+
+												break;
+
+											case 07:
+												var tile = DungeonTiles.wall_left.src;
+
+												break;
+
+											case 08:
+												var tile = DungeonTiles.wall_bottom.src;
+
+												break;
+
+											case 09:
+												var tile = DungeonTiles.tiled_floor.src;
+
+												break;
+
 											case 10:
 												var tile = DungeonTiles.internal_wall.src;
 
@@ -1770,6 +2083,16 @@
 
 											case 15:
 												var tile = DungeonTiles.chest.src;
+
+												break;
+
+											case 16:
+												var tile = DungeonTiles.room_pillar1.src;
+
+												break;
+
+											case 17:
+												var tile = DungeonTiles.room_pillar2.src;
 
 												break;
 
@@ -1857,13 +2180,19 @@
 						ctx.closePath();
 					}
 				}
-				///kinght stuffdssdaf
+				///kinght stuff
 				for (var i in local_KNIGHT_ARRAY){
 					var knight = local_KNIGHT_ARRAY[i];
 					if(isInRevealedSegment(knight)) {
 						ctx.beginPath();
-						ctx.fillStyle = knight.color;
-						ctx.arc(knight.x - localData.x + (WIDTH/2), knight.y - localData.y + (HEIGHT/2), knight.size, 0, Math.PI*2);
+						console.log(knight.direction);
+						ctx.drawImage(knightAnims[knight.direction][knight.animTick], knight.x - localData.x + (WIDTH/2) - 8, knight.y - localData.y + (HEIGHT/2) - 8);
+						ctx.closePath();
+
+						//Health Bar
+						ctx.beginPath();
+						ctx.fillStyle = "red";
+						ctx.rect((knight.x-knight.size) - localData.x + (WIDTH/2), (knight.y - 30) - localData.y + (HEIGHT/2), 40 * (knight.health/knight.maxHealth), 5);
 						ctx.fill();
 						ctx.closePath();
 					}
@@ -2009,6 +2338,24 @@
 					}
 				}
 
+				for(var i in local_ABILITIES_ARRAY) {
+					var abilityArray = local_ABILITIES_ARRAY[i];
+
+					for(var j in abilityArray) {
+						var ability = abilityArray[j];
+						if(i == "dust_mites") {
+							ctx.beginPath();
+							ctx.save();
+							ctx.translate(ability.x + (ability.w/2) - localData.x + (WIDTH/2), ability.y + (ability.h/2) - localData.y + (HEIGHT/2));
+							ctx.rotate(ability.rotation);
+							ctx.translate(-(ability.x + (ability.w/2) - localData.x + (WIDTH/2)), -(ability.y + (ability.h/2) - localData.y + (HEIGHT/2)));
+							ctx.drawImage(AbilityAnims["dust_mites"][ability.animTick], ability.x - localData.x + (WIDTH/2), ability.y - localData.y + (HEIGHT/2), ability.w, ability.h );
+							ctx.restore();
+							ctx.closePath();
+
+						}
+					}
+				}
 
 
 
@@ -2055,16 +2402,93 @@
 				ctx.fill();
 				ctx.closePath();
 
+
+				//Ability Hovers
+				if(localData.selectedAbility !== "none") {
+					drawSelectedAbility();
+				}
+
+				if(hovering[0] !== "none") {
+					if(hovering[0] == "rat") {
+						var rat = local_RAT_ARRAY[hovering[1]];
+						var drawPos = [rat.x - 50, rat.y - 125];
+						var drawSize = [100, 100];
+						ctx.beginPath();
+						ctx.rect(drawPos[0], drawPos[1], drawSize[0], drawSize[1]);
+						ctx.fillStyle = "rgba(0,0,0,0.25)";
+						ctx.stroke();
+						ctx.fill();
+						ctx.closePath();
+					}
+				}
+
+
+
+
+
+
+
+				//END ALL ANIMS
+
 				requestAnimationFrame(animate);
 
 			}
 
-				document.addEventListener('click', playerClick, false);
+				canvas.addEventListener('mouseup', playerClick, false);
+
+			function drawSelectedAbility() {
+				var abilityHover = Hovers[localData.selectedAbility];
+				ctx.beginPath();
+				if(abilityHover.type == "radial") {
+					ctx.arc(mouseX, mouseY, abilityHover.r, 0, Math.PI*2);
+					var grdn=ctx.createRadialGradient(mouseX,mouseY,abilityHover.r,mouseX,mouseY,5);
+					grdn.addColorStop(0,"red");
+					grdn.addColorStop(1,"transparent");
+					ctx.fillStyle = grdn;
+				} else if(abilityHover.type = "rect") {
+					ctx.rect(mouseX - abilityHover.w / 2, mouseY - abilityHover.h / 2, abilityHover.w, abilityHover.h);
+					ctx.fillStyle = "blue";
+				}
 
 
-			function playerClick() {
-				console.log("HERE");
-				socket.emit('playerAttackMelee');
+				ctx.fill();
+				ctx.closePath();
+			}
+
+			function toggleAbilitySelection(e) {
+				var ability = e.target.id.substring(9);
+				console.log(ability);
+				if(ability !== localData.selectedAbility) {
+
+					socket.emit('abilityChange', {ability: ability});
+				} else {
+					socket.emit('abilityChange', {ability: "none"});
+				}
+			}
+
+			function castSpell(spell, x, y) {
+				if(spell == "soul_passage") {
+					return;
+				}
+				socket.emit('castSpell', {ability: spell, x: x, y: y});
+			}
+
+			function getMousePos(canvas, evt) {
+			    var rect = canvas.getBoundingClientRect();
+			    return {
+			      x: evt.clientX - rect.left + (localData.x - (WIDTH/2)),
+			      y: evt.clientY - rect.top + (localData.y - (HEIGHT/2))
+			    };
+			}
+			function playerClick(e) {
+				var coords = getMousePos(canvas, e);
+				console.log(coords.x, coords.y);
+				//console.log("HERE");
+				if(!localData.castingSpell) {
+					socket.emit('playerAttackMelee');
+				} else {
+					castSpell(localData.selectedAbility, coords.x, coords.y);
+				}
 			}
 
 
@@ -2128,15 +2552,24 @@
 					}
 				}
 
+				if(event.keyCode == 49) {//1[Top]
+					var spell = getSpellAtSlot(1);
+					socket.emit('abilityChange', {ability: spell});
+				} else if(event.keyCode == 50) {//2[Top]
+					var spell = getSpellAtSlot(2);
+					socket.emit('abilityChange', {ability: spell});
+				} else if(event.keyCode == 51) {//3[Top]
+					var spell = getSpellAtSlot(3);
+					socket.emit('abilityChange', {ability: spell});
+				} else if(event.keyCode == 52) {//4[Top]
+					var spell = getSpellAtSlot(4);
+					socket.emit('abilityChange', {ability: spell});
+				}
 				if(event.keyCode == 27) {
 					shopOverlay.style.display = "none";
 					displayingShop = false;
 				}
 
-
-				function busy() {
-					2
-				}
 
 
 
@@ -2147,7 +2580,14 @@
 					socket.emit("spellKey", {number: 1, id: localId});
 				}
 			};
+			function getSpellAtSlot(slot) {
+				var elementArray = Array.from(document.querySelectorAll('#HotBarList>li'));
+				var elemId = elementArray[slot-1].lastChild.id;
+				var spell_id = elemId.substring(9);
 
+
+				return spell_id;
+			}
 			function getPlayerScreenHitbox() {
 				return [[localData.x - WIDTH/2, localData.y - HEIGHT/2],[WIDTH,HEIGHT]];
 

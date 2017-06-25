@@ -1,0 +1,11 @@
+[12/06/2017]:
+- Knight
+  + Animations
+  + Movement Logic
+  + Hitboxes
+- Hotbar
+  + Adding abilities to hotbar
+- New spells
+  + Pulvis Minuta (Dust Mites) [Fully Textured]
+  + Iter de Anima (Soul Passage) [Untextured, no object]
+  + Rugiens Procella (Roaring Thunder) [Untextured, no object]
