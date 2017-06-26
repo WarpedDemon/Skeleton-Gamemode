@@ -1,0 +1,873 @@
+<html>
+	<head>
+		<style>
+			* { font-family: helvetica; }
+			canvas { display: block; border:1px solid black; }
+
+			#tileBrowser {
+				display: none;
+
+				border: 2px solid black;
+				border-radius: 4px;
+				width: auto;
+				height: 300px;
+				overflow-y: scroll;
+				margin: 5px 5px 5px 5px;
+			}
+
+			#browser {
+				float: left;
+				display: block;
+				width: 300px;
+				height: 600px;
+			}
+
+			#beginButton {
+				width: 120px;
+				height: 30px;
+				border: 2px solid black;
+				border-radius: 4px;
+				transition: all 0.3s ease;
+				color: black;
+				text-align: center;
+			}
+			#beginButton p {
+				margin-top: 7px;
+			}
+			#beginButton:hover {
+				background-color: black;
+				color: white;
+			}
+
+			#exportArea {
+				width: auto;
+				height: auto;
+				border: 2px solid black;
+				border-radius: 4px;
+				display: none;
+			}
+			#exportText {
+				margin: 5px 5px 5px 5px;
+				color: black;
+			}
+
+			body {
+				overflow-x: scroll;
+			}
+
+			#place {
+				overflow-y: scroll;
+				max-width: 300px;
+				max-height: 300px;
+			}
+
+		</style>
+		<script src="js/jquery.min.js"></script>
+	</head>
+
+	<body>
+
+		<!-- HTML ELEMENTS -->
+		<div id="browser">
+			<div id="initialSettings">
+				<h2> New Map Settings </h2>
+				<hr/>
+				Map Type:
+				<select id="mapTypeSelect">
+					<option value="city">City</option>
+					<option value="dungeon">Dungoen Piece</option>
+					<option value="other">Other</option>
+				</select>
+				<br/><br/>
+				Rows: <input id="map_rows" type="text" />
+				<br/><br/>
+				Columns: <input id="map_cols" type="text" />
+				<br/><br/>
+				<div id="beginButton"><p>Begin Editing!</p></div>
+			</div>
+			<div id="tileBrowser">
+				<h2> Tile Browser </h2>
+				<hr/>
+				<ul id="tileBrowserList">
+					<!--Tilesets here-->
+				</ul>
+				<button id="drawButton" > Draw </button>
+				<button id="eraseButton" >Erase</button>
+				<button id="gridButton">Toggle Grid</button>
+				<br/><br/>
+				<div id="exportButton"><p>Export Map</p></div>
+			</div>
+		</div>
+		<div id="place">
+		</div>
+
+		<div id="exportArea">
+			<p id="exportText">test</p>
+		</div>
+
+
+		<canvas id="editorCanvas" width="0" height="0"></canvas>
+		<script type="text/javascript">
+
+			//System Variables
+			var canvas = document.getElementById("editorCanvas");
+			var ctx = canvas.getContext('2d');
+			var width = canvas.width;
+			var height = canvas.height;
+			var rows = 0;
+			var cols = 0;
+			var localOffsetX = 308;
+			var localOffsetY = 8;
+			var ready = false;
+			var eraseMode = false;
+			var toDrawGrid = true;
+			var curId = 0;
+			var curTileName = "none";
+
+			//UI Element Variables
+			var browser, tileBrowser, initialSettings, mapTypeSelect, beginButton, rowsInput, colsInput;
+			var exportArea, exportText;
+			var eraseButton, drawButton, exportButton;
+			//Map Variables
+			var mapType;
+
+			var Royal_Tiles = {};
+
+			//Tile Variables
+			var testHold = ["Royal_Blank", "Royal_Window_L1", "Royal_Window_L2", "Royal_Window_L3", "Royal_Window_L4",
+		 "Royal_Window_R1", "Royal_Window_R2", "Royal_Window_R3", "Royal_Window_R4",
+		 "Royal_Window2_L1","Royal_Window2_L2","Royal_Window2_L3","Royal_Window2_L4",
+		 "Royal_Window2_R1","Royal_Window2_R2","Royal_Window2_R3","Royal_Window2_R4",
+		 "Royal_Wall_Top_Ribbon", "Royal_Wall_Top_Shadow_Left", "Royal_Wall_Top_Shadow_Right",
+		 "Royal_Wall1", "Royal_Wall_Shadow_Left", "Royal_Wall_Shadow_Right",
+		 "Royal_Void_1", "Royal_Void_2", "Royal_Void_3", "Royal_Void_4", "Royal_Void_5", "Royal_Void_6",
+		 "Royal_Stone_Wall1", "Royal_Stone_WallPillared","Royal_Stone_Window_L", "Royal_Stone_Window_R",
+		 "Royal_Stone_Window2_L", "Royal_Stone_Window2_R", "Royal_StoneArch_Candles_L1", "Royal_StoneArch_Candles_L2",
+		 "Royal_StoneArch_Candles_L3","Royal_StoneArch_Candles_L4", "Royal_StoneArch_Candles_R1", "Royal_StoneArch_Candles_R2",
+		 "Royal_StoneArch_Candles_R3", "Royal_StoneArch_Candles_R4", "Royal_StoneArch_L1", "Royal_StoneArch_L2", "Royal_StoneArch_L3",
+		 "Royal_StoneArch_L4","Royal_StoneArch_L5", "Royal_StoneArch_R1", "Royal_StoneArch_R2", "Royal_StoneArch_R3", "Royal_StoneArch_R4","Royal_StoneArch_R5",
+		 "Royal_StoneArch_Painting_L1", "Royal_StoneArch_Painting_L2","Royal_StoneArch_Painting_L3","Royal_StoneArch_Painting_L4",
+		 "Royal_StoneArch_Painting_R1", "Royal_StoneArch_Painting_R2", "Royal_StoneArch_Painting_R3", "Royal_StoneArch_Painting_R4",
+		 "Royal_StoneArch_Painting2_L1","Royal_StoneArch_Painting2_L2","Royal_StoneArch_Painting2_L3","Royal_StoneArch_Painting2_L4",
+		 "Royal_StoneArch_Painting2_R1", "Royal_StoneArch_Painting2_R2", "Royal_StoneArch_Painting2_R3", "Royal_StoneArch_Painting2_R4",
+		 "Royal_Stool", "Royal_Stool2", "Royal_Table_1", "Royal_Table_2", "Royal_Table_Bottles_1", "Royal_Table_Bottles_2", "Royal_Table_Flowers_1",
+		 "Royal_Table_Flowers_2", "Royal_Table_Single",
+		 "Royal_Stone_Table_Flowers_1", "Royal_Stone_Table_Flowers_2", "Royal_Stone_Tapestry_L1", "Royal_Stone_Tapestry_L2",
+		 "Royal_Stone_Tapestry_R1", "Royal_Stone_Tapestry_R2", "Royal_Stone_ShiningWindow_L", "Royal_Stone_ShiningWindow_R",
+		 "Royal_Stone_ShiningWindow2_L", "Royal_Stone_ShiningWindow2_R", "Royal_Stone_ShiningCurtainWindow_L", "Royal_Stone_ShiningCurtainWindow_R",
+		 "Royal_Stone_ShiningCurtainWindow2_L", "Royal_Stone_ShiningCurtainWindow2_R", "Royal_Stone_CurtainWindow_L", "Royal_Stone_CurtainWindow_R",
+		 "Royal_Stone_PotionSign_1", "Royal_Stone_PotionSign_2", "Royal_Stone_ShieldSign_1", "Royal_Stone_ShieldSign_2", "Royal_Stone_Painting_1",
+		 "Royal_Stone_Painting_2", "Royal_Stone_Lamp", "Royal_Stone_Lamp2", "Royal_Stone_ArmourSign_1", "Royal_Stone_ArmourSign_2",
+		 "Royal_Stone_Doorway_L1", "Royal_Stone_Doorway_L2", "Royal_Stone_Doorway_L3", "Royal_Stone_Doorway_L4", "Royal_Stone_Doorway_R1",
+		 "Royal_Stone_Doorway_R2","Royal_Stone_Doorway_R3", "Royal_Stone_Doorway_R4", "Royal_Stone_Doorway_M1", "Royal_Stone_Doorway_M2",
+		 "Royal_Stone_Doorway_M3", "Royal_Stone_Doorway_M4",
+		 "Royal_Banner_Small_1", "Royal_Banner_Small_2","Royal_Stone_Banner2_1", "Royal_Stone_Banner2_2",
+		 "Royal_Banner_1", "Royal_Banner_2", "Royal_Banner_3","Royal_Banner_4", "Royal_Banner_5",
+		 "Royal_Stone_ArmourSet_1", "Royal_Stone_ArmourSet_2", "Royal_ArmourSet_1","Royal_ArmourSet_2", "Royal_ArmourSet_3", "Royal_ArmourSet2_1",
+		 "Royal_ArmourSet2_2",  "Royal_ArmourSet2_3",
+		 "Royal_Stall_L1", "Royal_Stall_L2", "Royal_Stall_ML1", "Royal_Stall_ML2", "Royal_Stall_MR1", "Royal_Stall_MR2", "Royal_Stall_R1", "Royal_Stall_R2",
+		 "Royal_Stall2_L1", "Royal_Stall2_L2", "Royal_Stall2_R1", "Royal_Stall2_R2", "Royal_Stall3_L1", "Royal_Stall3_L2", "Royal_Stall3_R1", "Royal_Stall3_R2",
+		 "Royal_Stairs1_L1", "Royal_Stairs1_L2", "Royal_Stairs1_L3", "Royal_Stairs1_L4", "Royal_Stairs1_L5","Royal_Stairs1_R1", "Royal_Stairs1_R2", "Royal_Stairs1_R3", "Royal_Stairs1_R4", "Royal_Stairs1_R5",
+		 "Royal_Stairs2_L1", "Royal_Stairs2_L2", "Royal_Stairs2_L4", "Royal_Stairs2_L5", "Royal_Stairs2_R1", "Royal_Stairs2_R2","Royal_Stairs2_R4","Royal_Stairs2_R5",
+		 "Royal_Lounge_L1", "Royal_Lounge_L2","Royal_Lounge_M1", "Royal_Lounge_M2","Royal_Lounge_R1","Royal_Lounge_R2",
+		 "Royal_ClosedCurtainWindow_1", "Royal_ClosedCurtainWindow_2", "Royal_CurtainWindow_1","Royal_CurtainWindow_2",
+		 "Royal_Candle_1", "Royal_Candle_2", "Royal_Candle_3",
+		 "Overlay_Royal_Painting1", "Overlay_Royal_Painting2", "Overlay_Royal_Painting3", "Overlay_Royal_Ornament", "Overlay_Royal_Lamp2", "Overlay_Royal_Flowers", "Overlay_Royal_DeerHead_1", "Overlay_Royal_DeerHead_2",
+		 "Overlay_Royal_Chair1_Front", "Overlay_Royal_Chair1_Back", "Overlay_Royal_Chair2_Front", "Overlay_Royal_Chair2_Back", "Overlay_Royal_Candle_1", "Overlay_Royal_Candle_2", "Overlay_Royal_Candle_3",
+		 "Overlay_Royal_ArmourSet_1", "Overlay_Royal_ArmourSet_2","Overlay_Royal_ArmourSet_3","Overlay_Royal_ArmourSet_Left_1", "Overlay_Royal_ArmourSet_Left_2", "Overlay_Royal_ArmourSet_Left_3", "Overlay_Royal_ArmourSet_Right_1",
+		 "Overlay_Royal_ArmourSet_Right_2", "Overlay_Royal_ArmourSet_Right_3",
+
+		 // differnet set
+
+		 "blank", "bottomLeftCorner",
+		 "bottomRightCorner", "BottomWall",
+		 "chest", "floor",
+		 "middleRoomPillar",
+		 "outLeftBottomCorner", "outLeftTopCorner",
+		 "outRightBottomCorner", "outRightTopCorner",
+		 "pillarBlack", "pillarBlackLeft", "pillarWall",
+		 "pillarWallRight",
+		 "tiledFloor", "topLeftCorner", "topRightCorner",
+		 "wall", "wall1", "wall2", "wallLeft", "wallPillar1",
+		 "wallPillar2", "wallRight"];
+			console.log(testHold.length);
+
+			for(var i in testHold) {
+				var newElemPre = $('<img id="' + testHold[i] + '" src="img/royal/' + testHold[i] + '.png" />');
+
+				$('#place').append(newElemPre);
+
+				var newElem = document.getElementById(testHold[i]);
+
+				//Royal_Tiles[testHold[i]] = newElem;
+
+				document.getElementById('place').addEventListener('click', clickPls, false);
+				var id = testHold[i];
+				if(id == "blank") { Royal_Tiles[00] = newElem; }
+				if(id == "topLeftCorner") { Royal_Tiles[01] = newElem; }
+				if(id == "topRightCorner") { Royal_Tiles[02] = newElem; }
+				if(id == "bottomLeftCorner") { Royal_Tiles[03] = newElem; }
+				if(id == "bottomRightCorner") { Royal_Tiles[04] = newElem; }
+				if(id == "wall") { Royal_Tiles[05] = newElem; }
+				if(id == "wallRight") { Royal_Tiles[06] = newElem; }
+				if(id == "wallLeft") { Royal_Tiles[07] = newElem; }
+				if(id == "BottomWall") { Royal_Tiles[08] = newElem; }
+				if(id == "tiledFloor") { Royal_Tiles[09] = newElem; }
+				if(id == "middleRoomPillar") { Royal_Tiles[10] = newElem; }
+				if(id == "outRightTopCorner") { Royal_Tiles[11] = newElem; }
+				if(id == "outLeftTopCorner") { Royal_Tiles[12] = newElem; }
+				if(id == "outRightBottomCorner") { Royal_Tiles[13] = newElem; }
+				if(id == "outLeftBottomCorner") { Royal_Tiles[14] = newElem; }
+				if(id == "chest") { Royal_Tiles[15] = newElem; }
+				if(id == "wallPillar1") { Royal_Tiles[16] = newElem; }
+				if(id == "wallPillar2") { Royal_Tiles[17] = newElem; }
+
+
+				if(id == "Royal_Blank") { Royal_Tiles[2000] = newElem; }
+				if(id == "Royal_Window_L1") { Royal_Tiles[2001] = newElem;}
+				if(id == "Royal_Window_L2") { Royal_Tiles[2002] = newElem; }
+				if(id == "Royal_Window_L3") { Royal_Tiles[2003] = newElem; }
+				if(id == "Royal_Window_L4") { Royal_Tiles[2004] = newElem; }
+				if(id == "Royal_Window_R1") { Royal_Tiles[2005] = newElem; }
+				if(id == "Royal_Window_R2") { Royal_Tiles[2006] = newElem; }
+				if(id == "Royal_Window_R3") { Royal_Tiles[2007] = newElem; }
+				if(id == "Royal_Window_R4") { Royal_Tiles[2008] = newElem; }
+				if(id == "Royal_Window2_L1") { Royal_Tiles[2009] = newElem; }
+				if(id == "Royal_Window2_L2") { Royal_Tiles[2010] = newElem; }
+				if(id == "Royal_Window2_L3") { Royal_Tiles[2011] = newElem; }
+				if(id == "Royal_Window2_L4") { Royal_Tiles[2012] = newElem; }
+				if(id == "Royal_Window2_R1") { Royal_Tiles[2013] = newElem; }
+				if(id == "Royal_Window2_R2") { Royal_Tiles[2014] = newElem; }
+				if(id == "Royal_Window2_R3") { Royal_Tiles[2015] = newElem; }
+				if(id == "Royal_Window2_R4") { Royal_Tiles[2016] = newElem; }
+				if(id == "Royal_Wall_Top_Ribbon") { Royal_Tiles[2017] = newElem; }
+				if(id == "Royal_Wall_Top_Shadow_Left") { Royal_Tiles[2018] = newElem; }
+				if(id == "Royal_Wall_Top_Shadow_Right") { Royal_Tiles[2019] = newElem; }
+				if(id == "Royal_Wall1") { Royal_Tiles[2020] = newElem; }
+				if(id == "Royal_Wall_Shadow_Left") { Royal_Tiles[2021] = newElem; }
+				if(id == "Royal_Wall_Shadow_Right") { Royal_Tiles[2022] = newElem; }
+				if(id == "Royal_Void_1") { Royal_Tiles[2023] = newElem; }
+				if(id == "Royal_Void_2") { Royal_Tiles[2024] = newElem; }
+				if(id == "Royal_Void_3") { Royal_Tiles[2025] = newElem; }
+				if(id == "Royal_Void_4") { Royal_Tiles[2026] = newElem; }
+				if(id == "Royal_Void_5") { Royal_Tiles[2027] = newElem; }
+				if(id == "Royal_Void_6") { Royal_Tiles[2028] = newElem; }
+				if(id == "Royal_Stone_Wall1") { Royal_Tiles[2029] = newElem; }
+				if(id == "Royal_Stone_WallPillared") { Royal_Tiles[2030] = newElem; }
+				if(id == "Royal_Stone_Window_L") { Royal_Tiles[2031] = newElem; }
+				if(id == "Royal_Stone_Window_R") { Royal_Tiles[2032] = newElem; }
+				if(id == "Royal_Stone_Window2_L") { Royal_Tiles[2033] = newElem; }
+				if(id == "Royal_Stone_Window2_R") { Royal_Tiles[2034] = newElem; }
+				if(id == "Royal_StoneArch_Candles_L1") { Royal_Tiles[2035] = newElem; }
+				if(id == "Royal_StoneArch_Candles_L2") { Royal_Tiles[2036] = newElem; }
+				if(id == "Royal_StoneArch_Candles_L3") { Royal_Tiles[2037] = newElem; }
+				if(id == "Royal_StoneArch_Candles_L4") { Royal_Tiles[2038] = newElem; }
+				if(id == "Royal_StoneArch_Candles_R1") { Royal_Tiles[2039] = newElem; }
+				if(id == "Royal_StoneArch_Candles_R2") { Royal_Tiles[2040] = newElem; }
+				if(id == "Royal_StoneArch_Candles_R3") { Royal_Tiles[2041] = newElem; }
+				if(id == "Royal_StoneArch_Candles_R4") { Royal_Tiles[2042] = newElem; }
+				if(id == "Royal_StoneArch_L1") { Royal_Tiles[2043] = newElem; }
+				if(id == "Royal_StoneArch_L2") { Royal_Tiles[2044] = newElem; }
+				if(id == "Royal_StoneArch_L3") { Royal_Tiles[2045] = newElem; }
+				if(id == "Royal_StoneArch_L4") { Royal_Tiles[2046] = newElem; }
+				if(id == "Royal_StoneArch_L5") { Royal_Tiles[2047] = newElem; }
+				if(id == "Royal_StoneArch_R1") { Royal_Tiles[2048] = newElem; }
+				if(id == "Royal_StoneArch_R2") { Royal_Tiles[2049] = newElem; }
+				if(id == "Royal_StoneArch_R3") { Royal_Tiles[2050] = newElem; }
+				if(id == "Royal_StoneArch_R4") { Royal_Tiles[2051] = newElem; }
+				if(id == "Royal_StoneArch_R5") { Royal_Tiles[2052] = newElem; }
+				if(id == "Royal_StoneArch_Painting_L1") { Royal_Tiles[2053] = newElem; }
+				if(id == "Royal_StoneArch_Painting_L2") { Royal_Tiles[2054] = newElem; }
+				if(id == "Royal_StoneArch_Painting_L3") { Royal_Tiles[2055] = newElem; }
+				if(id == "Royal_StoneArch_Painting_L4") { Royal_Tiles[2056] = newElem; }
+				if(id == "Royal_StoneArch_Painting_R1") { Royal_Tiles[2057] = newElem; }
+				if(id == "Royal_StoneArch_Painting_R2") { Royal_Tiles[2058] = newElem; }
+				if(id == "Royal_StoneArch_Painting_R3" ) { Royal_Tiles[2059] = newElem; }
+				if(id == "Royal_StoneArch_Painting_R4") { Royal_Tiles[2060] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_L1") { Royal_Tiles[2061] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_L2") { Royal_Tiles[2062] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_L3") { Royal_Tiles[2063] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_L4") { Royal_Tiles[2064] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_R1") { Royal_Tiles[2065] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_R2") { Royal_Tiles[2066] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_R3") { Royal_Tiles[2067] = newElem; }
+				if(id == "Royal_StoneArch_Painting2_R4") { Royal_Tiles[2068] = newElem; }
+				if(id == "Royal_Stool") { Royal_Tiles[2069] = newElem; }
+				if(id == "Royal_Stool2") { Royal_Tiles[2070] = newElem; }
+				if(id == "Royal_Table_1") { Royal_Tiles[2071] = newElem; }
+				if(id == "Royal_Table_2") { Royal_Tiles[2072]= newElem; }
+				if(id == "Royal_Table_Bottles_1") { Royal_Tiles[2073] = newElem; }
+				if(id == "Royal_Table_Bottles_2") { Royal_Tiles[2074] = newElem; }
+				if(id == "Royal_Table_Flowers_1") { Royal_Tiles[2075] = newElem; }
+				if(id == "Royal_Table_Flowers_2") { Royal_Tiles[2076] = newElem; }
+				if(id == "Royal_Table_Single") { Royal_Tiles[2077] = newElem; }
+				if(id == "Royal_Stone_Table_Flowers_1") { Royal_Tiles[2078] = newElem; }
+				if(id == "Royal_Stone_Table_Flowers_2") { Royal_Tiles[2079] = newElem; }
+				if(id == "Royal_Stone_Tapestry_L1") { Royal_Tiles[2080] = newElem; }
+				if(id == "Royal_Stone_Tapestry_L2") { Royal_Tiles[2081] = newElem; }
+				if(id == "Royal_Stone_Tapestry_R1") {Royal_Tiles[2082] = newElem; }
+				if(id == "Royal_Stone_Tapestry_R2") { Royal_Tiles[2083] = newElem; }
+				if(id == "Royal_Stone_ShiningWindow_L" ) { Royal_Tiles[2084] = newElem; }
+				if(id == "Royal_Stone_ShiningWindow_R") { Royal_Tiles[2085] = newElem; }
+				if(id == "Royal_Stone_ShiningWindow2_L") { Royal_Tiles[2086] = newElem; }
+				if(id == "Royal_Stone_ShiningWindow2_R") { Royal_Tiles[2087] = newElem; }
+				if(id == "Royal_Stone_ShiningCurtainWindow_L") { Royal_Tiles[2088] = newElem; }
+				if(id == "Royal_Stone_ShiningCurtainWindow_R") { Royal_Tiles[2089] = newElem; }
+				if(id == "Royal_Stone_ShiningCurtainWindow2_L") { Royal_Tiles[2090] = newElem; }
+				if(id == "Royal_Stone_ShiningCurtainWindow2_R") { Royal_Tiles[2091] = newElem; }
+				if(id == "Royal_Stone_CurtainWindow_L") { Royal_Tiles[2092] = newElem; }
+				if(id == "Royal_Stone_CurtainWindow_R") { Royal_Tiles[2093] = newElem; }
+				if(id == "Royal_Stone_PotionSign_1") { Royal_Tiles[2094] = newElem; }
+				if(id == "Royal_Stone_PotionSign_2") { Royal_Tiles[2095] = newElem; }
+				if(id == "Royal_Stone_ShieldSign_1" ) { Royal_Tiles[2096] = newElem; }
+				if(id == "Royal_Stone_ShieldSign_2") { Royal_Tiles[20097] = newElem; }
+				if(id == "Royal_Stone_Painting_1") { Royal_Tiles[20098] = newElem; }
+				if(id == "Royal_Stone_Painting_2") { Royal_Tiles[2099] = newElem; }
+				if(id == "Royal_Stone_Lamp") { Royal_Tiles[2100] = newElem; }
+				if(id == "Royal_Stone_Lamp2") { Royal_Tiles[2101] = newElem; }
+				if(id == "Royal_Stone_ArmourSign_1") { Royal_Tiles[2102] = newElem; }
+				if(id == "Royal_Stone_ArmourSign_2") { Royal_Tiles[2103] = newElem; }
+				if(id == "Royal_Stone_Doorway_L1") { Royal_Tiles[2104]= newElem; }
+				if(id == "Royal_Stone_Doorway_L2") { Royal_Tiles[2105] = newElem; }
+				if(id == "Royal_Stone_Doorway_L3") { Royal_Tiles[2106] = newElem; }
+				if(id == "Royal_Stone_Doorway_L4") { Royal_Tiles[2107] = newElem; }
+				if(id == "Royal_Stone_Doorway_R1") { Royal_Tiles[2108] = newElem; }
+				if(id == "Royal_Stone_Doorway_R2") { Royal_Tiles[2109] = newElem; }
+				if(id == "Royal_Stone_Doorway_R3") { Royal_Tiles[2110] = newElem; }
+				if(id == "Royal_Stone_Doorway_R4") { Royal_Tiles[2111] = newElem; }
+				if(id == "Royal_Stone_Doorway_M1") { Royal_Tiles[2112] = newElem; }
+				if(id == "Royal_Stone_Doorway_M2") { Royal_Tiles[2113] = newElem; }
+				if(id == "Royal_Stone_Doorway_M3") { Royal_Tiles[2114] = newElem; }
+				if(id == "Royal_Stone_Doorway_M4") { Royal_Tiles[2115] = newElem; }
+				if(id == "Royal_Banner_Small_1") { Royal_Tiles[2116] = newElem; }
+				if(id == "Royal_Banner_Small_2") { Royal_Tiles[2117] = newElem; }
+				if(id == "Royal_Stone_Banner2_1") { Royal_Tiles[2118] = newElem; }
+				if(id == "Royal_Stone_Banner2_2") { Royal_Tiles[2119] = newElem; }
+				if(id == "Royal_Banner_1") { Royal_Tiles[2120] = newElem; }
+				if(id == "Royal_Banner_2") { Royal_Tiles[2121] = newElem; }
+				if(id == "Royal_Banner_3") { Royal_Tiles[2122] = newElem; }
+				if(id == "Royal_Banner_4") { Royal_Tiles[2123] = newElem; }
+				if(id == "Royal_Banner_5") { Royal_Tiles[2124] = newElem; }
+				if(id == "Royal_Stone_ArmourSet_1") { Royal_Tiles[2125] = newElem; }
+				if(id == "Royal_Stone_ArmourSet_2") { Royal_Tiles[2126] = newElem; }
+				if(id == "Royal_ArmourSet_1") { Royal_Tiles[2127] = newElem; }
+				if(id == "Royal_ArmourSet_2") { Royal_Tiles[2128] = newElem; }
+				if(id == "Royal_ArmourSet_3") { Royal_Tiles[2129] = newElem; }
+				if(id == "Royal_ArmourSet2_1") { Royal_Tiles[2130] = newElem; }
+				if(id == "Royal_ArmourSet2_2") { Royal_Tiles[2131] = newElem; }
+				if(id == "Royal_ArmourSet2_3") { Royal_Tiles[2132] = newElem; }
+				if(id == "Royal_Stall_L1") { Royal_Tiles[2133] = newElem; }
+				if(id == "Royal_Stall_L2") { Royal_Tiles[2134] = newElem; }
+				if(id == "Royal_Stall_ML1") { Royal_Tiles[2135] = newElem; }
+				if(id == "Royal_Stall_ML2") { Royal_Tiles[2136] = newElem; }
+				if(id == "Royal_Stall_MR1") { Royal_Tiles[2137] = newElem; }
+				if(id == "Royal_Stall_MR2") { Royal_Tiles[2138] = newElem; }
+				if(id == "Royal_Stall_R1") { Royal_Tiles[2139] = newElem; }
+				if(id == "Royal_Stall_R2") { Royal_Tiles[2140] = newElem; }
+				if(id == "Royal_Stall2_L1") { Royal_Tiles[2141] = newElem; }
+				if(id == "Royal_Stall2_L2") { Royal_Tiles[2142] = newElem; }
+				if(id == "Royal_Stall2_R1") { Royal_Tiles[2143] = newElem; }
+				if(id == "Royal_Stall2_R2") { Royal_Tiles[2144] = newElem; }
+				if(id == "Royal_Stall3_L1") { Royal_Tiles[2145] = newElem; }
+				if(id == "Royal_Stall3_L2") { Royal_Tiles[2146] = newElem; }
+				if(id == "Royal_Stall3_R1") { Royal_Tiles[2147] = newElem; }
+				if(id == "Royal_Stall3_R2") { Royal_Tiles[2148] = newElem; }
+				if(id == "Royal_Stairs1_L1") { Royal_Tiles[2149] = newElem; }
+				if(id == "Royal_Stairs1_L2") { Royal_Tiles[2150] = newElem; }
+				if(id == "Royal_Stairs1_L3") { Royal_Tiles[2151] = newElem; }
+				if(id == "Royal_Stairs1_L4") { Royal_Tiles[2152] = newElem; }
+				if(id == "Royal_Stairs1_L5") { Royal_Tiles[2153] = newElem; }
+				if(id == "Royal_Stairs1_R1") { Royal_Tiles[2154] = newElem; }
+				if(id == "Royal_Stairs1_R2") { Royal_Tiles[2155] = newElem; }
+				if(id == "Royal_Stairs1_R3") { Royal_Tiles[2156] = newElem; }
+				if(id == "Royal_Stairs1_R4") { Royal_Tiles[2157] = newElem; }
+				if(id == "Royal_Stairs1_R5") { Royal_Tiles[2158] = newElem; }
+				if(id == "Royal_Stairs2_L1") { Royal_Tiles[2159] = newElem; }
+				if(id == "Royal_Stairs2_L2") { Royal_Tiles[2160] = newElem; }
+				if(id == "Royal_Stairs2_L4") { Royal_Tiles[2161] = newElem; }
+				if(id == "Royal_Stairs2_L5") { Royal_Tiles[2162] = newElem; }
+				if(id == "Royal_Stairs2_R1") { Royal_Tiles[2163] = newElem; }
+				if(id == "Royal_Stairs2_R2") { Royal_Tiles[2164] = newElem; }
+				if(id == "Royal_Stairs2_R4") { Royal_Tiles[2165] = newElem; }
+				if(id == "Royal_Stairs2_R5") { Royal_Tiles[2166] = newElem; }
+				if(id == "Royal_Lounge_L1") { Royal_Tiles[2167] = newElem; }
+				if(id == "Royal_Lounge_L2") { Royal_Tiles[2168] = newElem; }
+				if(id == "Royal_Lounge_M1") { Royal_Tiles[2169] = newElem; }
+				if(id == "Royal_Lounge_M2") { Royal_Tiles[2170] = newElem; }
+				if(id == "Royal_Lounge_R1") { Royal_Tiles[2171] = newElem; }
+				if(id == "Royal_Lounge_R2") { Royal_Tiles[21712] = newElem; }
+				if(id == "Royal_ClosedCurtainWindow_1") { Royal_Tiles[2173] = newElem; }
+				if(id == "Royal_ClosedCurtainWindow_2") { Royal_Tiles[2174] = newElem; }
+				if(id == "Royal_CurtainWindow_1") { Royal_Tiles[2175] = newElem; }
+				if(id == "Royal_CurtainWindow_2") { Royal_Tiles[2176] = newElem; }
+				if(id == "Royal_Candle_1") { Royal_Tiles[2177] = newElem; }
+				if(id == "Royal_Candle_2") { Royal_Tiles[2178] = newElem; }
+				if(id == "Royal_Candle_3") { Royal_Tiles[2179] = newElem; }
+				if(id == "Overlay_Royal_Painting1") { Royal_Tiles[2180] = newElem; }
+				if(id == "Overlay_Royal_Painting2") { Royal_Tiles[2181] = newElem; }
+				if(id == "Overlay_Royal_Painting3") { Royal_Tiles[2182] = newElem; }
+				if(id == "Overlay_Royal_Ornament") { Royal_Tiles[2183] = newElem;}
+				if(id == "Overlay_Royal_Lamp2") { Royal_Tiles[2184] = newElem; }
+				if(id == "Overlay_Royal_Flowers") { Royal_Tiles[2185] = newElem; }
+				if(id == "Overlay_Royal_DeerHead_1") { Royal_Tiles[2186] = newElem; }
+				if(id == "Overlay_Royal_DeerHead_2") { Royal_Tiles[2187] = newElem; }
+				if(id == "Overlay_Royal_Chair1_Front") { Royal_Tiles[2188] = newElem; }
+				if(id == "Overlay_Royal_Chair1_Back") { Royal_Tiles[2189] = newElem; }
+				if(id == "Overlay_Royal_Chair2_Front") { Royal_Tiles[2190] = newElem; }
+				if(id == "Overlay_Royal_Chair2_Back") { Royal_Tiles[2191] = newElem; }
+				if(id == "Overlay_Royal_Candle_1") { Royal_Tiles[2192] = newElem; }
+				if(id == "Overlay_Royal_Candle_2") { Royal_Tiles[2193] = newElem; }
+				if(id == "Overlay_Royal_Candle_3") { Royal_Tiles[2194] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_1") { Royal_Tiles[2195] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_2") { Royal_Tiles[2196] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_3") { Royal_Tiles[2197] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_Left_1") { Royal_Tiles[2198] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_Left_2") { Royal_Tiles[2199] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_Left_3") { Royal_Tiles[2200] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_Right_1") { Royal_Tiles[2201] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_Right_2") { Royal_Tiles[2202] = newElem; }
+				if(id == "Overlay_Royal_ArmourSet_Right_3") { Royal_Tiles[2203] = newElem; }
+			}
+
+			function clickPls(e){
+				console.log(e.target.id);
+				var id = e.target.id;
+				curTileName = id;
+				if(id == "blank") { curId = 00; }
+				if(id == "topLeftCorner") {curId = 01; }
+				if(id == "topRightCorner") { curId = 02 }
+				if(id == "bottomLeftCorner") { curId = 03 }
+				if(id == "bottomRightCorner") { curId = 04 }
+				if(id == "wall") { curId = 05 }
+				if(id == "wallRight") {curId = 06 }
+				if(id == "wallLeft") { curId = 07 }
+				if(id == "BottomWall") { curId = 08 }
+				if(id == "tiledFloor") { curId = 09 }
+				if(id == "middleRoomPillar") { curId = 10 }
+				if(id == "outRightTopCorner") { curId = 11 }
+				if(id == "outLeftTopCorner") { curId = 12 }
+				if(id == "outRightBottomCorner") { curId = 13 }
+				if(id == "outLeftBottomCorner") { curId = 14 }
+				if(id == "chest") { curId = 15 }
+				if(id == "wallPillar1") { curId = 16 }
+				if(id == "wallPillar2") { curId = 17 }
+
+				if(id == "Royal_Blank") { curId = 2000; }
+				if(id == "Royal_Window_L1") { curId = 2001; }
+				if(id == "Royal_Window_L2") { curId = 2002; }
+				if(id == "Royal_Window_L3") { curId = 2003; }
+				if(id == "Royal_Window_L4") { curId = 2004; }
+				if(id == "Royal_Window_R1") { curId = 2005; }
+				if(id == "Royal_Window_R2") { curId = 2006; }
+				if(id == "Royal_Window_R3") { curId = 2007; }
+				if(id == "Royal_Window_R4") { curId = 2008; }
+				if(id == "Royal_Window2_L1") { curId = 2009; }
+				if(id == "Royal_Window2_L2") { curId = 2010; }
+				if(id == "Royal_Window2_L3") { curId = 2011; }
+				if(id == "Royal_Window2_L4") { curId = 2012; }
+				if(id == "Royal_Window2_R1") { curId = 2013; }
+				if(id == "Royal_Window2_R2") { curId = 2014; }
+				if(id == "Royal_Window2_R3") { curId = 2015; }
+				if(id == "Royal_Window2_R4") { curId = 2016; }
+				if(id == "Royal_Wall_Top_Ribbon") { curId = 2017; }
+				if(id == "Royal_Wall_Top_Shadow_Left") { curId = 2018; }
+				if(id == "Royal_Wall_Top_Shadow_Right") { curId = 2019; }
+				if(id == "Royal_Wall1") { curId = 2020; }
+				if(id == "Royal_Wall_Shadow_Left") { curId = 2021; }
+				if(id == "Royal_Wall_Shadow_Right") { curId = 2022; }
+				if(id == "Royal_Void_1") { curId = 2023; }
+				if(id == "Royal_Void_2") { curId = 2024; }
+				if(id == "Royal_Void_3") { curId = 2025; }
+				if(id == "Royal_Void_4") { curId = 2026; }
+				if(id == "Royal_Void_5") { curId = 2027; }
+				if(id == "Royal_Void_6") { curId = 2028; }
+				if(id == "Royal_Stone_Wall1") { curId = 2029; }
+				if(id == "Royal_Stone_WallPillared") { curId = 2030; }
+				if(id == "Royal_Stone_Window_L") { curId = 2031; }
+				if(id == "Royal_Stone_Window_R") { curId = 2032; }
+				if(id == "Royal_Stone_Window2_L") { curId = 2033; }
+				if(id == "Royal_Stone_Window2_R") { curId = 2034; }
+				if(id == "Royal_StoneArch_Candles_L1") { curId = 2035; }
+				if(id == "Royal_StoneArch_Candles_L2") { curId = 2036; }
+				if(id == "Royal_StoneArch_Candles_L3") { curId = 2037; }
+				if(id == "Royal_StoneArch_Candles_L4") { curId = 2038; }
+				if(id == "Royal_StoneArch_Candles_R1") { curId = 2039; }
+				if(id == "Royal_StoneArch_Candles_R2") { curId = 2040; }
+				if(id == "Royal_StoneArch_Candles_R3") { curId = 2041; }
+				if(id == "Royal_StoneArch_Candles_R4") { curId = 2042; }
+				if(id == "Royal_StoneArch_L1") { curId = 2043; }
+				if(id == "Royal_StoneArch_L2") { curId = 2044; }
+				if(id == "Royal_StoneArch_L3") { curId = 2045; }
+				if(id == "Royal_StoneArch_L4") { curId = 2046; }
+				if(id == "Royal_StoneArch_L5") { curId = 2047; }
+				if(id == "Royal_StoneArch_R1") { curId = 2048; }
+				if(id == "Royal_StoneArch_R2") { curId = 2049; }
+				if(id == "Royal_StoneArch_R3") { curId = 2050; }
+				if(id == "Royal_StoneArch_R4") { curId = 2051; }
+				if(id == "Royal_StoneArch_R5") { curId = 2052; }
+				if(id == "Royal_StoneArch_Painting_L1") { curId = 2053; }
+				if(id == "Royal_StoneArch_Painting_L2") { curId = 2054; }
+				if(id == "Royal_StoneArch_Painting_L3") { curId = 2055; }
+				if(id == "Royal_StoneArch_Painting_L4") { curId = 2056; }
+				if(id == "Royal_StoneArch_Painting_R1") { curId = 2057; }
+				if(id == "Royal_StoneArch_Painting_R2") { curId = 2058; }
+				if(id == "Royal_StoneArch_Painting_R3" ) { curId = 2059; }
+				if(id == "Royal_StoneArch_Painting_R4") { curId = 2060; }
+				if(id == "Royal_StoneArch_Painting2_L1") { curId = 2061; }
+				if(id == "Royal_StoneArch_Painting2_L2") { curId = 2062; }
+				if(id == "Royal_StoneArch_Painting2_L3") { curId = 2063; }
+				if(id == "Royal_StoneArch_Painting2_L4") { curId = 2064; }
+				if(id == "Royal_StoneArch_Painting2_R1") { curId = 2065; }
+				if(id == "Royal_StoneArch_Painting2_R2") { curId = 2066; }
+				if(id == "Royal_StoneArch_Painting2_R3") { curId = 2067; }
+				if(id == "Royal_StoneArch_Painting2_R4") { curId = 2068; }
+				if(id == "Royal_Stool") { curId = 2069; }
+				if(id == "Royal_Stool2") { curId = 2070; }
+				if(id == "Royal_Table_1") { curId = 2071; }
+				if(id == "Royal_Table_2") { curId = 2072; }
+				if(id == "Royal_Table_Bottles_1") { curId = 2073; }
+				if(id == "Royal_Table_Bottles_2") { curId = 2074; }
+				if(id == "Royal_Table_Flowers_1") { curId = 2075; }
+				if(id == "Royal_Table_Flowers_2") { curId = 2076; }
+				if(id == "Royal_Table_Single") { curId = 2077; }
+				if(id == "Royal_Stone_Table_Flowers_1") { curId = 2078; }
+				if(id == "Royal_Stone_Table_Flowers_2") { curId = 2079; }
+				if(id == "Royal_Stone_Tapestry_L1") { curId = 2080; }
+				if(id == "Royal_Stone_Tapestry_L2") { curId = 2081; }
+				if(id == "Royal_Stone_Tapestry_R1") { curId = 2082; }
+				if(id == "Royal_Stone_Tapestry_R2") { curId = 2083; }
+				if(id == "Royal_Stone_ShiningWindow_L" ) { curId = 2084; }
+				if(id == "Royal_Stone_ShiningWindow_R") { curId = 2085; }
+				if(id == "Royal_Stone_ShiningWindow2_L") { curId = 2086; }
+				if(id == "Royal_Stone_ShiningWindow2_R") { curId = 2087; }
+				if(id == "Royal_Stone_ShiningCurtainWindow_L") { curId = 2088; }
+				if(id == "Royal_Stone_ShiningCurtainWindow_R") { curId = 2089; }
+				if(id == "Royal_Stone_ShiningCurtainWindow2_L") { curId = 2090; }
+				if(id == "Royal_Stone_ShiningCurtainWindow2_R") { curId = 2091; }
+				if(id == "Royal_Stone_CurtainWindow_L") { curId = 2092; }
+				if(id == "Royal_Stone_CurtainWindow_R") { curId = 2093; }
+				if(id == "Royal_Stone_PotionSign_1") { curId = 2094; }
+				if(id == "Royal_Stone_PotionSign_2") { curId = 2095; }
+				if(id == "Royal_Stone_ShieldSign_1" ) { curId = 2096; }
+				if(id == "Royal_Stone_ShieldSign_2") { curId = 2097; }
+				if(id == "Royal_Stone_Painting_1") { curId = 2098; }
+				if(id == "Royal_Stone_Painting_2") { curId = 2099; }
+				if(id == "Royal_Stone_Lamp") { curId = 2100; }
+				if(id == "Royal_Stone_Lamp2") { curId = 2101; }
+				if(id == "Royal_Stone_ArmourSign_1") { curId = 2102; }
+				if(id == "Royal_Stone_ArmourSign_2") { curId = 2103; }
+				if(id == "Royal_Stone_Doorway_L1") { curId = 2104; }
+				if(id == "Royal_Stone_Doorway_L2") { curId = 2105; }
+				if(id == "Royal_Stone_Doorway_L3") { curId = 2106; }
+				if(id == "Royal_Stone_Doorway_L4") { curId = 2107; }
+				if(id == "Royal_Stone_Doorway_R1") { curId = 2108; }
+				if(id == "Royal_Stone_Doorway_R2") { curId = 2109; }
+				if(id == "Royal_Stone_Doorway_R3") { curId = 2110; }
+				if(id == "Royal_Stone_Doorway_R4") { curId = 2111; }
+				if(id == "Royal_Stone_Doorway_M1") { curId = 2112; }
+				if(id == "Royal_Stone_Doorway_M2") { curId = 2113; }
+				if(id == "Royal_Stone_Doorway_M3") { curId = 2114; }
+				if(id == "Royal_Stone_Doorway_M4") { curId = 2115; }
+				if(id == "Royal_Banner_Small_1") { curId = 2116; }
+				if(id == "Royal_Banner_Small_2") { curId = 2117; }
+				if(id == "Royal_Stone_Banner2_1") { curId = 2118; }
+				if(id == "Royal_Stone_Banner2_2") { curId = 2119; }
+				if(id == "Royal_Banner_1") { curId = 2120; }
+				if(id == "Royal_Banner_2") { curId = 2121; }
+				if(id == "Royal_Banner_3") { curId = 2122; }
+				if(id == "Royal_Banner_4") { curId = 2123; }
+				if(id == "Royal_Banner_5") { curId = 2124; }
+				if(id == "Royal_Stone_ArmourSet_1") { curId = 2125; }
+				if(id == "Royal_Stone_ArmourSet_2") { curId = 2126; }
+				if(id == "Royal_ArmourSet_1") { curId = 2127; }
+				if(id == "Royal_ArmourSet_2") { curId = 2128; }
+				if(id == "Royal_ArmourSet_3") { curId = 2129; }
+				if(id == "Royal_ArmourSet2_1") { curId = 2130; }
+				if(id == "Royal_ArmourSet2_2") { curId = 2131; }
+				if(id == "Royal_ArmourSet2_3") { curId = 2132; }
+				if(id == "Royal_Stall_L1") { curId = 2133; }
+				if(id == "Royal_Stall_L2") { curId = 2134; }
+				if(id == "Royal_Stall_ML1") { curId = 2135; }
+				if(id == "Royal_Stall_ML2") { curId = 2136; }
+				if(id == "Royal_Stall_MR1") { curId = 2137; }
+				if(id == "Royal_Stall_MR2") { curId = 2138; }
+				if(id == "Royal_Stall_R1") { curId = 2139; }
+				if(id == "Royal_Stall_R2") { curId = 2140; }
+				if(id == "Royal_Stall2_L1") { curId = 2141; }
+				if(id == "Royal_Stall2_L2") { curId = 2142; }
+				if(id == "Royal_Stall2_R1") { curId = 2143; }
+				if(id == "Royal_Stall2_R2") { curId = 2144; }
+				if(id == "Royal_Stall3_L1") { curId = 2145; }
+				if(id == "Royal_Stall3_L2") { curId = 2146; }
+				if(id == "Royal_Stall3_R1") { curId = 2147; }
+				if(id == "Royal_Stall3_R2") { curId = 2148; }
+				if(id == "Royal_Stairs1_L1") { curId = 2149; }
+				if(id == "Royal_Stairs1_L2") { curId = 2150; }
+				if(id == "Royal_Stairs1_L3") { curId = 2151; }
+				if(id == "Royal_Stairs1_L4") { curId = 2152; }
+				if(id == "Royal_Stairs1_L5") { curId = 2153; }
+				if(id == "Royal_Stairs1_R1") { curId = 2154; }
+				if(id == "Royal_Stairs1_R2") { curId = 2155; }
+				if(id == "Royal_Stairs1_R3") { curId = 2156; }
+				if(id == "Royal_Stairs1_R4") { curId = 2157; }
+				if(id == "Royal_Stairs1_R5") { curId = 2158; }
+				if(id == "Royal_Stairs2_L1") { curId = 2159; }
+				if(id == "Royal_Stairs2_L2") { curId = 2160; }
+				if(id == "Royal_Stairs2_L4") { curId = 2161; }
+				if(id == "Royal_Stairs2_L5") { curId = 2162; }
+				if(id == "Royal_Stairs2_R1") { curId = 2163; }
+				if(id == "Royal_Stairs2_R2") { curId = 2164; }
+				if(id == "Royal_Stairs2_R4") { curId = 2165; }
+				if(id == "Royal_Stairs2_R5") { curId = 2166; }
+				if(id == "Royal_Lounge_L1") { curId = 2167; }
+				if(id == "Royal_Lounge_L2") { curId = 2168; }
+				if(id == "Royal_Lounge_M1") { curId = 2169; }
+				if(id == "Royal_Lounge_M2") { curId = 2170; }
+				if(id == "Royal_Lounge_R1") { curId = 2171; }
+				if(id == "Royal_Lounge_R2") { curId = 2172; }
+				if(id == "Royal_ClosedCurtainWindow_1") { curId = 2173; }
+				if(id == "Royal_ClosedCurtainWindow_2") { curId = 2174; }
+				if(id == "Royal_CurtainWindow_1") { curId = 2175; }
+				if(id == "Royal_CurtainWindow_2") { curId = 2176; }
+				if(id == "Royal_Candle_1") { curId = 2177; }
+				if(id == "Royal_Candle_2") { curId = 2178; }
+				if(id == "Royal_Candle_3") { curId = 2179; }
+				if(id == "Overlay_Royal_Painting1") { curId = 2180; }
+				if(id == "Overlay_Royal_Painting2") { curId = 2181; }
+				if(id == "Overlay_Royal_Painting3") { curId = 2182; }
+				if(id == "Overlay_Royal_Ornament") { curId = 2183; }
+				if(id == "Overlay_Royal_Lamp2") { curId = 2184; }
+				if(id == "Overlay_Royal_Flowers") { curId = 2185; }
+				if(id == "Overlay_Royal_DeerHead_1") { curId = 2186; }
+				if(id == "Overlay_Royal_DeerHead_2") { curId = 2187; }
+				if(id == "Overlay_Royal_Chair1_Front") { curId = 2188; }
+				if(id == "Overlay_Royal_Chair1_Back") { curId = 2189; }
+				if(id == "Overlay_Royal_Chair2_Front") { curId = 2190; }
+				if(id == "Overlay_Royal_Chair2_Back") { curId = 2191; }
+				if(id == "Overlay_Royal_Candle_1") { curId = 2192; }
+				if(id == "Overlay_Royal_Candle_2") { curId = 2193; }
+				if(id == "Overlay_Royal_Candle_3") { curId = 2194; }
+				if(id == "Overlay_Royal_ArmourSet_1") { curId = 2195; }
+				if(id == "Overlay_Royal_ArmourSet_2") { curId = 2196; }
+				if(id == "Overlay_Royal_ArmourSet_3") { curId = 2197; }
+				if(id == "Overlay_Royal_ArmourSet_Left_1") { curId = 2198; }
+				if(id == "Overlay_Royal_ArmourSet_Left_2") { curId = 2199; }
+				if(id == "Overlay_Royal_ArmourSet_Left_3") { curId = 2200; }
+				if(id == "Overlay_Royal_ArmourSet_Right_1") { curId = 2201; }
+				if(id == "Overlay_Royal_ArmourSet_Right_2") { curId = 2202; }
+				if(id == "Overlay_Royal_ArmourSet_Right_3") { curId = 2203; }
+				console.log(curId);
+			}
+
+			//Temporary Variables
+
+
+			//Event Listeners
+			document.addEventListener('DOMContentLoaded', function() {
+				browser = document.getElementById('browser');
+				tileBrowser = document.getElementById('tileBrowser');
+				initialSettings = document.getElementById('initialSettings');
+				mapTypeSelect = document.getElementById('mapTypeSelect');
+
+				exportArea = document.getElementById('exportArea');
+				exportText = document.getElementById('exportText');
+
+				rowsInput = document.getElementById('map_rows');
+				colsInput = document.getElementById('map_cols');
+
+				beginButton = document.getElementById('beginButton');
+				drawButton = document.getElementById('drawButton');
+				eraseButton = document.getElementById('eraseButton');
+				gridButton = document.getElementById('gridButton');
+				exportButton = document.getElementById('exportButton');
+
+				exportButton.addEventListener('click', exportMap, false);
+
+
+				gridButton.addEventListener('click', toggleGrid, false);
+				beginButton.addEventListener('click', beginEditing, false);
+				drawButton.addEventListener('click', beginDrawing, false);
+				eraseButton.addEventListener('click', beginErasing, false);
+
+				mapTypeSelect.addEventListener('change', function(e) { mapType = mapTypeSelect.value; console.log(mapType); }, false);
+			}, false);
+
+
+			canvas.addEventListener('mousedown', clickEvent, false);
+			/*Functions*/
+			/////////////////
+
+			//Drawing
+			function draw() {
+				ctx.clearRect(0,0,width,height);
+				drawTiles();
+				if(toDrawGrid) {
+					drawGrid();
+				}
+
+
+				//requestAnimationFrame(draw);
+			}
+
+
+			function drawTiles() {
+				for(var i in GAME_MAP) {
+					for(var j in GAME_MAP[i]) {
+						var tile = GAME_MAP[i][j];
+						if(tile == 0) {
+
+						} else {
+							ctx.beginPath();
+							ctx.drawImage(Royal_Tiles[tile], j*32, i*32, 32, 32);
+							ctx.closePath();
+						}
+					}
+				}
+			}
+
+			function drawGrid() {
+
+				for(var i = 0; i < rows; i++) {
+					var curPos = i*32;
+					ctx.beginPath();
+					ctx.rect(0, curPos, width, 0.1);
+					ctx.strokeStyle = "black";
+					ctx.stroke();
+					ctx.closePath();
+				}
+				for(var i=0; i<cols; i++) {
+					var curPos = i*32;
+					ctx.beginPath();
+					ctx.rect(curPos, 0, 0.1, height);
+					ctx.strokeStyle = "black";
+					ctx.stroke();
+					ctx.closePath();
+				}
+			}
+
+			//Logic
+
+
+
+			//Event Listener Functions
+
+			function exportMap() {
+
+				browser.style.display = "none";
+				canvas.style.display = "none";
+				exportArea.style.display = "block";
+				exportText.innerHTML = "";
+
+				for(var i = 0; i<GAME_MAP.length; i++) {
+					for(var j = 0; j < GAME_MAP[i].length; j++) {
+
+						if(GAME_MAP[i][j] !== undefined) {
+							if(j == 0) { exportText.innerHTML += "[" + GAME_MAP[i][j]; console.log("ADDED FIRST"); } else{
+								exportText.innerHTML += ","+ GAME_MAP[i][j];
+							}
+							if(j == GAME_MAP[i].length-1) { exportText.innerHTML += "],"; }
+						} else {
+							if(j !== 0) {
+								if(j !== GAME_MAP[i].length-1) {
+									exportText.innerHTML += ",0000";
+								}
+							} else {
+								exportText.innerHTML += "[0000";
+							}
+							console.log("VALS: " + i, j);
+							if(j == GAME_MAP[i].length-1) {
+								if(GAME_MAP[i][j] !== undefined) {
+									exportText.innerHTML += GAME_MAP[i][j] + "],";
+								} else {
+									exportText.innerHTML += ",0000],";
+								}
+							} else {
+								console.log(j);
+							}
+						}
+					}
+					exportText.innerHTML += "<br/>";
+				}
+				console.log(exportText);
+			}
+
+			function toggleGrid() {
+				if(toDrawGrid) {
+					toDrawGrid = false;
+				} else { toDrawGrid = true; }
+			}
+
+			function beginDrawing(e) {
+				eraseMode = false;
+			}
+			function beginErasing(e) {
+				eraseMode = true;
+			}
+
+			function beginEditing(e) {
+				rows = rowsInput.value;
+				cols = colsInput.value;
+
+				canvas.width = cols*32;
+				canvas.height = rows*32;
+
+				width = canvas.width;
+				height = canvas.height;
+
+				console.log(rows, cols);
+
+				GAME_MAP = [];
+				for(var i = 0; i < rows; i++) {
+					GAME_MAP.push(new Array(parseInt(cols)));
+				}
+				console.log(GAME_MAP);
+				initialSettings.style.display = "none";
+				tileBrowser.style.display = "block";
+
+				ready = true;
+			}
+
+			function clickEvent(e) {
+				var clickX = e.pageX - localOffsetX;
+				var clickY = e.pageY - localOffsetY;
+				console.log(clickX, clickY);
+				var tileY = Math.floor(clickY / 32);
+				var tileX = Math.floor(clickX / 32);
+
+				console.log(tileX, tileY);
+
+				if(tileX > cols || tileY > rows) {
+					return;
+				}
+
+				if(!eraseMode) {
+					GAME_MAP[tileY][tileX] = curId;
+				} else {
+					GAME_MAP[tileY][tileX] = 0;
+				}
+				console.log("ran");
+
+			}
+
+			function getPos(el) {
+				// yay readability
+				for (var lx=0, ly=0;
+					 el != null;
+					 lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent);
+				return {x: lx,y: ly};
+			}
+			var checkInterval = setInterval(function () {
+				if(ready) {
+					clearInterval(checkInterval);
+					setInterval(draw, 250);
+					var pos = getPos(canvas);
+					localOffsetX = pos.x;
+					localOffsetY = pos.y;
+				} else {
+					console.log("check");
+				}
+			}, 500);
+
+		</script>
+	</body>
+</html>

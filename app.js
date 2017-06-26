@@ -219,6 +219,7 @@ var Player = function(id){
 		health: 50,
 		maxHealth: 50,
 		mana: 25,
+		maxMana: 25,
 		size: 8,
 		id: id,
 		x: 48,
@@ -243,6 +244,10 @@ var Player = function(id){
 		inventory: inventory,
 		spellList: spellList,
 		selectedAbility: "none",
+
+		knight_chevron_lastStackTime: 0,
+		knight_chevron_stackTimeOut: 3,
+		knight_chevron_stackCount: 0
 	};
 	return self;
 };
@@ -301,7 +306,10 @@ var Knight = function(id, x, y, vx, vy){
 		lastTickUpdate: 0,
 		sightRadius: 300,
 		chaseRadius: 300,
-		target: "none"
+		target: "none",
+		lastAttack: 0,
+		attackDelay: 1.5,
+		attackRadius: 25
 	};
 	return self;
 }
@@ -359,6 +367,19 @@ var Melee = function(x, y, hbx, hby, w, h, type, dir) {
 		animTick: 0,
 		type: type,
 		direction: dir,
+		lastTickUpdate: 0
+	};
+	return self;
+}
+var KnightAttack = function(x, y, hbx, hby, w, h) {
+	var self = {
+		x: x,
+		y: y,
+		hbx: hbx,
+		hby: hby,
+		w: w,
+		h: h,
+		animTick: 0,
 		lastTickUpdate: 0
 	};
 	return self;
@@ -546,7 +567,10 @@ io.sockets.on('connection', function(socket)
 				roomLengthY: data.roomLengthY
 			},
 			map: data.map,
-			attacks: [],
+			attacks: {
+				player: [],
+				knight: []
+			},
 			abilities: {
 				//aer
 				dust_mites: [],
@@ -773,13 +797,46 @@ function createNewMeleeAttack(player) {
 
 		var newAttackObj = new Melee(animX, animY, xLoc, yLoc, w, h, "default", direction);
 
-		world.attacks.push(newAttackObj);
+		world.attacks.player.push(newAttackObj);
 		//Create actual damage for attack
 		checkHits(newAttackObj, player.worldId, player);
 		//console.log("CHECKED");
 	} else {
 		console.log("Random fatal error.");
 	}
+}
+
+function createKnightAttack(knight, id) {
+		var world = GLOBAL_WORLD_LIST[id];
+
+		var target = PLAYER_LIST[knight.target];
+
+		var dx = (knight.x - target.x);
+		var dy = (knight.y - target.y);
+		var mag = Math.sqrt((dx*dx) + (dy*dy));
+
+		var vx = (dx/mag);
+		var vy = (dy/mag);
+		var xPos = knight.x - (vx * knight.attackRadius);
+		var yPos = knight.y - (vy * knight.attackRadius);
+		var newKnightAttackObj = new KnightAttack(xPos, yPos, 32, 32, 64, 64);
+
+		world.attacks.knight.push(newKnightAttackObj);
+
+		//Check damaged players
+		for(var i in world.roomData.playerlist) {
+			var thisPlayer = PLAYER_LIST[world.roomData.playerlist[i]];
+			if(boxCollides([thisPlayer.x - thisPlayer.size/2, thisPlayer.y - thisPlayer.size/2],[thisPlayer.size, thisPlayer.size],[newKnightAttackObj.x - newKnightAttackObj.w/2,newKnightAttackObj.y - newKnightAttackObj.size/2],[newKnightAttackObj.size, newKnightAttackObj.size])) {
+				//Hit a player.
+				thisPlayer.health -= 10;
+				thisPlayer.knight_chevron_stackCount += 1;
+				thisPlayer.knight_chevron_lastStackTime = dt;
+				if(thisPlayer.knight_chevron_stackCount > 3){
+					thisPlayer.health -= thisPlayer.maxHealth*0.65;
+					thisPlayer.knight_chevron_stackCount = Math.ceil(thisPlayer.knight_chevron_stackCount/2);
+				}
+			}
+		}
 }
 
 function checkHits(object, worldId, player) {
@@ -920,15 +977,29 @@ function determineTileFromPx(x, y, id) {
 }
 
 function updateAttacks(id) {
-	for(var i in GLOBAL_WORLD_LIST[id].attacks) {
-		var attack = GLOBAL_WORLD_LIST[id].attacks[i];
+	for(var i in GLOBAL_WORLD_LIST[id].attacks.player) {
+		var attack = GLOBAL_WORLD_LIST[id].attacks.player[i];
 		if(attack) {
 			var timer = 0.05;
 			if(timer < dt - attack.lastTickUpdate) {
 				attack.lastTickUpdate = dt;
 				attack.animTick += 1;
 				if(attack.animTick > 5) {
-					GLOBAL_WORLD_LIST[id].attacks.splice(i, 1);
+					GLOBAL_WORLD_LIST[id].attacks.player.splice(i, 1);
+				}
+			}
+		}
+	}
+
+	for(var i in GLOBAL_WORLD_LIST[id].attacks.knight) {
+		var attack = GLOBAL_WORLD_LIST[id].attacks.knight[i];
+		if(attack) {
+			var timer = 0.05;
+			if(timer < dt - attack.lastTickUpdate) {
+				attack.lastTickUpdate = dt;
+				attack.animTick += 1;
+				if(attack.animTick > 13) {
+					GLOBAL_WORLD_LIST[id].attacks.knight.splice(i, 1);
 				}
 			}
 		}
@@ -1226,7 +1297,7 @@ function updateKnights(id) {
 				for(var k in knightSegment) {
 					for(var l in knightSegment[k]) {
 						var tile = knightSegment[k][l];
-						if(tile == 09) {
+						if(tile == 09 || tile == 9) {
 							grid.setWalkableAt(l,k,true);
 						} else {
 							grid.setWalkableAt(l,k,false);
@@ -1333,6 +1404,13 @@ function updateKnights(id) {
 				//console.log("Knight is attacking!");
 				if(knightLoc.innerX !== playerLoc.innerX || playerLoc.innerY !== knightLoc.innerY ) {
 					knight.status = "choose_chase";
+				} else {
+					//Knight Attack delay timer.
+					if(dt - knight.lastAttack > knight.attackDelay) {
+						knight.lastAttack = dt;
+						createKnightAttack(knight, id);
+						console.log("ATTACKED LEL");
+					}
 				}
 			}
 			if(knight.health <= 0) {
@@ -1370,7 +1448,7 @@ function getDirectionFromVelocity(vx,vy) {
 	if(vx < 0 && vy < 0) { return "down"; }
 	if(vx > 0 && vy < 0) { return "down"; }
 
-	return "down";
+	return "none";
 
 }
 function newVectorFromPathway(posX, posY, curX, curY) {
@@ -1389,6 +1467,8 @@ function lastIdle(entity) {
 	} else if(entity.direction == "up") {
 		return "idle_up";
 	}
+	return "none";
+
 }
 function checkNearbyPlayers(entity, id) {
 	var world = GLOBAL_WORLD_LIST[id];
