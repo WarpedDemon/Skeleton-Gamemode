@@ -91,9 +91,11 @@
 				<ul id="tileBrowserList">
 					<!--Tilesets here-->
 				</ul>
-				<button id="drawButton" > Draw </button>
-				<button id="eraseButton" >Erase</button>
+				<button id="drawButton">Draw</button>
+				<button id="eraseButton">Erase</button>
 				<button id="gridButton">Toggle Grid</button>
+				<button id="bucketButton">Paint Bucket</button>
+				<button id="floorButton">Openings</button>
 				<br/><br/>
 				<div id="exportButton"><p>Export Map</p></div>
 			</div>
@@ -680,6 +682,7 @@
 				eraseButton = document.getElementById('eraseButton');
 				gridButton = document.getElementById('gridButton');
 				exportButton = document.getElementById('exportButton');
+				bucketButton = document.getElementById('bucketButton');
 
 				exportButton.addEventListener('click', exportMap, false);
 
@@ -688,6 +691,8 @@
 				beginButton.addEventListener('click', beginEditing, false);
 				drawButton.addEventListener('click', beginDrawing, false);
 				eraseButton.addEventListener('click', beginErasing, false);
+				bucketButton.addEventListener('click', floodFill, false);
+				floorButton.addEventListener('click', floor, false);
 
 				mapTypeSelect.addEventListener('change', function(e) { mapType = mapTypeSelect.value; console.log(mapType); }, false);
 			}, false);
@@ -709,6 +714,96 @@
 				//requestAnimationFrame(draw);
 			}
 
+			function floor(){
+				//floor is 09
+////////////////////////////////
+//top
+				GAME_MAP[0][7] = 07;
+
+				GAME_MAP[0][8] = 09;
+				GAME_MAP[0][9] = 09;
+
+				GAME_MAP[0][10] = 06;
+////////////////////////////////
+//second line
+				GAME_MAP[1][7] = 03;
+
+				GAME_MAP[1][8] = 08;
+				GAME_MAP[1][9] = 08;
+
+				GAME_MAP[1][10] = 04;
+
+////////////////////////////////
+
+//bottom
+				GAME_MAP[17][7] = 07;
+
+				GAME_MAP[17][8] = 09;
+				GAME_MAP[17][9] = 09;
+
+				GAME_MAP[17][10] = 06;
+////////////////////////////////
+//second line
+				GAME_MAP[16][7] = 01;
+
+				GAME_MAP[16][8] = 05;
+				GAME_MAP[16][9] = 05;
+
+				GAME_MAP[16][10] = 02;
+////////////////////////////////
+
+//left
+				GAME_MAP[7][0] = 05;
+
+				GAME_MAP[8][0] = 09;
+				GAME_MAP[9][0] = 09;
+
+				GAME_MAP[10][0] = 08;
+////////////////////////////////
+//second line
+				GAME_MAP[7][1] = 02;
+
+				GAME_MAP[8][1] = 06;
+				GAME_MAP[9][1] = 06;
+
+				GAME_MAP[10][1] = 04;
+////////////////////////////////
+
+//right
+				GAME_MAP[7][17] = 05;
+
+				GAME_MAP[8][17] = 09;
+				GAME_MAP[9][17] = 09;
+
+				GAME_MAP[10][17] = 08;
+////////////////////////////////
+//second line
+				GAME_MAP[7][16] = 01;
+
+				GAME_MAP[8][16] = 07;
+				GAME_MAP[9][16] = 07;
+
+				GAME_MAP[10][16] = 03;
+////////////////////////////////
+			}
+
+
+			function floodFill() {
+				//use current tile to fill all area that isnt this tile
+				//exclude tiles that are different to currenly selected floodFill tile
+				//GAME_MAP[i][j]; the tiles currently stored
+				//curId is the currently selected tile
+				//GAME_MAP[i][j] = 2027; proves it does what i want e.g. fill page with tile 2026 <- this dood will be a variable :)
+				//floodFill tile
+
+				for (var i in GAME_MAP){
+					for (var j in GAME_MAP){
+						if(GAME_MAP[i][j] == null || GAME_MAP[i][j] == 0){
+							GAME_MAP[i][j] = curId;
+						}
+					}
+				}
+			}
 
 			function drawTiles() {
 				for(var i in GAME_MAP) {
