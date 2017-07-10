@@ -50,6 +50,7 @@ var GLOBAL_NPC_LIST = {};
 var GLOBAL_WORLD_LIST = {};
 
 //1
+//dont use this but it is the ruff method of map generating
 var map_Piece1 = [
 	[1,0,1,1,1,1,1,0,1],
 	[1,0,1,0,0,0,1,0,1],

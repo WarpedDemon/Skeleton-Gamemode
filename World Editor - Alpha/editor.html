@@ -96,6 +96,7 @@
 				<button id="gridButton">Toggle Grid</button>
 				<button id="bucketButton">Paint Bucket</button>
 				<button id="floorButton">Openings</button>
+				<button id="generatePathButton">Path Generator</button>
 				<br/><br/>
 				<div id="exportButton"><p>Export Map</p></div>
 			</div>
@@ -693,6 +694,7 @@
 				eraseButton.addEventListener('click', beginErasing, false);
 				bucketButton.addEventListener('click', floodFill, false);
 				floorButton.addEventListener('click', floor, false);
+				generatePathButton.addEventListener('click', generatePath, false);
 
 				mapTypeSelect.addEventListener('change', function(e) { mapType = mapTypeSelect.value; console.log(mapType); }, false);
 			}, false);
@@ -785,6 +787,70 @@
 
 				GAME_MAP[10][16] = 03;
 ////////////////////////////////
+
+////////////////////////////////
+
+//center
+				GAME_MAP[6][7] = 01;
+
+				GAME_MAP[6][8] = 05;
+				GAME_MAP[6][9] = 05;
+
+				GAME_MAP[6][10] = 02;
+////////////////////////////////
+////////////////////////////////
+
+//centerRight
+				GAME_MAP[7][11] = 02;
+
+				GAME_MAP[8][11] = 06;
+				GAME_MAP[9][11] = 06;
+
+				GAME_MAP[10][11] = 04;
+////////////////////////////////
+////////////////////////////////
+
+//centerLeft
+				GAME_MAP[7][6] = 01;
+
+				GAME_MAP[8][6] = 07;
+				GAME_MAP[9][6] = 07;
+
+				GAME_MAP[10][6] = 03;
+////////////////////////////////
+////////////////////////////////
+//fills center node
+//not done
+//centerCenter
+				GAME_MAP[7][7] = 13;
+				GAME_MAP[7][8] = 09;
+				GAME_MAP[7][9] = 09;
+				GAME_MAP[7][10] = 14;
+
+				GAME_MAP[8][7] = 09;
+				GAME_MAP[8][8] = 09;
+				GAME_MAP[8][9] = 09;
+				GAME_MAP[8][10] = 09;
+
+				GAME_MAP[9][7] = 09;
+				GAME_MAP[9][8] = 09;
+				GAME_MAP[9][9] = 09;
+				GAME_MAP[9][10] = 09;
+
+				GAME_MAP[10][7] = 11;
+				GAME_MAP[10][8] = 09;
+				GAME_MAP[10][9] = 09;
+				GAME_MAP[10][10] = 12;
+////////////////////////////////
+
+//center Bottom
+				GAME_MAP[11][7] = 03;
+
+				GAME_MAP[11][8] = 08;
+				GAME_MAP[11][9] = 08;
+
+				GAME_MAP[11][10] = 04;
+////////////////////////////////
 			}
 
 
@@ -818,6 +884,327 @@
 						}
 					}
 				}
+			}
+
+			//path methods
+			function AM(){
+				//Top to middle
+								GAME_MAP[1][7] = 07;
+
+								GAME_MAP[1][8] = 09;
+								GAME_MAP[1][9] = 09;
+
+								GAME_MAP[1][10] = 06;
+				////////////////////////////////
+								GAME_MAP[2][7] = 07;
+
+								GAME_MAP[2][8] = 09;
+								GAME_MAP[2][9] = 09;
+
+								GAME_MAP[2][10] = 06;
+				////////////////////////////////
+								GAME_MAP[3][7] = 07;
+
+								GAME_MAP[3][8] = 09;
+								GAME_MAP[3][9] = 09;
+
+								GAME_MAP[3][10] = 06;
+				////////////////////////////////
+								GAME_MAP[4][7] = 07;
+
+								GAME_MAP[4][8] = 09;
+								GAME_MAP[4][9] = 09;
+
+								GAME_MAP[4][10] = 06;
+				////////////////////////////////
+								GAME_MAP[5][7] = 07;
+
+								GAME_MAP[5][8] = 09;
+								GAME_MAP[5][9] = 09;
+
+								GAME_MAP[5][10] = 06;
+				////////////////////////////////
+								GAME_MAP[6][7] = 07;
+
+								GAME_MAP[6][8] = 09;
+								GAME_MAP[6][9] = 09;
+
+								GAME_MAP[6][10] = 06;
+				////////////////////////////////
+			}
+			function BM(){
+				//Right to middle
+								GAME_MAP[7][16] = 05;
+
+								GAME_MAP[8][16] = 09;
+								GAME_MAP[9][16] = 09;
+
+								GAME_MAP[10][16] = 08;
+				////////////////////////////////
+								GAME_MAP[7][15] = 05;
+
+								GAME_MAP[8][15] = 09;
+								GAME_MAP[9][15] = 09;
+
+								GAME_MAP[10][15] = 08;
+				////////////////////////////////
+								GAME_MAP[7][14] = 05;
+
+								GAME_MAP[8][14] = 09;
+								GAME_MAP[9][14] = 09;
+
+								GAME_MAP[10][14] = 08;
+				////////////////////////////////
+								GAME_MAP[7][13] = 05;
+
+								GAME_MAP[8][13] = 09;
+								GAME_MAP[9][13] = 09;
+
+								GAME_MAP[10][13] = 08;
+				////////////////////////////////
+								GAME_MAP[7][12] = 05;
+
+								GAME_MAP[8][12] = 09;
+								GAME_MAP[9][12] = 09;
+
+								GAME_MAP[10][12] = 08;
+				////////////////////////////////
+								GAME_MAP[7][11] = 05;
+
+								GAME_MAP[8][11] = 09;
+								GAME_MAP[9][11] = 09;
+
+								GAME_MAP[10][11] = 08;
+				////////////////////////////////
+			}
+			function CM(){
+				//Left to middle
+								GAME_MAP[7][1] = 05;
+
+								GAME_MAP[8][1] = 09;
+								GAME_MAP[9][1] = 09;
+
+								GAME_MAP[10][1] = 08;
+				////////////////////////////////
+								GAME_MAP[7][2] = 05;
+
+								GAME_MAP[8][2] = 09;
+								GAME_MAP[9][2] = 09;
+
+								GAME_MAP[10][2] = 08;
+				////////////////////////////////
+								GAME_MAP[7][3] = 05;
+
+								GAME_MAP[8][3] = 09;
+								GAME_MAP[9][3] = 09;
+
+								GAME_MAP[10][3] = 08;
+				////////////////////////////////
+								GAME_MAP[7][4] = 05;
+
+								GAME_MAP[8][4] = 09;
+								GAME_MAP[9][4] = 09;
+
+								GAME_MAP[10][4] = 08;
+				////////////////////////////////
+								GAME_MAP[7][5] = 05;
+
+								GAME_MAP[8][5] = 09;
+								GAME_MAP[9][5] = 09;
+
+								GAME_MAP[10][5] = 08;
+				////////////////////////////////
+								GAME_MAP[7][6] = 05;
+
+								GAME_MAP[8][6] = 09;
+								GAME_MAP[9][6] = 09;
+
+								GAME_MAP[10][6] = 08;
+				////////////////////////////////
+			}
+			function DM(){
+				//Bottom to middle
+								GAME_MAP[16][7] = 07;
+
+								GAME_MAP[16][8] = 09;
+								GAME_MAP[16][9] = 09;
+
+								GAME_MAP[16][10] = 06;
+				////////////////////////////////
+								GAME_MAP[15][7] = 07;
+
+								GAME_MAP[15][8] = 09;
+								GAME_MAP[15][9] = 09;
+
+								GAME_MAP[15][10] = 06;
+				////////////////////////////////
+								GAME_MAP[14][7] = 07;
+
+								GAME_MAP[14][8] = 09;
+								GAME_MAP[14][9] = 09;
+
+								GAME_MAP[14][10] = 06;
+				////////////////////////////////
+								GAME_MAP[13][7] = 07;
+
+								GAME_MAP[13][8] = 09;
+								GAME_MAP[13][9] = 09;
+
+								GAME_MAP[13][10] = 06;
+				////////////////////////////////
+								GAME_MAP[12][7] = 07;
+
+								GAME_MAP[12][8] = 09;
+								GAME_MAP[12][9] = 09;
+
+								GAME_MAP[12][10] = 06;
+				////////////////////////////////
+								GAME_MAP[11][7] = 07;
+
+								GAME_MAP[11][8] = 09;
+								GAME_MAP[11][9] = 09;
+
+								GAME_MAP[11][10] = 06;
+				////////////////////////////////
+			}
+
+			function generatePath(){
+				var numberOfConnections = Math.floor(Math.random() * 4) + 0;
+
+				switch (numberOfConnections) {
+					case 0:
+						console.log("Blank Segment This Time");
+					break;
+
+					case 1:
+						var connectionMethod = Math.floor(Math.random() * 4) + 1;
+						switch (connectionMethod) {
+							case 1:
+								AM();
+							break;
+
+							case 2:
+								BM();
+							break;
+
+							case 3:
+								CM();
+							break;
+
+							case 4:
+								DM();
+							break;
+
+							default:
+								AM();
+						}
+					break;
+
+					case 2:
+						var numberOfConnections = Math.floor(Math.random() * 6) + 1;
+						switch (connectionMethod) {
+							case 1:
+								AM();
+								BM();
+							break;
+
+							case 2:
+								AM();
+								CM();
+							break;
+
+							case 3:
+								AM();
+								DM();
+							break;
+
+							case 4:
+								BM();
+								CM();
+							break;
+
+							case 5:
+								BM();
+								DM();
+							break;
+
+							case 6:
+								CM();
+								DM();
+							break;
+
+							default:
+								AM();
+								BM();
+						}
+					break;
+
+					case 3:
+						var numberOfConnections = Math.floor(Math.random() * 4) + 1;
+						switch (connectionMethod) {
+							case 1:
+								AM();
+								BM();
+								CM();
+							break;
+
+							case 2:
+								AM();
+								BM();
+								DM();
+							break;
+
+							case 3:
+								BM();
+								CM();
+								DM();
+							break;
+
+							case 4:
+								DM();
+								CM();
+								AM();
+							break;
+
+							default:
+								AM();
+								BM();
+								CM();
+						}
+					break;
+
+					case 4:
+						AM();
+						CM();
+						CM();
+						DM();
+					break;
+
+					default:
+					//will defaultly create 1 path if the method fails
+						var connectionMethod = Math.floor(Math.random() * 4) + 1;
+						switch (connectionMethod) {
+							case 1:
+								AM();
+							break;
+
+							case 2:
+								BM();
+							break;
+
+							case 3:
+								CM();
+							break;
+
+							case 4:
+								DM();
+							break;
+
+							default:
+								AM();
+						}
+				}
+
 			}
 
 			function drawGrid() {
